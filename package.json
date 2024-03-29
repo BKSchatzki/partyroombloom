@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "server": "tsx watch ./server/index.ts"
   },
-  "dependencies": {
+  "prisma": {
+    "schema": "./server/prisma/schema.prisma"
+  },
+    "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.12",
