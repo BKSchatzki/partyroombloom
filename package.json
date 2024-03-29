@@ -13,7 +13,7 @@
   "prisma": {
     "schema": "./server/prisma/schema.prisma"
   },
-    "dependencies": {
+  "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.12",
