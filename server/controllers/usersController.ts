@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import connectPrisma from '../utils/connectPrisma';
 
-const prisma = new PrismaClient();
+const prisma = connectPrisma();
 
 const usersController = {
   getUsers: async (req, res) => {
