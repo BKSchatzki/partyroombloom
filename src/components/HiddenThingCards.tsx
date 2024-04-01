@@ -7,7 +7,9 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   Divider,
+  FormControlLabel,
   Grid,
   Stack,
   TextField,
@@ -26,7 +28,14 @@ const HiddenThingCards = ({
     hiddenName: '',
     hiddenDescription: '',
     hasSecret: false,
-    secretThings: null,
+    secretThings: [
+      {
+        secretName: '',
+        secretDescription: '',
+        onSuccess: '',
+        onFailure: '',
+      },
+    ],
   };
 
   return (
@@ -41,14 +50,21 @@ const HiddenThingCards = ({
         >
           <Card sx={{ mx: 1, my: 1 }}>
             <CardHeader
-              title={landmarkItem.landmarkName || `Landmark Thing ${landmarkIndex + 1}`}
+              title={
+                landmarkItem.landmarkName
+                  ? `📍 ${landmarkItem.landmarkName}`
+                  : `📍 Landmark Thing ${landmarkIndex + 1}`
+              }
+              titleTypographyProps={{
+                sx: { fontSize: '1.2rem' },
+              }}
             />
             <Divider />
             {landmarkItem.hiddenThings.map((hiddenItem, hiddenIndex) => (
               <CardContent key={hiddenIndex}>
                 <Stack spacing={2}>
                   <TextField
-                    label={'Hidden Thing'}
+                    label={`🔎 Hidden Thing ${hiddenIndex + 1}`}
                     value={hiddenItem.hiddenName}
                     onChange={(e) => {
                       const updatedLandmarkItems = [...scene.landmarkThings];
@@ -63,7 +79,7 @@ const HiddenThingCards = ({
                     variant={'outlined'}
                   />
                   <TextField
-                    label={'Hidden Description'}
+                    label={'Description'}
                     value={hiddenItem.hiddenDescription}
                     onChange={(e) => {
                       const updatedLandmarkItems = [...scene.landmarkThings];
@@ -80,6 +96,24 @@ const HiddenThingCards = ({
                     multiline
                     minRows={2}
                     maxRows={Infinity}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color={'warning'}
+                        checked={hiddenItem.hasSecret}
+                        onChange={(e) => {
+                          const updatedLandmarkItems = [...scene.landmarkThings];
+                          updatedLandmarkItems[landmarkIndex].hiddenThings[hiddenIndex].hasSecret =
+                            e.target.checked;
+                          setScene({
+                            ...scene,
+                            landmarkThings: updatedLandmarkItems,
+                          });
+                        }}
+                      />
+                    }
+                    label={'🎲 Can roll for secrets'}
                   />
                   <ButtonGroup
                     size={'small'}
@@ -104,7 +138,7 @@ const HiddenThingCards = ({
                       <Clear />
                     </Button>
                     <Button
-                      color={'success'}
+                      color={'primary'}
                       sx={{ width: '500%' }}
                       onClick={() => {
                         const updatedLandmarkItems = [...scene.landmarkThings];

@@ -6,6 +6,7 @@ import FormNav from '../components/FormNav';
 import HiddenThingCards from '../components/HiddenThingCards';
 import LandmarkThingCards from '../components/LandmarkThingCards';
 import SceneCard from '../components/SceneCard';
+import SecretThingCards from '../components/SecretThingCards';
 
 export type Scene = {
   info: {
@@ -21,12 +22,12 @@ export type Scene = {
       hiddenName: string;
       hiddenDescription: string;
       hasSecret: boolean;
-      secretThings:
-        | {
-            secretName: string;
-            secretDescription: string;
-          }[]
-        | null;
+      secretThings: {
+        secretName: string;
+        secretDescription: string;
+        onSuccess: string;
+        onFailure: string;
+      }[];
     }[];
   }[];
 };
@@ -49,7 +50,14 @@ const SceneForm = () => {
             hiddenName: '',
             hiddenDescription: '',
             hasSecret: false,
-            secretThings: null,
+            secretThings: [
+              {
+                secretName: '',
+                secretDescription: '',
+                onSuccess: '',
+                onFailure: '',
+              },
+            ],
           },
         ],
       },
@@ -86,6 +94,12 @@ const SceneForm = () => {
           )}
           {formStep === 2 && (
             <HiddenThingCards
+              scene={scene}
+              setScene={setScene}
+            />
+          )}
+          {formStep === 3 && (
+            <SecretThingCards
               scene={scene}
               setScene={setScene}
             />

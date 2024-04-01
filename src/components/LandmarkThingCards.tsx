@@ -20,7 +20,14 @@ const LandmarkThingCards = ({
         hiddenName: '',
         hiddenDescription: '',
         hasSecret: false,
-        secretThings: null,
+        secretThings: [
+          {
+            secretName: '',
+            secretDescription: '',
+            onSuccess: '',
+            onFailure: '',
+          },
+        ],
       },
     ],
   };
@@ -38,7 +45,7 @@ const LandmarkThingCards = ({
             <CardContent>
               <Stack spacing={2}>
                 <TextField
-                  label={'Landmark Thing'}
+                  label={`📍 Landmark Thing ${landmarkIndex + 1}`}
                   value={landmarkItem.landmarkName}
                   onChange={(e) => {
                     const updatedItems = [...scene.landmarkThings];
@@ -52,7 +59,7 @@ const LandmarkThingCards = ({
                   variant={'outlined'}
                 />
                 <TextField
-                  label={'Landmark Description'}
+                  label={'Description'}
                   value={landmarkItem.landmarkDescription}
                   onChange={(e) => {
                     const updatedItems = [...scene.landmarkThings];
@@ -71,10 +78,9 @@ const LandmarkThingCards = ({
                 <ButtonGroup
                   size={'small'}
                   color={'inherit'}
-                  variant={'contained'}
+                  variant={'outlined'}
                   fullWidth={true}
                 >
-                  {/* {index !== 0 && ( */}
                   <Button
                     color={'error'}
                     disabled={scene.landmarkThings.length === 1}
@@ -90,9 +96,8 @@ const LandmarkThingCards = ({
                   >
                     <Clear />
                   </Button>
-                  {/* )} */}
                   <Button
-                    color={'success'}
+                    color={'primary'}
                     sx={{ width: '500%' }}
                     onClick={() => {
                       const updatedItems = [...scene.landmarkThings];
