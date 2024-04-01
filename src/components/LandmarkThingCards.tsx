@@ -31,6 +31,7 @@ const LandmarkThingCards = ({
       },
     ],
   };
+
   return (
     <Grid container>
       {scene.landmarkThings.map((landmarkItem, landmarkIndex) => (

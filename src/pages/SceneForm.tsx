@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Container, Stack } from '@mui/material';
 
@@ -64,12 +64,36 @@ const SceneForm = () => {
     ],
   });
 
+  useEffect(() => {
+    const storedScene = localStorage.getItem('scene');
+    if (storedScene) {
+      const parsedScene = JSON.parse(storedScene);
+      if (!Array.isArray(parsedScene.landmarkThings)) {
+        parsedScene.landmarkThings = [];
+      }
+      setScene(parsedScene);
+    }
+  }, []);
+
+  const setSceneAndStore = (newScene: React.SetStateAction<Scene>) => {
+    if (typeof newScene === 'function') {
+      setScene((prevScene) => {
+        const updatedScene = newScene(prevScene);
+        localStorage.setItem('scene', JSON.stringify(updatedScene));
+        return updatedScene;
+      });
+    } else {
+      setScene(newScene);
+      localStorage.setItem('scene', JSON.stringify(newScene));
+    }
+  };
+
   return (
     <form>
       <Container
         maxWidth={'xl'}
         sx={{
-          py: 2,
+          py: 8,
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
@@ -78,30 +102,30 @@ const SceneForm = () => {
       >
         <Stack
           spacing={4}
-          sx={{ mb: 6, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
           {formStep === 0 && (
             <SceneCard
               scene={scene}
-              setScene={setScene}
+              setScene={setSceneAndStore}
             />
           )}
           {formStep === 1 && (
             <LandmarkThingCards
               scene={scene}
-              setScene={setScene}
+              setScene={setSceneAndStore}
             />
           )}
           {formStep === 2 && (
             <HiddenThingCards
               scene={scene}
-              setScene={setScene}
+              setScene={setSceneAndStore}
             />
           )}
           {formStep === 3 && (
             <SecretThingCards
               scene={scene}
-              setScene={setScene}
+              setScene={setSceneAndStore}
             />
           )}
           <FormNav
