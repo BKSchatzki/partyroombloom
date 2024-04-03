@@ -29,7 +29,8 @@ const SceneCard = ({
 }) => {
   const [expanded, setExpanded] = useState<string | false>('panel0');
 
-  const handleChange = (panel: string) => (newExpanded: boolean) => {
+  const handleChange = (panel: string) => (e: React.SyntheticEvent, newExpanded: boolean) => {
+    e.preventDefault();
     setExpanded(newExpanded ? panel : false);
   };
 
