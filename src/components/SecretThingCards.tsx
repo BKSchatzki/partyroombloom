@@ -38,7 +38,7 @@ const SecretThingCards = ({
       {scene.landmarkThings.map((landmarkItem, landmarkIndex) => (
         <React.Fragment key={landmarkIndex}>
           {landmarkItem.hiddenThings.map((hiddenItem, hiddenIndex) => (
-            <React.Fragment key={landmarkIndex}>
+            <React.Fragment key={hiddenIndex}>
               {hiddenItem.hasSecret && (
                 // <Grid
                 //   item
