@@ -4,9 +4,11 @@ import { AppBar, Button, Toolbar } from '@mui/material';
 const FormNav = ({
   formStep,
   setFormStep,
+  generatePdf,
 }: {
   formStep: number;
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
+  generatePdf: () => void;
 }) => {
   return (
     <AppBar
@@ -24,6 +26,14 @@ const FormNav = ({
         >
           <ArrowBackIosNew />
         </Button>
+        {formStep === 3 && (
+          <Button
+            variant="contained"
+            onClick={generatePdf}
+          >
+            Download PDF
+          </Button>
+        )}
         <Button
           onClick={() => setFormStep((prev) => prev + 1)}
           disabled={formStep === 3}

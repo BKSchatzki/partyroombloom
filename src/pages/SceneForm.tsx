@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
 import { breakTextIntoLines, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
-import { Button, Container, Stack } from '@mui/material';
+import { Container, Stack } from '@mui/material';
 
 import FormNav from '../components/FormNav';
 import HiddenThingCards from '../components/HiddenThingCards';
@@ -334,15 +334,10 @@ const SceneForm = () => {
               setScene={setSceneAndStore}
             />
           )}
-          <Button
-            variant="contained"
-            onClick={generatePdf}
-          >
-            Generate PDF
-          </Button>
           <FormNav
             formStep={formStep}
             setFormStep={setFormStep}
+            generatePdf={generatePdf}
           />
         </Stack>
       </Container>
