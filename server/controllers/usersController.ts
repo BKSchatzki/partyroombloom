@@ -24,7 +24,7 @@ const usersController = {
   },
   createUser: async (req, res) => {
     try {
-      const { email, name } = req.body; // Destructure data from request body
+      const { email, name } = req.body;
       const newUser = await prisma.user.create({
         data: {
           email,
@@ -34,7 +34,7 @@ const usersController = {
       res.json(newUser);
     } catch (error) {
       console.error(error);
-      res.status(400).json({ message: 'Error creating user' }); // Handle specific errors like duplicate email
+      res.status(400).json({ message: 'Error creating user' });
     }
   },
   updateUser: async (req, res) => {
@@ -51,7 +51,7 @@ const usersController = {
       res.json(updatedUser);
     } catch (error) {
       console.error(error);
-      res.status(400).json({ message: 'Error updating user' }); // Handle specific errors like duplicate email
+      res.status(400).json({ message: 'Error updating user' });
     }
   },
   deleteUser: async (req, res) => {
