@@ -1,14 +1,21 @@
-import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material';
-import { AppBar, Button, Toolbar } from '@mui/material';
+import {
+  ArrowBackIosNew,
+  ArrowForwardIos,
+} from '@mui/icons-material';
+import {
+  AppBar,
+  Button,
+  Toolbar,
+} from '@mui/material';
 
 const FormNav = ({
   formStep,
   setFormStep,
-  generatePdf,
+  generateScenePdf: generatePdf,
 }: {
   formStep: number;
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
-  generatePdf: () => void;
+  generateScenePdf: () => void;
 }) => {
   return (
     <AppBar
