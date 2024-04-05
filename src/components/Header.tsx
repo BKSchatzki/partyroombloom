@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   SignedIn,
   SignedOut,
@@ -37,7 +35,7 @@ const Header = () => {
         </Box>
         <header>
           <SignedOut>
-            <SignInButton mode={'modal'}>
+            <SignInButton>
               <Button
                 variant={'contained'}
                 size={'small'}
