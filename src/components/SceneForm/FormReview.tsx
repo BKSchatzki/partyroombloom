@@ -133,7 +133,7 @@ const FormReview = ({
               fullWidth={true}
               size={`large`}
               variant={`contained`}
-              orientation="vertical"
+              orientation={`vertical`}
             >
               <Button
                 color={`success`}
