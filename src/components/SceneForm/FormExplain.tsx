@@ -1,32 +1,27 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { FilterVintage } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Card,
-  CardContent,
-  Container,
   Link,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 
-import type { Scene } from '../pages/SceneForm';
+// import { Scene } from '../../pages/SceneForm';
 
-const SceneCard = ({
+const FormExplain = (/* {
   scene,
-  setScene,
+  setSceneNoStore,
 }: {
   scene: Scene;
-  setScene: React.Dispatch<React.SetStateAction<Scene>>;
-}) => {
+  setSceneNoStore: React.Dispatch<React.SetStateAction<Scene>>;
+} */) => {
   const [expanded, setExpanded] = useState<string | false>('panel0');
 
   const handleChange = (panel: string) => (e: React.SyntheticEvent, newExpanded: boolean) => {
@@ -35,20 +30,19 @@ const SceneCard = ({
   };
 
   return (
-    <Container maxWidth={'sm'}>
+    <>
       <Accordion
         variant={'outlined'}
-        sx={{ mb: 2 }}
         expanded={expanded === 'panel0'}
         onChange={handleChange('panel0')}
       >
         <AccordionSummary expandIcon={<FilterVintage />}>
           <Typography
-            variant={'h2'}
+            variant={'h3'}
             fontWeight={'bold'}
             fontSize={'1.2rem'}
           >
-            Let's set the scene!
+            PartyRoomBloom?
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -110,7 +104,7 @@ const SceneCard = ({
       >
         <AccordionSummary expandIcon={<FilterVintage />}>
           <Typography
-            variant={'h2'}
+            variant={'h3'}
             fontWeight={'bold'}
             fontSize={'1.2rem'}
           >
@@ -118,7 +112,7 @@ const SceneCard = ({
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          Feel free to watch{' '}
+          Or feel free to watch{' '}
           <Link
             href={'https://www.youtube.com/watch?v=Sd2svbU7t50'}
             target={'_blank'}
@@ -130,80 +124,8 @@ const SceneCard = ({
           that you can print it out for your sessions!
         </AccordionDetails>
       </Accordion>
-      <Card>
-        <CardContent>
-          <Stack spacing={2}>
-            <TextField
-              label={'Location'}
-              value={scene.info.name}
-              onChange={(e) => {
-                setScene({
-                  ...scene,
-                  info: {
-                    ...scene.info,
-                    name: e.target.value,
-                  },
-                });
-              }}
-              fullWidth={true}
-              variant={'outlined'}
-            />
-            <TextField
-              label={'Description'}
-              value={scene.info.description}
-              onChange={(e) => {
-                setScene({
-                  ...scene,
-                  info: {
-                    ...scene.info,
-                    description: e.target.value,
-                  },
-                });
-              }}
-              fullWidth={true}
-              variant={'outlined'}
-            />
-            <TextField
-              label={'Movement'}
-              value={scene.info.movement}
-              onChange={(e) => {
-                setScene({
-                  ...scene,
-                  info: {
-                    ...scene.info,
-                    movement: e.target.value,
-                  },
-                });
-              }}
-              fullWidth={true}
-              variant={'outlined'}
-              multiline
-              minRows={2}
-              maxRows={Infinity}
-            />
-            <TextField
-              label={'Flavor'}
-              value={scene.info.flavor}
-              onChange={(e) => {
-                setScene({
-                  ...scene,
-                  info: {
-                    ...scene.info,
-                    flavor: e.target.value,
-                  },
-                });
-              }}
-              fullWidth={true}
-              variant={'outlined'}
-              multiline
-              minRows={2}
-              maxRows={Infinity}
-            />
-          </Stack>
-        </CardContent>
-      </Card>
-    </Container>
+    </>
   );
 };
 
-export default SceneCard;
+export default FormExplain;

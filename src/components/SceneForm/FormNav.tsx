@@ -11,41 +11,37 @@ import {
 const FormNav = ({
   formStep,
   setFormStep,
-  generateScenePdf: generatePdf,
 }: {
   formStep: number;
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
-  generateScenePdf: () => void;
 }) => {
+  const breadcrumbs = ['Info', 'Landmark', 'Hidden', 'Secret', 'Review'];
+
   return (
     <AppBar
-      position={'fixed'}
+      position={`fixed`}
       sx={{ top: 'auto', bottom: 0 }}
     >
       <Toolbar
-        variant="dense"
+        variant={`dense`}
         sx={{ justifyContent: 'space-between' }}
       >
         <Button
           onClick={() => setFormStep((prev) => prev - 1)}
           disabled={formStep === 0}
-          variant={'text'}
+          variant={`text`}
+          size={`small`}
         >
           <ArrowBackIosNew />
+          {breadcrumbs[formStep - 1]}
         </Button>
-        {formStep === 3 && (
-          <Button
-            variant="contained"
-            onClick={generatePdf}
-          >
-            Download PDF
-          </Button>
-        )}
         <Button
           onClick={() => setFormStep((prev) => prev + 1)}
-          disabled={formStep === 3}
-          variant={'text'}
+          disabled={formStep === 4}
+          variant={`text`}
+          size={`small`}
         >
+          {breadcrumbs[formStep + 1]}
           <ArrowForwardIos />
         </Button>
       </Toolbar>

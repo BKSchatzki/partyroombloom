@@ -205,5 +205,14 @@ export const generateScenePdf = async (scene: Scene) => {
   const pdfBytes = await pdfDoc.save();
 
   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-  saveAs(blob, `scene-${new Date().toISOString()}.pdf`);
+  const lowercasedName = scene.info.name.toLowerCase();
+  const sanitizedDescription = scene.info.description
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/ /g, '-');
+  const fileName = `${lowercasedName}-${sanitizedDescription}-${new Date()
+    .toISOString()
+    .slice(0, 10)
+    .replace(/-/g, '')}.pdf`;
+  saveAs(blob, fileName);
 };

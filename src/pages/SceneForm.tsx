@@ -8,11 +8,12 @@ import {
   Stack,
 } from '@mui/material';
 
-import FormNav from '../components/FormNav';
-import HiddenThingCards from '../components/HiddenThingCards';
-import LandmarkThingCards from '../components/LandmarkThingCards';
-import SceneCard from '../components/SceneCard';
-import SecretThingCards from '../components/SecretThingCards';
+import FormNav from '../components/SceneForm/FormNav';
+import FormReview from '../components/SceneForm/FormReview';
+import HiddenThingCards from '../components/SceneForm/HiddenThingCards';
+import InfoCard from '../components/SceneForm/InfoCard';
+import LandmarkThingCards from '../components/SceneForm/LandmarkThingCards';
+import SecretThingCards from '../components/SceneForm/SecretThingCards';
 import { generateScenePdf } from '../utils/generateScenePdf';
 
 export type Scene = {
@@ -116,9 +117,10 @@ const SceneForm = () => {
           sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
           {formStep === 0 && (
-            <SceneCard
+            <InfoCard
               scene={scene}
               setScene={setSceneAndStore}
+              // setSceneNoStore={setScene}
             />
           )}
           {formStep === 1 && (
@@ -139,10 +141,15 @@ const SceneForm = () => {
               setScene={setSceneAndStore}
             />
           )}
+          {formStep === 4 && (
+            <FormReview
+              scene={scene}
+              generateScenePdf={handleGenerateScenePdf}
+            />
+          )}
           <FormNav
             formStep={formStep}
             setFormStep={setFormStep}
-            generateScenePdf={handleGenerateScenePdf}
           />
         </Stack>
       </Container>
