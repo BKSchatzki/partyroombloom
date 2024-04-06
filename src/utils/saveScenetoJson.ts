@@ -6,11 +6,12 @@ export const saveSceneToJson = () => {
     const parsedScene = JSON.parse(storedScene);
     const sceneJson = JSON.stringify(parsedScene, null, 2);
     const blob = new Blob([sceneJson], { type: 'application/json' });
-    const lowercasedName = parsedScene.info.name.toLowerCase();
-    const adjectives = parsedScene.info.description
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/ /g, '-');
+    const lowercasedName = parsedScene.info.name.toLowerCase() || 'untitled';
+    const adjectives =
+      parsedScene.info.description
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/ /g, '-') || 'undescribed';
     const fileName = `${lowercasedName}-${adjectives}-${new Date()
       .toISOString()
       .slice(0, 10)

@@ -1,10 +1,5 @@
 import { saveAs } from 'file-saver';
-import {
-  breakTextIntoLines,
-  PDFDocument,
-  rgb,
-  StandardFonts,
-} from 'pdf-lib';
+import { breakTextIntoLines, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 import type { Scene } from '../pages/SceneForm';
 
@@ -39,7 +34,9 @@ export const generateScenePdf = async (scene: Scene) => {
     }
   };
 
-  const sceneTitle = `${scene.info.name} (${scene.info.description})`;
+  const sceneTitle = `${scene.info.name || 'Location'} (${
+    scene.info.description || 'Description'
+  })`;
   page.drawText(sceneTitle, {
     x: MARGIN,
     y: yPosition,
@@ -54,7 +51,7 @@ export const generateScenePdf = async (scene: Scene) => {
   yPosition -= FONT_BASE_LINE * currentLineCount;
   checkAndAddPage();
 
-  const sceneMood = `${scene.info.flavor} ${scene.info.movement}`;
+  const sceneMood = `${scene.info.flavor || 'Flavor and'} ${scene.info.movement || 'Movement'}`;
   page.drawText(sceneMood, {
     x: MARGIN,
     y: yPosition,
@@ -71,7 +68,7 @@ export const generateScenePdf = async (scene: Scene) => {
   checkAndAddPage();
 
   scene.landmarkThings.map((landmarkItem) => {
-    const landmarkName = `${landmarkItem.landmarkName}`;
+    const landmarkName = `${landmarkItem.landmarkName || 'Landmark Thing'}`;
     page.drawText(landmarkName, {
       x: MARGIN,
       y: yPosition,
@@ -86,7 +83,7 @@ export const generateScenePdf = async (scene: Scene) => {
     yPosition -= FONT_PARAGRAPH_LINE * currentLineCount;
     checkAndAddPage();
 
-    const landmarkDescription = `${landmarkItem.landmarkDescription}`;
+    const landmarkDescription = `${landmarkItem.landmarkDescription || 'Description'}`;
     page.drawText(landmarkDescription, {
       x: MARGIN,
       y: yPosition,
@@ -103,7 +100,7 @@ export const generateScenePdf = async (scene: Scene) => {
     checkAndAddPage();
 
     landmarkItem.hiddenThings.map((hiddenItem) => {
-      const hiddenName = `> ${hiddenItem.hiddenName}`;
+      const hiddenName = `> ${hiddenItem.hiddenName || 'Hidden Thing'}`;
       page.drawText(hiddenName, {
         x: MARGIN + 20,
         y: yPosition,
@@ -118,7 +115,7 @@ export const generateScenePdf = async (scene: Scene) => {
       yPosition -= FONT_PARAGRAPH_LINE * currentLineCount;
       checkAndAddPage();
 
-      const hiddenDescription = `${hiddenItem.hiddenDescription}`;
+      const hiddenDescription = `${hiddenItem.hiddenDescription || 'Description'}`;
       page.drawText(hiddenDescription, {
         x: MARGIN + 20,
         y: yPosition,
@@ -135,7 +132,7 @@ export const generateScenePdf = async (scene: Scene) => {
 
       hiddenItem.hasSecret &&
         hiddenItem.secretThings.map((secretItem) => {
-          const secretName = `? ${secretItem.secretName}`;
+          const secretName = `? ${secretItem.secretName || 'Secret Thing'}`;
           page.drawText(secretName, {
             x: MARGIN + 40,
             y: yPosition,
@@ -150,7 +147,7 @@ export const generateScenePdf = async (scene: Scene) => {
           yPosition -= FONT_PARAGRAPH_LINE * currentLineCount;
           checkAndAddPage();
 
-          const secretDescription = `${secretItem.secretDescription}`;
+          const secretDescription = `${secretItem.secretDescription || 'Description'}`;
           page.drawText(secretDescription, {
             x: MARGIN + 40,
             y: yPosition,
@@ -165,7 +162,7 @@ export const generateScenePdf = async (scene: Scene) => {
           yPosition -= FONT_PARAGRAPH_LINE * currentLineCount;
           checkAndAddPage();
 
-          const onSuccess = `$ ${secretItem.onSuccess}`;
+          const onSuccess = `$ ${secretItem.onSuccess || 'On Success'}`;
           page.drawText(onSuccess, {
             x: MARGIN + 60,
             y: yPosition,
@@ -180,7 +177,7 @@ export const generateScenePdf = async (scene: Scene) => {
           yPosition -= FONT_PARAGRAPH_LINE * currentLineCount;
           checkAndAddPage();
 
-          const onFailure = `X ${secretItem.onFailure}`;
+          const onFailure = `X ${secretItem.onFailure || 'On Failure'}`;
           page.drawText(onFailure, {
             x: MARGIN + 60,
             y: yPosition,
@@ -205,11 +202,12 @@ export const generateScenePdf = async (scene: Scene) => {
   const pdfBytes = await pdfDoc.save();
 
   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-  const lowercasedName = scene.info.name.toLowerCase();
-  const sanitizedDescription = scene.info.description
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/ /g, '-');
+  const lowercasedName = scene.info.name.toLowerCase() || 'untitled';
+  const sanitizedDescription =
+    scene.info.description
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/ /g, '-') || 'undescribed';
   const fileName = `${lowercasedName}-${sanitizedDescription}-${new Date()
     .toISOString()
     .slice(0, 10)

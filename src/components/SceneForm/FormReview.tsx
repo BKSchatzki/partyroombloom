@@ -33,13 +33,13 @@ const FormReview = ({
                 fontSize={`1.5rem`}
                 fontWeight={`bold`}
               >
-                {scene.info.name} ({scene.info.description})
+                {scene.info.name || 'Location'} ({scene.info.description || 'Description'})
               </Typography>
               <Typography
                 variant={`subtitle1`}
                 fontStyle={`italic`}
               >
-                {scene.info.flavor} {scene.info.movement}
+                {scene.info.flavor || 'Flavor and'} {scene.info.movement || 'Movement'}
               </Typography>
             </Stack>
           </CardContent>
@@ -57,13 +57,13 @@ const FormReview = ({
                   fontSize={`1.2rem`}
                   fontWeight={`bold`}
                 >
-                  📍 {landmarkItem.landmarkName}
+                  📍 {landmarkItem.landmarkName || 'Landmark Thing'}
                 </Typography>
                 <Typography
                   variant={`subtitle2`}
                   fontStyle={`italic`}
                 >
-                  {landmarkItem.landmarkDescription}
+                  {landmarkItem.landmarkDescription || 'Description'}
                 </Typography>
                 {landmarkItem.hiddenThings.map((hiddenItem, hiddenIndex) => (
                   <Card
@@ -78,10 +78,10 @@ const FormReview = ({
                           fontSize={`1.1rem`}
                           fontWeight={`bold`}
                         >
-                          🔎 {hiddenItem.hiddenName}
+                          🔎 {hiddenItem.hiddenName || 'Hidden Thing'}
                         </Typography>
                         <Typography variant={`subtitle2`}>
-                          {hiddenItem.hiddenDescription}
+                          {hiddenItem.hiddenDescription || 'Description'}
                         </Typography>
                         {hiddenItem.hasSecret &&
                           hiddenItem.secretThings.map((secretItem, secretIndex) => (
@@ -97,16 +97,16 @@ const FormReview = ({
                                     fontSize={`1rem`}
                                     fontWeight={`bold`}
                                   >
-                                    🔒 {secretItem.secretName}
+                                    🔒 {secretItem.secretName || 'Secret Thing'}
                                   </Typography>
                                   <Typography variant={`subtitle2`}>
-                                    {secretItem.secretDescription}
+                                    {secretItem.secretDescription || 'Description'}
                                   </Typography>
                                   <Typography variant={`subtitle2`}>
-                                    ✔️ {secretItem.onSuccess}
+                                    ✔️ {secretItem.onSuccess || 'On Success'}
                                   </Typography>
                                   <Typography variant={`subtitle2`}>
-                                    ✖️ {secretItem.onFailure}
+                                    ✖️ {secretItem.onFailure || 'On Failure'}
                                   </Typography>
                                 </Stack>
                               </CardContent>
