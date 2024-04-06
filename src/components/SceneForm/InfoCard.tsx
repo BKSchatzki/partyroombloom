@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { sceneInit } from '../../data/sceneInit';
 import type { Scene } from '../../pages/SceneForm';
 import { saveSceneToJson } from '../../utils/saveScenetoJson';
 import FormExplain from './FormExplain';
@@ -82,7 +83,7 @@ const InfoCard = ({
             role={undefined}
             tabIndex={-1}
           >
-            Upload Scene JSON
+            Upload Scene
             <VisuallyHiddenInput
               type="file"
               accept=".json"
@@ -93,7 +94,13 @@ const InfoCard = ({
             color={`warning`}
             onClick={saveSceneToJson}
           >
-            Save Scene to JSON
+            Save Scene
+          </Button>
+          <Button
+            color={`error`}
+            onClick={() => setScene(sceneInit)}
+          >
+            Reset Scene
           </Button>
         </ButtonGroup>
         <Card variant={'outlined'}>

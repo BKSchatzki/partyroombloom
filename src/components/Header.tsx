@@ -1,12 +1,20 @@
+// import { useState } from 'react';
+
 import { FilterVintage } from '@mui/icons-material';
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  Typography,
-} from '@mui/material';
+// import { Menu } from '@mui/icons-material';
+import { AppBar, Box, Toolbar, Typography } from '@mui/material';
+
+// import { Button } from '@mui/material';
+
+// import MenuDrawer from './MenuDrawer';
 
 const Header = () => {
+  // const [open, setOpen] = useState(false);
+
+  // const toggleDrawer = (newOpen: boolean) => () => {
+  //   setOpen(newOpen);
+  // };
+
   return (
     <AppBar
       position="fixed"
@@ -16,7 +24,15 @@ const Header = () => {
         variant="dense"
         sx={{ justifyContent: 'space-between', gap: 1 }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'start',
+            gap: 1,
+          }}
+        >
           <FilterVintage />
           <Typography
             variant={'h1'}
@@ -26,6 +42,13 @@ const Header = () => {
             PartyRoomBloom
           </Typography>
         </Box>
+        {/* <Button onClick={toggleDrawer(true)}>
+          <Menu color={`action`} />
+        </Button>
+        <MenuDrawer
+          open={open}
+          toggleDrawer={toggleDrawer}
+        /> */}
       </Toolbar>
     </AppBar>
   );

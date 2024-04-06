@@ -8,6 +8,7 @@ import HiddenThingCards from '../components/SceneForm/HiddenThingCards';
 import InfoCard from '../components/SceneForm/InfoCard';
 import LandmarkThingCards from '../components/SceneForm/LandmarkThingCards';
 import SecretThingCards from '../components/SceneForm/SecretThingCards';
+import { sceneInit } from '../data/sceneInit';
 import { generateScenePdf } from '../utils/generateScenePdf';
 
 export type Scene = {
@@ -36,35 +37,7 @@ export type Scene = {
 
 const SceneForm = () => {
   const [formStep, setFormStep] = useState(0);
-  const [scene, setScene] = useState<Scene>({
-    info: {
-      name: '',
-      description: '',
-      movement: '',
-      flavor: '',
-    },
-    landmarkThings: [
-      {
-        landmarkName: '',
-        landmarkDescription: '',
-        hiddenThings: [
-          {
-            hiddenName: '',
-            hiddenDescription: '',
-            hasSecret: false,
-            secretThings: [
-              {
-                secretName: '',
-                secretDescription: '',
-                onSuccess: '',
-                onFailure: '',
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  });
+  const [scene, setScene] = useState<Scene>(sceneInit);
 
   useEffect(() => {
     const storedScene = localStorage.getItem('scene');

@@ -139,7 +139,7 @@ const FormReview = ({
                 color={`warning`}
                 onClick={saveSceneToJson}
               >
-                Save Scene to JSON
+                Save Scene
               </Button>
             </ButtonGroup>
           </CardContent>
