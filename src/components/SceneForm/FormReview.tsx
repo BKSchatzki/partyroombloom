@@ -1,12 +1,5 @@
 import { Masonry } from '@mui/lab';
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, ButtonGroup, Card, CardContent, Stack, Typography } from '@mui/material';
 
 import type { Scene } from '../../pages/SceneForm';
 import { saveSceneToJson } from '../../utils/saveScenetoJson';
@@ -132,7 +125,8 @@ const FormReview = ({
             <ButtonGroup
               fullWidth={true}
               size={`large`}
-              variant={`contained`}
+              variant={`text`}
+              color={`inherit`}
               orientation={`vertical`}
             >
               <Button

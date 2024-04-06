@@ -1,12 +1,6 @@
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 
-import {
-  Container,
-  Stack,
-} from '@mui/material';
+import { Container, Stack } from '@mui/material';
 
 import FormNav from '../components/SceneForm/FormNav';
 import FormReview from '../components/SceneForm/FormReview';
@@ -120,7 +114,6 @@ const SceneForm = () => {
             <InfoCard
               scene={scene}
               setScene={setSceneAndStore}
-              // setSceneNoStore={setScene}
             />
           )}
           {formStep === 1 && (

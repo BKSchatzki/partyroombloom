@@ -1,18 +1,23 @@
-/* import { useState } from 'react'; */
+import React from 'react';
 
 import {
+  Button,
+  ButtonGroup,
   Card,
   CardContent,
   Container,
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 import type { Scene } from '../../pages/SceneForm';
+import { saveSceneToJson } from '../../utils/saveScenetoJson';
 import FormExplain from './FormExplain';
 
-/* const VisuallyHiddenInput = styled('input')({
+const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
   height: 1,
@@ -22,39 +27,35 @@ import FormExplain from './FormExplain';
   left: 0,
   whiteSpace: 'nowrap',
   width: 1,
-}); */
+});
 
 const InfoCard = ({
   scene,
   setScene,
-}: // setSceneNoStore,
-{
+}: {
   scene: Scene;
   setScene: React.Dispatch<React.SetStateAction<Scene>>;
-  // setSceneNoStore: React.Dispatch<React.SetStateAction<Scene>>;
 }) => {
-  /*   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const isMobile = useMediaQuery('(max-width: 600px)');
 
-  const handleSceneUpload = async () => {
-      if (!uploadedFile) {
-        return alert('Please select a JSON file to upload');
-      }
-
+  const handleSceneUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files?.length) {
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
-      console.log(e.target?.result);
       try {
-        const data = JSON.parse(e.target.result);
+        const data = JSON.parse(e?.target?.result as string);
         setScene(data);
-        setUploadedFile(null);
       } catch (error) {
         console.error('Error parsing JSON:', error);
         alert('Invalid JSON file format');
       }
     };
-    reader.readAsText(uploadedFile);
-  }; */
+    reader.readAsText(files[0]);
+    event.target.value = '';
+  };
 
   return (
     <>
@@ -67,28 +68,25 @@ const InfoCard = ({
         Let's Set the Scene!
       </Typography>
       <Container maxWidth={'sm'}>
-        {/* <ButtonGroup
+        <ButtonGroup
           fullWidth={true}
           size={`large`}
-          variant={`contained`}
+          variant={`text`}
+          color={`inherit`}
           orientation={isMobile ? 'vertical' : 'horizontal'}
           sx={{ mb: 2 }}
         >
           <Button
-            component="label"
-            color="info"
-            variant="contained"
+            color={`primary`}
+            component={`label`}
+            role={undefined}
             tabIndex={-1}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSceneUpload();
-            }}
           >
-            Upload File
+            Upload Scene JSON
             <VisuallyHiddenInput
               type="file"
               accept=".json"
-              onChange={(event) => setUploadedFile(event.target.files[0])}
+              onChange={(event) => handleSceneUpload(event)}
             />
           </Button>
           <Button
@@ -97,7 +95,7 @@ const InfoCard = ({
           >
             Save Scene to JSON
           </Button>
-        </ButtonGroup> */}
+        </ButtonGroup>
         <Card variant={'outlined'}>
           <CardContent>
             <Stack spacing={2}>
