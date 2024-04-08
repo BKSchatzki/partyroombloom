@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 
 import {
-  Button,
-  ButtonGroup,
   Card,
   CardContent,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Stack,
   TextField,
   Typography,
@@ -18,9 +11,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { sceneInit } from '../../data/sceneInit';
-import type { Scene } from '../../pages/SceneForm';
-import { saveSceneToJson } from '../../utils/saveScenetoJson';
+import type { Scene } from '../pages/SceneForm';
 import FormExplain from './FormExplain';
 
 const VisuallyHiddenInput = styled('input')({
@@ -75,86 +66,6 @@ const InfoCard = ({
         Let's Set the Scene!
       </Typography>
       <Container maxWidth={'sm'}>
-        <ButtonGroup
-          fullWidth={true}
-          size={`large`}
-          variant={`text`}
-          color={`inherit`}
-          orientation={isMobile ? 'vertical' : 'horizontal'}
-          sx={{ mb: 2 }}
-        >
-          <Button
-            color={`primary`}
-            component={`label`}
-            role={undefined}
-            tabIndex={-1}
-          >
-            Upload Scene
-            <VisuallyHiddenInput
-              type="file"
-              accept=".json"
-              onChange={(event) => handleSceneUpload(event)}
-            />
-          </Button>
-          <Button
-            color={`warning`}
-            onClick={saveSceneToJson}
-          >
-            Save Scene
-          </Button>
-          <Button
-            color={`error`}
-            onClick={() => setDialogOpen(true)}
-          >
-            Reset Scene
-          </Button>
-          <Dialog
-            open={dialogOpen}
-            onClose={() => setDialogOpen(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">{'Are you sure?'}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                This will reset the entire scene. You will lose all info, landmark, hidden, and
-                secret things. Consider backing up the scene by saving its data to your device.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <ButtonGroup
-                fullWidth={true}
-                size={`large`}
-                variant={`text`}
-                color={`inherit`}
-                orientation={isMobile ? 'vertical' : 'horizontal'}
-              >
-                <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-                <Button
-                  color={`warning`}
-                  onClick={() => {
-                    saveSceneToJson();
-                    setScene(sceneInit);
-                    setDialogOpen(false);
-                  }}
-                  autoFocus
-                >
-                  Save and Reset
-                </Button>
-                <Button
-                  color={`error`}
-                  onClick={() => {
-                    setScene(sceneInit);
-                    setDialogOpen(false);
-                  }}
-                  autoFocus
-                >
-                  Reset Scene
-                </Button>
-              </ButtonGroup>
-            </DialogActions>
-          </Dialog>
-        </ButtonGroup>
         <Card variant={'outlined'}>
           <CardContent>
             <Stack spacing={2}>

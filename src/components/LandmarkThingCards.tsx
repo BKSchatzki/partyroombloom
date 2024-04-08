@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import type { Scene } from '../../pages/SceneForm';
+import type { Scene } from '../pages/SceneForm';
 
 const LandmarkThingCards = ({
   scene,

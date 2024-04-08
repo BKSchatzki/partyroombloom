@@ -4,7 +4,6 @@ import {
   ThemeProvider,
 } from '@mui/material/styles';
 
-import Header from './components/Header';
 import SceneForm from './pages/SceneForm';
 
 const darkTheme = createTheme({
@@ -17,7 +16,6 @@ const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Header />
       <SceneForm />
     </ThemeProvider>
   );

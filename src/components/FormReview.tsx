@@ -1,26 +1,14 @@
 import { Masonry } from '@mui/lab';
 import {
-  Button,
-  ButtonGroup,
   Card,
   CardContent,
   Stack,
   Typography,
-  useMediaQuery,
 } from '@mui/material';
 
-import type { Scene } from '../../pages/SceneForm';
-import { saveSceneToJson } from '../../utils/saveScenetoJson';
+import type { Scene } from '../pages/SceneForm';
 
-const FormReview = ({
-  scene,
-  generateScenePdf,
-}: {
-  scene: Scene;
-  generateScenePdf: () => void;
-}) => {
-  const isMobile = useMediaQuery('(max-width: 600px)');
-
+const FormReview = ({ scene }: { scene: Scene }) => {
   return (
     <>
       <Typography
@@ -35,26 +23,6 @@ const FormReview = ({
         columns={{ xs: 1, sm: 2, md: 3 }}
         sequential
       >
-        <ButtonGroup
-          fullWidth={true}
-          size={`large`}
-          variant={`text`}
-          color={`inherit`}
-          orientation={isMobile ? 'vertical' : 'horizontal'}
-        >
-          <Button
-            color={`success`}
-            onClick={generateScenePdf}
-          >
-            Download PDF
-          </Button>
-          <Button
-            color={`warning`}
-            onClick={saveSceneToJson}
-          >
-            Save Scene
-          </Button>
-        </ButtonGroup>
         <Card variant={`outlined`}>
           <CardContent>
             <Stack spacing={2}>

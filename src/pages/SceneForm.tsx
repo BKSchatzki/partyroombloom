@@ -8,14 +8,14 @@ import {
   Stack,
 } from '@mui/material';
 
-import FormNav from '../components/SceneForm/FormNav';
-import FormReview from '../components/SceneForm/FormReview';
-import HiddenThingCards from '../components/SceneForm/HiddenThingCards';
-import InfoCard from '../components/SceneForm/InfoCard';
-import LandmarkThingCards from '../components/SceneForm/LandmarkThingCards';
-import SecretThingCards from '../components/SceneForm/SecretThingCards';
+import FormNav from '../components/FormNav';
+import FormReview from '../components/FormReview';
+import Header from '../components/Header';
+import HiddenThingCards from '../components/HiddenThingCards';
+import InfoCard from '../components/InfoCard';
+import LandmarkThingCards from '../components/LandmarkThingCards';
+import SecretThingCards from '../components/SecretThingCards';
 import { sceneInit } from '../data/sceneInit';
-import { generateScenePdf } from '../utils/generateScenePdf';
 
 export type Scene = {
   info: {
@@ -69,63 +69,60 @@ const SceneForm = () => {
     }
   };
 
-  const handleGenerateScenePdf = () => {
-    generateScenePdf(scene);
-  };
-
   return (
-    <form>
-      <Container
-        maxWidth={'xl'}
-        sx={{
-          py: 8,
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'start',
-        }}
-      >
-        <Stack
-          spacing={4}
-          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    <>
+      <Header
+        scene={scene}
+        setScene={setSceneAndStore}
+      />
+      <form>
+        <Container
+          maxWidth={'xl'}
+          sx={{
+            py: 8,
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'start',
+          }}
         >
-          {formStep === 0 && (
-            <InfoCard
-              scene={scene}
-              setScene={setSceneAndStore}
+          <Stack
+            spacing={4}
+            sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          >
+            {formStep === 0 && (
+              <InfoCard
+                scene={scene}
+                setScene={setSceneAndStore}
+              />
+            )}
+            {formStep === 1 && (
+              <LandmarkThingCards
+                scene={scene}
+                setScene={setSceneAndStore}
+              />
+            )}
+            {formStep === 2 && (
+              <HiddenThingCards
+                scene={scene}
+                setScene={setSceneAndStore}
+              />
+            )}
+            {formStep === 3 && (
+              <SecretThingCards
+                scene={scene}
+                setScene={setSceneAndStore}
+              />
+            )}
+            {formStep === 4 && <FormReview scene={scene} />}
+            <FormNav
+              formStep={formStep}
+              setFormStep={setFormStep}
             />
-          )}
-          {formStep === 1 && (
-            <LandmarkThingCards
-              scene={scene}
-              setScene={setSceneAndStore}
-            />
-          )}
-          {formStep === 2 && (
-            <HiddenThingCards
-              scene={scene}
-              setScene={setSceneAndStore}
-            />
-          )}
-          {formStep === 3 && (
-            <SecretThingCards
-              scene={scene}
-              setScene={setSceneAndStore}
-            />
-          )}
-          {formStep === 4 && (
-            <FormReview
-              scene={scene}
-              generateScenePdf={handleGenerateScenePdf}
-            />
-          )}
-          <FormNav
-            formStep={formStep}
-            setFormStep={setFormStep}
-          />
-        </Stack>
-      </Container>
-    </form>
+          </Stack>
+        </Container>
+      </form>
+    </>
   );
 };
 
