@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Add,
   Clear,
+  Close,
 } from '@mui/icons-material';
 import { Masonry } from '@mui/lab';
 import {
@@ -10,6 +11,8 @@ import {
   ButtonGroup,
   Card,
   CardContent,
+  IconButton,
+  Snackbar,
   Stack,
   TextField,
   Typography,
@@ -24,6 +27,42 @@ const LandmarkThingCards = ({
   scene: Scene;
   setScene: React.Dispatch<React.SetStateAction<Scene>>;
 }) => {
+  const [deletedLandmarkItem, setDeletedLandmarkItem] = useState<
+    Scene['landmarkThings'][number] | null
+  >(null);
+  const [deletedLandmark, setDeletedLandmarkIndex] = useState<number>(0);
+  const [undoSnackbar, setUndoSnackbar] = useState({
+    open: false,
+  });
+
+  const handleUndoDelete = () => {
+    if (!deletedLandmarkItem) return;
+    const updatedItems = [...scene.landmarkThings];
+    updatedItems.splice(deletedLandmark, 0, deletedLandmarkItem);
+    setScene({ ...scene, landmarkThings: updatedItems });
+    setDeletedLandmarkItem(null);
+  };
+
+  const snackbarActions = (
+    <>
+      <Button
+        color={`secondary`}
+        size={`small`}
+        onClick={() => handleUndoDelete()}
+      >
+        Undo?
+      </Button>
+      <IconButton
+        size={`small`}
+        aria-label={`close`}
+        color={`inherit`}
+        onClick={() => setUndoSnackbar({ open: false })}
+      >
+        <Close fontSize="small" />
+      </IconButton>
+    </>
+  );
+
   const newLandmarkThing = {
     landmarkName: '',
     landmarkDescription: '',
@@ -107,6 +146,9 @@ const LandmarkThingCards = ({
                     color={'error'}
                     disabled={scene.landmarkThings.length === 1}
                     onClick={() => {
+                      setDeletedLandmarkItem(scene.landmarkThings[landmarkIndex]);
+                      setDeletedLandmarkIndex(landmarkIndex);
+                      setUndoSnackbar({ open: true });
                       const updatedItems = [
                         ...scene.landmarkThings.filter((_, i) => i !== landmarkIndex),
                       ];
@@ -138,6 +180,14 @@ const LandmarkThingCards = ({
             </CardContent>
           </Card>
         ))}
+        {deletedLandmarkItem && (
+          <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            open={undoSnackbar.open}
+            message="Landmark thing deleted"
+            action={snackbarActions}
+          />
+        )}
       </Masonry>
     </>
   );

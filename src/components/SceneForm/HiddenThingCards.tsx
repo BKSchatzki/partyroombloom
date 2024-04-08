@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Add,
@@ -14,6 +14,8 @@ import {
   Checkbox,
   Divider,
   FormControlLabel,
+  IconButton,
+  Snackbar,
   Stack,
   TextField,
   Typography,
@@ -28,6 +30,47 @@ const HiddenThingCards = ({
   scene: Scene;
   setScene: React.Dispatch<React.SetStateAction<Scene>>;
 }) => {
+  const [deletedHiddenItem, setDeletedHiddenItem] = useState<
+    Scene['landmarkThings'][number]['hiddenThings'][number] | null
+  >(null);
+  const [deletedHiddenItemLandmarkIndex, setDeletedHiddenItemLandmarkIndex] = useState<number>(0);
+  const [deletedHiddenIndex, setDeletedHiddenIndex] = useState<number>(0);
+  const [undoSnackbar, setUndoSnackbar] = useState({
+    open: false,
+  });
+
+  const handleUndoDelete = () => {
+    if (!deletedHiddenItem) return;
+    const updatedLandmarkItems = [...scene.landmarkThings];
+    updatedLandmarkItems[deletedHiddenItemLandmarkIndex].hiddenThings.splice(
+      deletedHiddenIndex,
+      0,
+      deletedHiddenItem
+    );
+    setScene({ ...scene, landmarkThings: updatedLandmarkItems });
+    setDeletedHiddenItem(null);
+  };
+
+  const snackbarActions = (
+    <>
+      <Button
+        color={`secondary`}
+        size={`small`}
+        onClick={() => handleUndoDelete()}
+      >
+        Undo?
+      </Button>
+      <IconButton
+        size={`small`}
+        aria-label={`close`}
+        color={`inherit`}
+        onClick={() => setUndoSnackbar({ open: false })}
+      >
+        <Clear fontSize="small" />
+      </IconButton>
+    </>
+  );
+
   const newHiddenThing = {
     hiddenName: '',
     hiddenDescription: '',
@@ -138,14 +181,15 @@ const HiddenThingCards = ({
                       color={'error'}
                       disabled={landmarkItem.hiddenThings.length === 1}
                       onClick={() => {
+                        setDeletedHiddenItem(landmarkItem.hiddenThings[hiddenIndex]);
+                        setDeletedHiddenItemLandmarkIndex(landmarkIndex);
+                        setDeletedHiddenIndex(hiddenIndex);
+                        setUndoSnackbar({ open: true });
                         const updatedLandmarkItems = [...scene.landmarkThings];
                         updatedLandmarkItems[landmarkIndex].hiddenThings = updatedLandmarkItems[
                           landmarkIndex
                         ].hiddenThings.filter((_, i) => i !== hiddenIndex);
-                        setScene({
-                          ...scene,
-                          landmarkThings: updatedLandmarkItems,
-                        });
+                        setScene({ ...scene, landmarkThings: updatedLandmarkItems });
                       }}
                     >
                       <Clear />
@@ -174,6 +218,14 @@ const HiddenThingCards = ({
             ))}
           </Card>
         ))}
+        {deletedHiddenItem && (
+          <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            open={undoSnackbar.open}
+            message="Hidden thing deleted"
+            action={snackbarActions}
+          />
+        )}
       </Masonry>
     </>
   );

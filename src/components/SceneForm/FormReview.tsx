@@ -1,5 +1,13 @@
 import { Masonry } from '@mui/lab';
-import { Button, ButtonGroup, Card, CardContent, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CardContent,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 
 import type { Scene } from '../../pages/SceneForm';
 import { saveSceneToJson } from '../../utils/saveScenetoJson';
@@ -11,6 +19,8 @@ const FormReview = ({
   scene: Scene;
   generateScenePdf: () => void;
 }) => {
+  const isMobile = useMediaQuery('(max-width: 600px)');
+
   return (
     <>
       <Typography
@@ -25,6 +35,26 @@ const FormReview = ({
         columns={{ xs: 1, sm: 2, md: 3 }}
         sequential
       >
+        <ButtonGroup
+          fullWidth={true}
+          size={`large`}
+          variant={`text`}
+          color={`inherit`}
+          orientation={isMobile ? 'vertical' : 'horizontal'}
+        >
+          <Button
+            color={`success`}
+            onClick={generateScenePdf}
+          >
+            Download PDF
+          </Button>
+          <Button
+            color={`warning`}
+            onClick={saveSceneToJson}
+          >
+            Save Scene
+          </Button>
+        </ButtonGroup>
         <Card variant={`outlined`}>
           <CardContent>
             <Stack spacing={2}>
@@ -120,30 +150,6 @@ const FormReview = ({
             </CardContent>
           </Card>
         ))}
-        <Card sx={{ mx: 1, my: 1 }}>
-          <CardContent>
-            <ButtonGroup
-              fullWidth={true}
-              size={`large`}
-              variant={`text`}
-              color={`inherit`}
-              orientation={`vertical`}
-            >
-              <Button
-                color={`success`}
-                onClick={generateScenePdf}
-              >
-                Download PDF
-              </Button>
-              <Button
-                color={`warning`}
-                onClick={saveSceneToJson}
-              >
-                Save Scene
-              </Button>
-            </ButtonGroup>
-          </CardContent>
-        </Card>
       </Masonry>
     </>
   );
