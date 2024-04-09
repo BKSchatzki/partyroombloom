@@ -3,6 +3,7 @@ import {
   createTheme,
   ThemeProvider,
 } from '@mui/material/styles';
+import { Analytics } from '@vercel/analytics/react';
 
 import SceneForm from './pages/SceneForm';
 
@@ -15,6 +16,7 @@ const darkTheme = createTheme({
 const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
+      <Analytics />
       <CssBaseline />
       <SceneForm />
     </ThemeProvider>

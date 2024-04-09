@@ -42,18 +42,55 @@ const MenuDrawer = ({
     if (!files?.length) {
       return;
     }
+    const file = files[0];
+    if (file.type !== 'application/json') {
+      alert('Invalid file type. Please upload a JSON file.');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const data = JSON.parse(e?.target?.result as string);
+        const data = JSON.parse(e?.target?.result as string) as Scene;
+        if (!isSceneValid(data)) {
+          alert('Invalid JSON file structure. Please upload a valid Scene object.');
+          return;
+        }
         setScene(data);
       } catch (error) {
         console.error('Error parsing JSON:', error);
         alert('Invalid JSON file format');
       }
     };
-    reader.readAsText(files[0]);
+    reader.readAsText(file);
     event.target.value = '';
+  };
+
+  const isSceneValid = (data: Scene) => {
+    const validInfoKeys = ['name', 'description', 'movement', 'flavor'];
+    const validLandmarkKeys = ['landmarkName', 'landmarkDescription'];
+    const validHiddenKeys = ['hiddenName', 'hiddenDescription', 'hasSecret'];
+    const validSecretKeys = ['secretName', 'secretDescription', 'onSuccess', 'onFailure'];
+
+    return (
+      typeof data === 'object' &&
+      'info' in data &&
+      validInfoKeys.every((key) => key in data.info) &&
+      'landmarkThings' in data &&
+      Array.isArray(data.landmarkThings) &&
+      data.landmarkThings.every(
+        (landmark) =>
+          validLandmarkKeys.every((key) => key in landmark) &&
+          'hiddenThings' in landmark &&
+          Array.isArray(landmark.hiddenThings) &&
+          landmark.hiddenThings.every(
+            (hidden) =>
+              validHiddenKeys.every((key) => key in hidden) &&
+              'secretThings' in hidden &&
+              Array.isArray(hidden.secretThings) &&
+              hidden.secretThings.every((secret) => validSecretKeys.every((key) => key in secret))
+          )
+      )
+    );
   };
 
   return (
