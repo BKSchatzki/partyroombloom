@@ -1,5 +1,10 @@
 import { saveAs } from 'file-saver';
-import { breakTextIntoLines, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import {
+  breakTextIntoLines,
+  PDFDocument,
+  rgb,
+  StandardFonts,
+} from 'pdf-lib';
 
 import type { Scene } from '../pages/SceneForm';
 
