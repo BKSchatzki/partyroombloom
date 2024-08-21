@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { produce } from 'immer';
+
 import {
   Add,
   Clear,
@@ -41,13 +43,19 @@ const HiddenThingCards = ({
 
   const handleUndoDelete = () => {
     if (!deletedHiddenItem) return;
-    const updatedLandmarkItems = [...scene.landmarkThings];
-    updatedLandmarkItems[deletedHiddenItemLandmarkIndex].hiddenThings.splice(
-      deletedHiddenIndex,
-      0,
-      deletedHiddenItem
-    );
-    setScene({ ...scene, landmarkThings: updatedLandmarkItems });
+    setScene(prevScene => {
+      return produce(prevScene, (draft) => {
+        draft.landmarkThings[deletedHiddenItemLandmarkIndex].hiddenThings.splice(deletedHiddenIndex, 0 , deletedHiddenItem);
+      })
+    })
+    // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+    // const updatedLandmarkItems = [...scene.landmarkThings];
+    // updatedLandmarkItems[deletedHiddenItemLandmarkIndex].hiddenThings.splice(
+    //   deletedHiddenIndex,
+    //   0,
+    //   deletedHiddenItem
+    // );
+    // setScene({ ...scene, landmarkThings: updatedLandmarkItems });
     setDeletedHiddenItem(null);
   };
 
@@ -123,13 +131,19 @@ const HiddenThingCards = ({
                     label={`🔎 Hidden Thing ${hiddenIndex + 1}`}
                     value={hiddenItem.hiddenName}
                     onChange={(e) => {
-                      const updatedLandmarkItems = [...scene.landmarkThings];
-                      updatedLandmarkItems[landmarkIndex].hiddenThings[hiddenIndex].hiddenName =
-                        e.target.value;
-                      setScene({
-                        ...scene,
-                        landmarkThings: updatedLandmarkItems,
-                      });
+                      setScene((prevScene) => {
+                        return produce(prevScene, (draft) => {
+                          draft.landmarkThings[landmarkIndex].hiddenThings[hiddenIndex].hiddenName = e.target.value;
+                        })
+                      })
+                      // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                      // const updatedLandmarkItems = [...scene.landmarkThings];
+                      // updatedLandmarkItems[landmarkIndex].hiddenThings[hiddenIndex].hiddenName =
+                      //   e.target.value;
+                      // setScene({
+                      //   ...scene,
+                      //   landmarkThings: updatedLandmarkItems,
+                      // });
                     }}
                     fullWidth={true}
                     variant={'outlined'}
@@ -138,14 +152,20 @@ const HiddenThingCards = ({
                     label={'Description'}
                     value={hiddenItem.hiddenDescription}
                     onChange={(e) => {
-                      const updatedLandmarkItems = [...scene.landmarkThings];
-                      updatedLandmarkItems[landmarkIndex].hiddenThings[
-                        hiddenIndex
-                      ].hiddenDescription = e.target.value;
-                      setScene({
-                        ...scene,
-                        landmarkThings: updatedLandmarkItems,
-                      });
+                      setScene((prevScene) => {
+                        return produce(prevScene, (draft) => {
+                          draft.landmarkThings[landmarkIndex].hiddenThings[hiddenIndex].hiddenDescription = e.target.value;
+                        })
+                      })
+                      // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                      // const updatedLandmarkItems = [...scene.landmarkThings];
+                      // updatedLandmarkItems[landmarkIndex].hiddenThings[
+                      //   hiddenIndex
+                      // ].hiddenDescription = e.target.value;
+                      // setScene({
+                      //   ...scene,
+                      //   landmarkThings: updatedLandmarkItems,
+                      // });
                     }}
                     fullWidth={true}
                     variant={'outlined'}
@@ -159,13 +179,19 @@ const HiddenThingCards = ({
                         color={'warning'}
                         checked={hiddenItem.hasSecret}
                         onChange={(e) => {
-                          const updatedLandmarkItems = [...scene.landmarkThings];
-                          updatedLandmarkItems[landmarkIndex].hiddenThings[hiddenIndex].hasSecret =
-                            e.target.checked;
-                          setScene({
-                            ...scene,
-                            landmarkThings: updatedLandmarkItems,
-                          });
+                          setScene((prevScene) => {
+                            return produce(prevScene, (draft) => {
+                              draft.landmarkThings[landmarkIndex].hiddenThings[hiddenIndex].hasSecret = e.target.checked;
+                            })
+                          })
+                          // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                          // const updatedLandmarkItems = [...scene.landmarkThings];
+                          // updatedLandmarkItems[landmarkIndex].hiddenThings[hiddenIndex].hasSecret =
+                          //   e.target.checked;
+                          // setScene({
+                          //   ...scene,
+                          //   landmarkThings: updatedLandmarkItems,
+                          // });
                         }}
                       />
                     }
@@ -182,14 +208,20 @@ const HiddenThingCards = ({
                       disabled={landmarkItem.hiddenThings.length === 1}
                       onClick={() => {
                         setDeletedHiddenItem(landmarkItem.hiddenThings[hiddenIndex]);
-                        setDeletedHiddenItemLandmarkIndex(landmarkIndex);
-                        setDeletedHiddenIndex(hiddenIndex);
-                        setUndoSnackbar({ open: true });
-                        const updatedLandmarkItems = [...scene.landmarkThings];
-                        updatedLandmarkItems[landmarkIndex].hiddenThings = updatedLandmarkItems[
-                          landmarkIndex
-                        ].hiddenThings.filter((_, i) => i !== hiddenIndex);
-                        setScene({ ...scene, landmarkThings: updatedLandmarkItems });
+                        setDeletedHiddenItemLandmarkIndex(landmarkIndex)
+                        setDeletedHiddenIndex(hiddenIndex)
+                        setUndoSnackbar({ open: true })
+                        setScene((prevScene) => {
+                          return produce(prevScene, (draft) => {
+                            draft.landmarkThings[landmarkIndex].hiddenThings = draft.landmarkThings[landmarkIndex].hiddenThings.filter((_, i) => i !== hiddenIndex);
+                          })
+                        })
+                        // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                        // const updatedLandmarkItems = [...scene.landmarkThings];
+                        // updatedLandmarkItems[landmarkIndex].hiddenThings = updatedLandmarkItems[
+                        //   landmarkIndex
+                        // ].hiddenThings.filter((_, i) => i !== hiddenIndex);
+                        // setScene({ ...scene, landmarkThings: updatedLandmarkItems });
                       }}
                     >
                       <Clear />
@@ -198,16 +230,22 @@ const HiddenThingCards = ({
                       color={'primary'}
                       sx={{ width: '500%' }}
                       onClick={() => {
-                        const updatedLandmarkItems = [...scene.landmarkThings];
-                        updatedLandmarkItems[landmarkIndex].hiddenThings.splice(
-                          hiddenIndex + 1,
-                          0,
-                          newHiddenThing
-                        );
-                        setScene({
-                          ...scene,
-                          landmarkThings: updatedLandmarkItems,
-                        });
+                        setScene((prevScene) => {
+                          return produce(prevScene, (draft) => {
+                            draft.landmarkThings[landmarkIndex].hiddenThings.splice(hiddenIndex + 1, 0, newHiddenThing);
+                          })
+                        })
+                      // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                        // const updatedLandmarkItems = [...scene.landmarkThings];
+                        // updatedLandmarkItems[landmarkIndex].hiddenThings.splice(
+                        //   hiddenIndex + 1,
+                        //   0,
+                        //   newHiddenThing
+                        // );
+                        // setScene({
+                        //   ...scene,
+                        //   landmarkThings: updatedLandmarkItems,
+                        // });
                       }}
                     >
                       <Add />

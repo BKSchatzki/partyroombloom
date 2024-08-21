@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { produce } from 'immer';
+
 import {
   Card,
   CardContent,
@@ -37,13 +39,19 @@ const InfoCard = ({
                 label={'Location'}
                 value={scene.info.name}
                 onChange={(e) => {
-                  setScene({
-                    ...scene,
-                    info: {
-                      ...scene.info,
-                      name: e.target.value,
-                    },
-                  });
+                  setScene((prevScene) => {
+                    return produce(prevScene, (draft) => {
+                      draft.info.name = e.target.value;
+                    })
+                  })
+                  // OKAY THIS ISN'T TERRIBLE BUT I PREFER IMPERATIVE STATE UPDATES WITH IMMER
+                  // setScene({
+                  //   ...scene,
+                  //   info: {
+                  //     ...scene.info,
+                  //     name: e.target.value,
+                  //   },
+                  // });
                 }}
                 fullWidth={true}
                 variant={'outlined'}
@@ -52,13 +60,19 @@ const InfoCard = ({
                 label={'Description'}
                 value={scene.info.description}
                 onChange={(e) => {
-                  setScene({
-                    ...scene,
-                    info: {
-                      ...scene.info,
-                      description: e.target.value,
-                    },
-                  });
+                  setScene((prevScene) => {
+                    return produce(prevScene, (draft) => {
+                      draft.info.description = e.target.value;
+                    })
+                  })
+                  // OKAY THIS ISN'T TERRIBLE BUT I PREFER IMPERATIVE STATE UPDATES WITH IMMER
+                  // setScene({
+                  //   ...scene,
+                  //   info: {
+                  //     ...scene.info,
+                  //     description: e.target.value,
+                  //   },
+                  // });
                 }}
                 fullWidth={true}
                 variant={'outlined'}
@@ -67,13 +81,19 @@ const InfoCard = ({
                 label={'Movement'}
                 value={scene.info.movement}
                 onChange={(e) => {
-                  setScene({
-                    ...scene,
-                    info: {
-                      ...scene.info,
-                      movement: e.target.value,
-                    },
-                  });
+                  setScene((prevScene) => {
+                    return produce(prevScene, (draft) => {
+                      draft.info.movement = e.target.value;
+                    })
+                  })
+                  // OKAY THIS ISN'T TERRIBLE BUT I PREFER IMPERATIVE STATE UPDATES WITH IMMER
+                  // setScene({
+                  //   ...scene,
+                  //   info: {
+                  //     ...scene.info,
+                  //     movement: e.target.value,
+                  //   },
+                  // });
                 }}
                 fullWidth={true}
                 variant={'outlined'}
@@ -85,13 +105,19 @@ const InfoCard = ({
                 label={'Flavor'}
                 value={scene.info.flavor}
                 onChange={(e) => {
-                  setScene({
-                    ...scene,
-                    info: {
-                      ...scene.info,
-                      flavor: e.target.value,
-                    },
-                  });
+                  setScene((prevScene) => {
+                    return produce(prevScene, (draft) => {
+                      draft.info.flavor = e.target.value;
+                    })
+                  })
+                  // OKAY THIS ISN'T TERRIBLE BUT I PREFER IMPERATIVE STATE UPDATES WITH IMMER
+                  // setScene({
+                  //   ...scene,
+                  //   info: {
+                  //     ...scene.info,
+                  //     flavor: e.target.value,
+                  //   },
+                  // });
                 }}
                 fullWidth={true}
                 variant={'outlined'}

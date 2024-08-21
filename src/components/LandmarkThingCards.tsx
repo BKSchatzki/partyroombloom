@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { produce } from 'immer';
+
 import {
   Add,
   Clear,
@@ -30,7 +32,7 @@ const LandmarkThingCards = ({
   const [deletedLandmarkItem, setDeletedLandmarkItem] = useState<
     Scene['landmarkThings'][number] | null
   >(null);
-  const [deletedLandmark, setDeletedLandmarkIndex] = useState<number>(0);
+  const [deletedLandmarkIndex, setDeletedLandmarkIndex] = useState<number>(0);
   const [undoSnackbar, setUndoSnackbar] = useState({
     open: false,
   });
@@ -38,7 +40,7 @@ const LandmarkThingCards = ({
   const handleUndoDelete = () => {
     if (!deletedLandmarkItem) return;
     const updatedItems = [...scene.landmarkThings];
-    updatedItems.splice(deletedLandmark, 0, deletedLandmarkItem);
+    updatedItems.splice(deletedLandmarkIndex, 0, deletedLandmarkItem);
     setScene({ ...scene, landmarkThings: updatedItems });
     setDeletedLandmarkItem(null);
   };
@@ -109,12 +111,18 @@ const LandmarkThingCards = ({
                   label={`📍 Landmark Thing ${landmarkIndex + 1}`}
                   value={landmarkItem.landmarkName}
                   onChange={(e) => {
-                    const updatedItems = [...scene.landmarkThings];
-                    updatedItems[landmarkIndex].landmarkName = e.target.value;
-                    setScene({
-                      ...scene,
-                      landmarkThings: updatedItems,
-                    });
+                    setScene((prevScene) => {
+                      return produce(prevScene, (draft) => {
+                        draft.landmarkThings[landmarkIndex].landmarkName = e.target.value;
+                      })
+                    })
+                    // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                    // const updatedItems = [...scene.landmarkThings];
+                    // updatedItems[landmarkIndex].landmarkName = e.target.value;
+                    // setScene({
+                    //   ...scene,
+                    //   landmarkThings: updatedItems,
+                    // });
                   }}
                   fullWidth={true}
                   variant={'outlined'}
@@ -123,12 +131,18 @@ const LandmarkThingCards = ({
                   label={'Description'}
                   value={landmarkItem.landmarkDescription}
                   onChange={(e) => {
-                    const updatedItems = [...scene.landmarkThings];
-                    updatedItems[landmarkIndex].landmarkDescription = e.target.value;
-                    setScene({
-                      ...scene,
-                      landmarkThings: updatedItems,
-                    });
+                    setScene((prevScene) => {
+                      return produce(prevScene, (draft) => {
+                        draft.landmarkThings[landmarkIndex].landmarkDescription = e.target.value;
+                      })
+                    })
+                    // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                    // const updatedItems = [...scene.landmarkThings];
+                    // updatedItems[landmarkIndex].landmarkDescription = e.target.value;
+                    // setScene({
+                    //   ...scene,
+                    //   landmarkThings: updatedItems,
+                    // });
                   }}
                   fullWidth={true}
                   variant={'outlined'}
@@ -149,13 +163,19 @@ const LandmarkThingCards = ({
                       setDeletedLandmarkItem(scene.landmarkThings[landmarkIndex]);
                       setDeletedLandmarkIndex(landmarkIndex);
                       setUndoSnackbar({ open: true });
-                      const updatedItems = [
-                        ...scene.landmarkThings.filter((_, i) => i !== landmarkIndex),
-                      ];
-                      setScene({
-                        ...scene,
-                        landmarkThings: updatedItems,
-                      });
+                      setScene((prevScene) => {
+                        return produce(prevScene, (draft) => {
+                          draft.landmarkThings = draft.landmarkThings.filter((_, i) => i !== landmarkIndex);
+                        })
+                      })
+                      // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                      // const updatedItems = [
+                      //   ...scene.landmarkThings.filter((_, i) => i !== landmarkIndex),
+                      // ];
+                      // setScene({
+                      //   ...scene,
+                      //   landmarkThings: updatedItems,
+                      // });
                     }}
                   >
                     <Clear />
@@ -164,13 +184,19 @@ const LandmarkThingCards = ({
                     color={'primary'}
                     sx={{ width: '500%' }}
                     onClick={() => {
-                      const updatedItems = [...scene.landmarkThings];
-                      const itemIndex = landmarkIndex;
-                      updatedItems.splice(itemIndex + 1, 0, newLandmarkThing);
-                      setScene({
-                        ...scene,
-                        landmarkThings: updatedItems,
-                      });
+                      setScene((prevScene) => {
+                        return produce(prevScene, (draft) => {
+                          draft.landmarkThings.splice(landmarkIndex + 1, 0, newLandmarkThing);
+                        })
+                      })
+                      // LEAVING ORIGINAL CODE AS A REMINDER OF TERRIBLE PRACTICES
+                      // const updatedItems = [...scene.landmarkThings];
+                      // const itemIndex = landmarkIndex;
+                      // updatedItems.splice(itemIndex + 1, 0, newLandmarkThing);
+                      // setScene({
+                      //   ...scene,
+                      //   landmarkThings: updatedItems,
+                      // });
                     }}
                   >
                     <Add />
