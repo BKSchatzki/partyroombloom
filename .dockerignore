@@ -1,0 +1,23 @@
+# Node modules and other directories
+node_modules
+npm-debug.log
+yarn-error.log
+.next
+.env
+.DS_Store
+
+# Docker-related files
+Dockerfile
+docker-compose.yml
+
+# Logs
+logs
+*.log
+
+# Build files
+build
+dist
+
+# IDE files
+.vscode
+.idea
