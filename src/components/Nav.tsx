@@ -35,7 +35,7 @@ const Nav = ({ user }: { user: User | null }) => {
         <Flower className={cn(`size-8`)} />
         <h2
           className={cn(
-            `flex items-center gap-2 text-2xl font-bold tracking-tighter max-md:hidden`
+            `flex items-center gap-2 text-2xl font-bold tracking-tighter max-lg:hidden`
           )}
         >
           PartyRoomBloom
