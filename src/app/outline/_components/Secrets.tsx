@@ -36,7 +36,6 @@ const Secrets = ({ elementId }: { elementId: string }) => {
     property: string
   ) => {
     if (!id) return;
-
     setOutline((outline) => ({
       ...outline,
       elements: outline.elements.map((element) =>
@@ -47,7 +46,6 @@ const Secrets = ({ elementId }: { elementId: string }) => {
 
   const handleDelete = (id: string) => {
     if (!id) return;
-
     setOutline((outline) => ({
       ...outline,
       elements: outline.elements.filter((element) => element.id !== id),
@@ -56,7 +54,6 @@ const Secrets = ({ elementId }: { elementId: string }) => {
 
   const handleAddSecret = () => {
     if (!thisElement) return;
-
     setOutline((outline) => ({
       ...outline,
       elements: [

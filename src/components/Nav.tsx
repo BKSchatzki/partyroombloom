@@ -1,10 +1,19 @@
 import React from 'react';
 
 import { User } from 'lucia';
-import { Flower, Grid2X2, Leaf, Menu, Sparkle } from 'lucide-react';
+import {
+  Flower,
+  Grid2X2,
+  Leaf,
+  Menu,
+  Sparkle,
+} from 'lucide-react';
 import Link from 'next/link';
 
-import { SignIn, SignOut } from '@/components/SignIn';
+import {
+  SignIn,
+  SignOut,
+} from '@/components/SignIn';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,

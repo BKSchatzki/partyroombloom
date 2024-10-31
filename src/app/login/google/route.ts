@@ -13,7 +13,6 @@ export async function GET(): Promise<Response> {
   const url = await google.createAuthorizationURL(state, codeVerifier, {
     scopes: googleAuthScopes,
   });
-
   cookies().set('google_oauth_state', state, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
@@ -21,7 +20,6 @@ export async function GET(): Promise<Response> {
     maxAge: 60 * 10,
     sameSite: 'lax',
   });
-
   cookies().set('code_verifier', codeVerifier, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
