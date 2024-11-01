@@ -9,12 +9,13 @@ import {
   ThumbsUp,
 } from 'lucide-react';
 
+import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import { Threadline } from '../../../components/ui/threadline';
+// import { Threadline } from '../../../components/ui/threadline';
 
 const Review = () => {
   const [outline] = useAtom(outlineAtom);
@@ -29,13 +30,15 @@ const Review = () => {
         <span>{outline.info.comments}</span>
       </div>
       <Separator className={cn(`my-2 border-base-300`)} />
-      <div className={cn(`flex flex-col`)}>
+      <div className={cn(`flex flex-col gap-4`)}>
         {/* Landmarks */}
         {outline.elements
           .filter((element) => element.type === 'landmark')
           .map((landmark) => (
-            <div
-              className={cn(`relative flex flex-col gap-2 p-4`)}
+            <Card
+              className={cn(
+                `relative flex flex-col gap-4 bg-primary/10 p-4 shadow-xl shadow-base-300`
+              )}
               key={landmark.id}
             >
               <span className={cn(`flex items-center gap-2 text-2xl text-primary`)}>
@@ -49,9 +52,11 @@ const Review = () => {
                   (element) => element.parentId === landmark.id && element.type === 'interactable'
                 )
                 .map((interactable) => (
-                  <div
+                  <Card
                     key={interactable.id}
-                    className={cn(`relative flex flex-col gap-2 pl-6`)}
+                    className={cn(
+                      `relative flex flex-col gap-2 bg-info/10 p-4 shadow-lg shadow-base-200`
+                    )}
                   >
                     <span className={cn(`flex items-center gap-2 text-xl text-info`)}>
                       <MousePointerClick className={cn(`size-6`)} />
@@ -66,19 +71,25 @@ const Review = () => {
                       )
                       // .sort((a, b) => a.parentId.localeCompare(b.parentId))
                       .map((secret) => (
-                        <div
+                        <Card
                           key={secret.id}
-                          className={cn(`relative flex flex-col gap-2 pl-6`)}
+                          className={cn(
+                            `relative flex flex-col gap-2 bg-error/10 p-4 shadow-md shadow-base-100`
+                          )}
                         >
-                          <Threadline color={`info`} />
+                          {/* <Threadline color={`info`} /> */}
                           <span className={cn(`flex items-center gap-2 text-lg text-error`)}>
                             <Lock className={cn(`size-5`)} />
                             {secret.name}
                           </span>
                           <span>{secret.description}</span>
                           {/* Rollables */}
-                          <div className={cn(`relative flex flex-col gap-2 pl-6`)}>
-                            <Threadline color={`error`} />
+                          <Card
+                            className={cn(
+                              `relative flex flex-col gap-2 bg-warning/10 p-4 shadow-sm shadow-base-100`
+                            )}
+                          >
+                            {/* <Threadline color={`error`} /> */}
                             <span className={cn(`flex items-center gap-2 text-warning`)}>
                               <ThumbsUp className={cn(`size-4`)} />
                               Success
@@ -89,12 +100,12 @@ const Review = () => {
                               Failure
                             </span>
                             <span>{secret.rollable.failure}</span>
-                          </div>
-                        </div>
+                          </Card>
+                        </Card>
                       ))}
-                  </div>
+                  </Card>
                 ))}
-            </div>
+            </Card>
           ))}
       </div>
     </ScrollArea>
