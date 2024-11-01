@@ -31,7 +31,6 @@ const Interactables = ({ elementId }: { elementId: string }) => {
     property: string
   ) => {
     if (!id) return;
-
     setOutline((outline) => ({
       ...outline,
       elements: outline.elements.map((element) =>
@@ -42,7 +41,6 @@ const Interactables = ({ elementId }: { elementId: string }) => {
 
   const handleDelete = (id: string) => {
     if (!id) return;
-
     setOutline((outline) => ({
       ...outline,
       elements: outline.elements.filter((element) => element.id !== id && element.parentId !== id),
@@ -51,7 +49,6 @@ const Interactables = ({ elementId }: { elementId: string }) => {
 
   const handleAddInteractable = () => {
     if (!thisElement) return;
-
     setOutline((outline) => ({
       ...outline,
       elements: [

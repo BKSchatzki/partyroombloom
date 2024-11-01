@@ -1,10 +1,19 @@
 import React from 'react';
 
 import { User } from 'lucia';
-import { Flower, Grid2X2, Leaf, Menu, Sparkle } from 'lucide-react';
+import {
+  Flower,
+  Grid2X2,
+  Leaf,
+  Menu,
+  Sparkle,
+} from 'lucide-react';
 import Link from 'next/link';
 
-import { SignIn, SignOut } from '@/components/SignIn';
+import {
+  SignIn,
+  SignOut,
+} from '@/components/SignIn';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
@@ -26,7 +35,7 @@ const Nav = ({ user }: { user: User | null }) => {
         <Flower className={cn(`size-8`)} />
         <h2
           className={cn(
-            `flex items-center gap-2 text-2xl font-bold tracking-tighter max-md:hidden`
+            `flex items-center gap-2 text-2xl font-bold tracking-tighter max-lg:hidden`
           )}
         >
           PartyRoomBloom

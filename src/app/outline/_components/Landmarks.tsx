@@ -26,7 +26,6 @@ const Landmarks = ({ elementId }: { elementId: string }) => {
     property: string
   ) => {
     if (!thisElement) return;
-
     setOutline((outline) => ({
       ...outline,
       elements: outline.elements.map((element) =>
@@ -35,72 +34,20 @@ const Landmarks = ({ elementId }: { elementId: string }) => {
     }));
   };
 
-  // const handleDelete = () => {
-  //   if (!thisElement) return;
-
-  //   setOutline((outline) => ({
-  //     ...outline,
-  //     elements: outline.elements.filter(
-  //       (element) => element.id !== thisElement.id && element.parentId !== thisElement.id
-  //     ),
-  //   }));
-  // };
-
-  // const handleDelete = () => {
-  //   if (!thisElement) return;
-
-  //   setOutline((outline) => {
-  //     const deleteCascade = (parentId: string): string[] => {
-  //       // Recursively get all child IDs for deletion
-  //       const children = outline.elements
-  //         .filter((element) => element.parentId === parentId)
-  //         .map((element) => element.id);
-
-  //       // Include children of the children in the deletion process
-  //       children.forEach((childId) => {
-  //         children.push(...deleteCascade(childId)); // Recursion to find descendants
-  //       });
-
-  //       return children;
-  //     };
-
-  //     const elementsToDelete = deleteCascade(thisElement.id); // Get all IDs to delete
-
-  //     // Filter out the landmark and all its descendants
-  //     const updatedElements = outline.elements.filter(
-  //       (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
-  //     );
-
-  //     return {
-  //       ...outline,
-  //       elements: updatedElements,
-  //     };
-  //   });
-  // };
-
   const handleDelete = () => {
     if (!thisElement) return;
-
     setOutline((outline) => {
       const deleteCascade = (parentId: string): string[] => {
-        // Recursively get all child IDs for deletion
         const children = outline.elements
           .filter((element) => element.parentId === parentId)
           .map((element) => element.id);
-
-        // Gather descendants of all children
         const descendants = children.flatMap((childId) => deleteCascade(childId));
-
-        return [...children, ...descendants]; // Return both children and descendants
+        return [...children, ...descendants];
       };
-
-      const elementsToDelete = deleteCascade(thisElement.id); // Get all IDs to delete
-
-      // Filter out the landmark and all its descendants
+      const elementsToDelete = deleteCascade(thisElement.id);
       const updatedElements = outline.elements.filter(
         (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
       );
-
       return {
         ...outline,
         elements: updatedElements,

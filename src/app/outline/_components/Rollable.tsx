@@ -18,7 +18,6 @@ const Rollable = ({ elementId }: { elementId: string }) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>, property: string) => {
     if (!thisElement) return;
-
     setOutline((outline) => ({
       ...outline,
       elements: outline.elements.map((element) =>
