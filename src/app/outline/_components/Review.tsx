@@ -26,11 +26,11 @@ const Review = () => {
       <Card className={cn(`flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300`)}>
         <span className={cn(`flex items-center gap-2 text-2xl text-neutral brightness-[3]`)}>
           <Theater className={cn(`size-7`)} />
-          {outline.info.title}
+          {outline.info.title || '[Scene Title]'}
         </span>
-        <span>{outline.info.description}</span>
-        <span>{outline.info.goal}</span>
-        <span>{outline.info.comments}</span>
+        <span>{outline.info.description || '[description]'}</span>
+        <span>{outline.info.goal || '[goal]'}</span>
+        <span>{outline.info.comments || '[comments]'}</span>
       </Card>
       <Separator className={cn(`my-3 border-base-300`)} />
       <div className={cn(`flex flex-col gap-6`)}>
@@ -47,12 +47,12 @@ const Review = () => {
               <div className={cn(`flex flex-col gap-2`)}>
                 <span className={cn(`flex items-center gap-2 text-2xl text-primary`)}>
                   <Pyramid className={cn(`size-7`)} />
-                  {landmark.name}
+                  {landmark.name || 'Landmark'}
                 </span>
-                <span>{landmark.description}</span>
+                <span>{landmark.description || '[description]'}</span>
               </div>
               {/* Interactables */}
-              <div className={cn(`flex flex-col gap-10`)}>
+              <div className={cn(`-mb-7 flex flex-col gap-10 has-[div]:mb-0`)}>
                 {outline.elements
                   .filter(
                     (element) => element.parentId === landmark.id && element.type === 'interactable'
@@ -67,12 +67,12 @@ const Review = () => {
                       <div className={cn(`flex flex-col gap-2`)}>
                         <span className={cn(`flex items-center gap-2 text-xl text-info`)}>
                           <MousePointerClick className={cn(`size-6`)} />
-                          {interactable.name}
+                          {interactable.name || 'Interactable'}
                         </span>
-                        <span>{interactable.description}</span>
+                        <span>{interactable.description || '[description]'}</span>
                       </div>
                       {/* Secrets */}
-                      <div className={cn(`flex flex-col gap-8`)}>
+                      <div className={cn(`-mb-7 flex flex-col gap-8 has-[div]:mb-0`)}>
                         {outline.elements
                           .filter(
                             (element) =>
@@ -90,9 +90,9 @@ const Review = () => {
                               <div className={cn(`flex flex-col gap-2`)}>
                                 <span className={cn(`flex items-center gap-2 text-lg text-error`)}>
                                   <Lock className={cn(`size-5`)} />
-                                  {secret.name}
+                                  {secret.name || 'Secret'}
                                 </span>
-                                <span>{secret.description}</span>
+                                <span>{secret.description || '[description]'}</span>
                               </div>
                               {/* Rollables */}
                               <Card
@@ -105,12 +105,12 @@ const Review = () => {
                                   <ThumbsUp className={cn(`size-4`)} />
                                   Success
                                 </span>
-                                <span>{secret.rollable.success}</span>
+                                <span>{secret.rollable.success || '[outcome]'}</span>
                                 <span className={cn(`flex items-center gap-2 text-warning`)}>
                                   <ThumbsDown className={cn(`size-4`)} />
                                   Failure
                                 </span>
-                                <span>{secret.rollable.failure}</span>
+                                <span>{secret.rollable.failure || '[outcome]'}</span>
                               </Card>
                             </Card>
                           ))}
