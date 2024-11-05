@@ -21,16 +21,30 @@ const Review = () => {
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
-      <Card className={cn(`flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300`)}>
-        <span className={cn(`flex items-center gap-2 text-2xl text-neutral brightness-[3]`)}>
-          <Theater className={cn(`size-7`)} />
-          {outline.info.title || '[Scene Title]'}
+      <Card className={cn(`mb-6 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300`)}>
+        <span
+          className={cn(
+            `flex w-full shrink-0 items-center gap-2 px-2 text-3xl text-[#64d8b4] max-sm:flex-col sm:basis-1/3 sm:gap-4`,
+            !outline.info.title && `italic opacity-30`
+          )}
+        >
+          <Theater className={cn(`size-9`)} />
+          {outline.info.title || 'Untitled Scene'}
         </span>
-        <span>{outline.info.description || '[description]'}</span>
-        <span>{outline.info.goal || '[goal]'}</span>
-        <span>{outline.info.comments || '[comments]'}</span>
+        <Separator className={cn(`my-0 border-base-300`)} />
+        <span className={cn(!outline.info.description && `italic opacity-30`)}>
+          <span className={cn(`font-semibold text-[#64d8b4]`)}>Description: </span>
+          {outline.info.description || 'A short description to set the scene.'}
+        </span>
+        <span className={cn(!outline.info.goal && `italic opacity-30`)}>
+          <span className={cn(`font-semibold text-[#64d8b4]`)}>Goal: </span>
+          {outline.info.goal || 'What this scene does or where it leads.'}
+        </span>
+        <span className={cn(!outline.info.comments && `italic opacity-30`)}>
+          <span className={cn(`font-semibold text-[#64d8b4]`)}>Comments: </span>
+          {outline.info.comments || 'Extra information to help the Simulator or Future You.'}
+        </span>
       </Card>
-      <Separator className={cn(`my-3 border-base-300`)} />
       <div className={cn(`flex flex-col gap-6`)}>
         {/* Landmarks */}
         {outline.elements
@@ -43,11 +57,18 @@ const Review = () => {
               key={landmark.id}
             >
               <div className={cn(`flex flex-col gap-2`)}>
-                <span className={cn(`flex items-center gap-2 text-2xl text-primary`)}>
+                <span
+                  className={cn(
+                    `flex items-center gap-2 text-2xl text-primary`,
+                    !landmark.name && `italic opacity-30`
+                  )}
+                >
                   <Pyramid className={cn(`size-7`)} />
-                  {landmark.name || 'Landmark'}
+                  {landmark.name || 'Untitled Landmark'}
                 </span>
-                <span>{landmark.description || '[description]'}</span>
+                <span className={cn(!landmark.description && `italic opacity-30`)}>
+                  {landmark.description || 'The first-glance impression of the landmark.'}
+                </span>
               </div>
               {/* Interactables */}
               <div className={cn(`-mb-7 flex flex-col gap-10 has-[div]:mb-0`)}>
@@ -63,11 +84,19 @@ const Review = () => {
                       )}
                     >
                       <div className={cn(`flex flex-col gap-2`)}>
-                        <span className={cn(`flex items-center gap-2 text-xl text-info`)}>
+                        <span
+                          className={cn(
+                            `flex items-center gap-2 text-xl text-info`,
+                            !interactable.name && `italic opacity-30`
+                          )}
+                        >
                           <MousePointerClick className={cn(`size-6`)} />
-                          {interactable.name || 'Interactable'}
+                          {interactable.name || 'Untitled Interactable'}
                         </span>
-                        <span>{interactable.description || '[description]'}</span>
+                        <span className={cn(!interactable.description && `italic opacity-30`)}>
+                          {interactable.description ||
+                            'What is noticed when inspected more closely.'}
+                        </span>
                       </div>
                       {/* Secrets */}
                       <div className={cn(`-mb-7 flex flex-col gap-8 has-[div]:mb-0`)}>
@@ -84,11 +113,19 @@ const Review = () => {
                               )}
                             >
                               <div className={cn(`flex flex-col gap-2`)}>
-                                <span className={cn(`flex items-center gap-2 text-lg text-error`)}>
+                                <span
+                                  className={cn(
+                                    `flex items-center gap-2 text-lg text-error`,
+                                    !secret.name && `italic opacity-30`
+                                  )}
+                                >
                                   <Lock className={cn(`size-5`)} />
-                                  {secret.name || 'Secret'}
+                                  {secret.name || 'Untitled Secret'}
                                 </span>
-                                <span>{secret.description || '[description]'}</span>
+                                <span className={cn(!secret.description && `italic opacity-30`)}>
+                                  {secret.description ||
+                                    'Information that must be earned with a roll.'}
+                                </span>
                               </div>
                               {/* Rollables */}
                               <Card
@@ -96,16 +133,34 @@ const Review = () => {
                                   `relative -m-3 flex flex-col gap-2 bg-warning/10 p-4 shadow-sm shadow-base-100`
                                 )}
                               >
-                                <span className={cn(`flex items-center gap-2 text-warning`)}>
+                                <span
+                                  className={cn(
+                                    `flex items-center gap-2 text-warning`,
+                                    !secret.rollable.success && `italic opacity-30`
+                                  )}
+                                >
                                   <ThumbsUp className={cn(`size-4`)} />
                                   Success
                                 </span>
-                                <span>{secret.rollable.success || '[outcome]'}</span>
-                                <span className={cn(`flex items-center gap-2 text-warning`)}>
+                                <span
+                                  className={cn(!secret.rollable.success && `italic opacity-30`)}
+                                >
+                                  {secret.rollable.success || 'Outcome of a successful roll.'}
+                                </span>
+                                <span
+                                  className={cn(
+                                    `flex items-center gap-2 text-warning`,
+                                    !secret.rollable.failure && `italic opacity-30`
+                                  )}
+                                >
                                   <ThumbsDown className={cn(`size-4`)} />
                                   Failure
                                 </span>
-                                <span>{secret.rollable.failure || '[outcome]'}</span>
+                                <span
+                                  className={cn(!secret.rollable.failure && `italic opacity-30`)}
+                                >
+                                  {secret.rollable.failure || 'Outcome of a failed roll.'}
+                                </span>
                               </Card>
                             </Card>
                           ))}
