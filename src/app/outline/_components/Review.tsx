@@ -5,6 +5,7 @@ import {
   Lock,
   MousePointerClick,
   Pyramid,
+  Theater,
   ThumbsDown,
   ThumbsUp,
 } from 'lucide-react';
@@ -22,14 +23,16 @@ const Review = () => {
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
-      <div className={cn(`flex flex-col gap-2`)}>
-        <span>Info</span>
-        <span>{outline.info.title}</span>
+      <Card className={cn(`flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300`)}>
+        <span className={cn(`flex items-center gap-2 text-2xl text-neutral brightness-[3]`)}>
+          <Theater className={cn(`size-7`)} />
+          {outline.info.title}
+        </span>
         <span>{outline.info.description}</span>
         <span>{outline.info.goal}</span>
         <span>{outline.info.comments}</span>
-      </div>
-      <Separator className={cn(`my-2 border-base-300`)} />
+      </Card>
+      <Separator className={cn(`my-3 border-base-300`)} />
       <div className={cn(`flex flex-col gap-6`)}>
         {/* Landmarks */}
         {outline.elements
