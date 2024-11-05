@@ -19,7 +19,13 @@ import Secrets from './Secrets';
 const InteractablesContainer = () => {
   const [outline] = useAtom(outlineAtom);
 
-  const interactables = outline.elements.filter((element) => element.type === 'interactable');
+  const interactablesSorted = outline.elements
+    .filter((element) => element.type === 'interactable')
+    .sort(
+      (a, b) =>
+        outline.elements.findIndex((element) => element.id === a.parentId) -
+        outline.elements.findIndex((element) => element.id === b.parentId)
+    );
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
@@ -41,7 +47,7 @@ const InteractablesContainer = () => {
           through player character deduction or rolls. They can be loot, information, traps, etc.
         </p>
       </section>
-      {interactables.length === 0 ? (
+      {interactablesSorted.length === 0 ? (
         <Card
           className={cn(
             `mb-8 flex h-[7.5rem] w-full flex-col items-center justify-center bg-error/5 shadow-lg shadow-base-300`
@@ -53,7 +59,7 @@ const InteractablesContainer = () => {
           </CardDescription>
         </Card>
       ) : (
-        interactables.map((element) => (
+        interactablesSorted.map((element) => (
           <Secrets
             key={element.id}
             elementId={element.id}

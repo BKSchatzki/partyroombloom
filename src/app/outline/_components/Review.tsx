@@ -16,8 +16,6 @@ import { Separator } from '@/components/ui/separator';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-// import { Threadline } from '../../../components/ui/threadline';
-
 const Review = () => {
   const [outline] = useAtom(outlineAtom);
 
@@ -78,7 +76,6 @@ const Review = () => {
                             (element) =>
                               element.parentId === interactable.id && element.type === 'secret'
                           )
-                          // .sort((a, b) => a.parentId.localeCompare(b.parentId))
                           .map((secret) => (
                             <Card
                               key={secret.id}
@@ -86,7 +83,6 @@ const Review = () => {
                                 `relative -m-3 flex flex-col gap-7 bg-error/10 p-4 shadow-md shadow-base-100`
                               )}
                             >
-                              {/* <Threadline color={`info`} /> */}
                               <div className={cn(`flex flex-col gap-2`)}>
                                 <span className={cn(`flex items-center gap-2 text-lg text-error`)}>
                                   <Lock className={cn(`size-5`)} />
@@ -100,7 +96,6 @@ const Review = () => {
                                   `relative -m-3 flex flex-col gap-2 bg-warning/10 p-4 shadow-sm shadow-base-100`
                                 )}
                               >
-                                {/* <Threadline color={`error`} /> */}
                                 <span className={cn(`flex items-center gap-2 text-warning`)}>
                                   <ThumbsUp className={cn(`size-4`)} />
                                   Success
