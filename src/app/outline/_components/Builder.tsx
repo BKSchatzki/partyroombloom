@@ -7,6 +7,7 @@ import {
 
 import { useAtom } from 'jotai';
 import { Save } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -31,6 +32,8 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchOutline = async () => {
@@ -68,23 +71,43 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
 
   const handleSave = async () => {
     setIsSaving(true);
-    try {
-      const response = await fetch('/api/outline', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ outline }),
-      });
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+    if (outlineId) {
+      try {
+        const response = await fetch(`/api/outline/${outlineId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ outline }),
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error saving outline:', error);
+      } finally {
+        setIsSaving(false);
       }
-      const data = await response.json();
-      // router.push(`/outlines/${data.id}`);
-    } catch (error) {
-      console.error('Error saving outline:', error);
-    } finally {
-      setIsSaving(false);
+    }
+    if (!outlineId) {
+      try {
+        const response = await fetch('/api/outline', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ outline }),
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        router.push(`/outline/${data.id}`);
+      } catch (error) {
+        console.error('Error saving outline:', error);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
