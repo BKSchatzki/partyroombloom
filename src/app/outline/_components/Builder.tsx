@@ -1,5 +1,6 @@
-'use client';
+import { Save } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
@@ -42,6 +43,14 @@ const Builder = () => {
         <div className={cn(`relative h-16`)}>
           <CarouselPrevious />
           <CarouselNext />
+          <Button
+            color={`secondary`}
+            outlined={true}
+            className={cn(`absolute bottom-0 right-20 flex items-center gap-2`)}
+          >
+            <Save className={cn(`size-5`)} />
+            Save Outline
+          </Button>
         </div>
       </div>
     </Carousel>
