@@ -122,7 +122,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
       <div className={cn(`flex max-h-full flex-col pb-4`)}>
         <CarouselContent>
           <CarouselItem className={cn(`basis-full py-4`)}>
-            <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
+            <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
               <Info />
             </ScrollArea>
           </CarouselItem>

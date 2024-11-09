@@ -15,8 +15,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
@@ -35,7 +33,7 @@ const Info = () => {
   };
 
   return (
-    <ScrollArea className={cn(`flex h-[calc(100vh-10rem)] flex-col gap-4 px-4 pb-4`)}>
+    <div>
       <section
         className={cn(
           `mb-8 mt-4 flex items-center justify-center gap-4 text-[#64d8b4] max-sm:flex-col sm:gap-2`
@@ -55,7 +53,7 @@ const Info = () => {
           including some flavor and movement. Include a goal and any relevant comments.
         </p>
       </section>
-      <Card className={cn(`bg-neutral/50 shadow-xl shadow-base-300`)}>
+      <Card className={cn(`bg-neutral/50 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
         <CardHeader></CardHeader>
         <CardContent className={cn(`flex flex-col gap-4`)}>
           <Label
@@ -113,7 +111,7 @@ const Info = () => {
         </CardContent>
         <CardFooter className={cn(`flex flex-col items-start gap-4`)}></CardFooter>
       </Card>
-    </ScrollArea>
+    </div>
   );
 };
 

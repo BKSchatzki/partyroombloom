@@ -28,7 +28,7 @@ const InteractablesContainer = () => {
     );
 
   return (
-    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
+    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
       <section
         className={cn(
           `mb-8 mt-4 flex items-center justify-center gap-4 text-error max-sm:flex-col sm:gap-2`

@@ -56,7 +56,7 @@ const Landmarks = ({ elementId }: { elementId: string }) => {
   };
 
   return (
-    <Card className={cn(`mb-8 w-full bg-primary/10 shadow-xl shadow-base-300`)}>
+    <Card className={cn(`mb-8 w-full bg-primary/10 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
       <CardHeader className={cn(`relative pt-7`)}>
         <DeleteButton
           first={true}

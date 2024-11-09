@@ -32,7 +32,7 @@ const DeleteButton = ({
     <div
       className={cn(
         `absolute right-[1px] top-[1px] rounded-b-none rounded-bl-xl rounded-tl-none bg-error/25`,
-        first ? 'rounded-tr-xl' : 'rounded-tr-none'
+        first ? 'sm:rounded-tr-xl' : 'rounded-tr-none'
       )}
     >
       <Dialog>
@@ -40,7 +40,7 @@ const DeleteButton = ({
           <Button
             className={cn(
               `rounded-bl-xl rounded-br-none rounded-tl-none`,
-              first ? 'rounded-tr-xl' : 'rounded-tr-none'
+              first ? 'rounded-tr-xl max-sm:rounded-tr-none' : 'rounded-tr-none'
             )}
             color={`error`}
             outlined={true}

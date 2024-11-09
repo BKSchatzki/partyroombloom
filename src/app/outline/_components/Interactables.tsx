@@ -69,7 +69,11 @@ const Interactables = ({ elementId }: { elementId: string }) => {
   };
 
   return (
-    <Card className={cn(`relative mb-8 w-full bg-info/10 shadow-lg shadow-base-300`)}>
+    <Card
+      className={cn(
+        `relative mb-8 w-full bg-info/10 shadow-lg shadow-base-300 max-sm:rounded-none`
+      )}
+    >
       <CardTitle className={cn(`absolute left-1/2 top-2.5 line-clamp-1 -translate-x-1/2`)}>
         {thisElement?.name || 'Landmark'}
       </CardTitle>
