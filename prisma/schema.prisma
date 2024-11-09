@@ -39,10 +39,10 @@ model Outline {
   id          Int       @id @default(autoincrement())
   userId      Int
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title       String
-  description String
-  goal        String
-  comments    String
+  title       String?
+  description String?
+  goal        String?
+  comments    String?
   elements    Element[]
 
   @@map("PRB_Outlines")
@@ -57,10 +57,10 @@ model Element {
   parentId        String?
   parent          Element?  @relation("Element", fields: [parentId], references: [id])
   type            String
-  name            String
-  description     String
-  rollableSuccess String
-  rollableFailure String
+  name            String?
+  description     String?
+  rollableSuccess String?
+  rollableFailure String?
   children        Element[] @relation("Element")
 
   @@map("PRB_Elements")
