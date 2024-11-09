@@ -16,13 +16,14 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { outlineAtom } from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const SecretsReview = (props) => {
+const SecretsReview = ({ outline, id }: { outline: Outline; id: string }) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-8 has-[div]:mb-0`)}>
-      {props.elements
-        .filter((element) => element.parentId === props.id && element.type === 'secret')
+      {outline.elements
+        .filter((element) => element.parentId === id && element.type === 'secret')
         .map((secret) => (
           <Card
             key={secret.id}
@@ -81,11 +82,11 @@ const SecretsReview = (props) => {
   );
 };
 
-const InteractablesReview = (props) => {
+const InteractablesReview = ({ outline, id }: { outline: Outline; id: string }) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-10 has-[div]:mb-0`)}>
-      {props.outline.elements
-        .filter((element) => element.parentId === props.id && element.type === 'interactable')
+      {outline.elements
+        .filter((element) => element.parentId === id && element.type === 'interactable')
         .map((interactable) => (
           <Card
             key={interactable.id}
@@ -108,7 +109,7 @@ const InteractablesReview = (props) => {
               </span>
             </div>
             <SecretsReview
-              elements={props.outline.elements}
+              outline={outline}
               id={interactable.id}
             />
           </Card>
@@ -117,11 +118,11 @@ const InteractablesReview = (props) => {
   );
 };
 
-const LandmarksReview = (props) => {
+const LandmarksReview = ({ outline }: { outline: Outline }) => {
   return (
     <div className={cn(`flex flex-col gap-6`)}>
       {/* Landmarks */}
-      {props.outline.elements
+      {outline.elements
         .filter((element) => element.type === 'landmark')
         .map((landmark) => (
           <Card
@@ -146,7 +147,7 @@ const LandmarksReview = (props) => {
             </div>
             {/* Interactables */}
             <InteractablesReview
-              outline={props.outline}
+              outline={outline}
               id={landmark.id}
             />
           </Card>
@@ -155,30 +156,30 @@ const LandmarksReview = (props) => {
   );
 };
 
-const InfoReview = (props) => {
+const InfoReview = ({ outline }: { outline: Outline }) => {
   return (
     <Card className={cn(`mb-6 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300`)}>
       <span
         className={cn(
           `flex w-full shrink-0 items-center gap-2 px-2 text-3xl text-[#64d8b4] max-sm:flex-col sm:basis-1/3 sm:gap-4`,
-          !props.title && `italic opacity-30`
+          !outline.title && `italic opacity-30`
         )}
       >
         <Theater className={cn(`size-9`)} />
-        {props.title || 'Untitled Scene'}
+        {outline.title || 'Untitled Scene'}
       </span>
       <Separator className={cn(`my-0 border-base-300`)} />
-      <span className={cn(!props.description && `italic opacity-30`)}>
+      <span className={cn(!outline.description && `italic opacity-30`)}>
         <span className={cn(`font-semibold text-[#64d8b4]`)}>Description: </span>
-        {props.description || 'A short description to set the scene.'}
+        {outline.description || 'A short description to set the scene.'}
       </span>
-      <span className={cn(!props.goal && `italic opacity-30`)}>
+      <span className={cn(!outline.goal && `italic opacity-30`)}>
         <span className={cn(`font-semibold text-[#64d8b4]`)}>Goal: </span>
-        {props.goal || 'What this scene does or where it leads.'}
+        {outline.goal || 'What this scene does or where it leads.'}
       </span>
-      <span className={cn(!props.comments && `italic opacity-30`)}>
+      <span className={cn(!outline.comments && `italic opacity-30`)}>
         <span className={cn(`font-semibold text-[#64d8b4]`)}>Comments: </span>
-        {props.comments || 'Extra information to help the Simulator or Future You.'}
+        {outline.comments || 'Extra information to help the Simulator or Future You.'}
       </span>
     </Card>
   );
@@ -189,7 +190,7 @@ const Review = () => {
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
-      <InfoReview info={outline.info}></InfoReview>
+      <InfoReview outline={outline}></InfoReview>
       <LandmarksReview outline={outline}></LandmarksReview>
     </ScrollArea>
   );
