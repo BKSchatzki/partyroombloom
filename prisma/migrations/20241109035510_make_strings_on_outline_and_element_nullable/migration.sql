@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE "PRB_Elements" ALTER COLUMN "name" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "rollableSuccess" DROP NOT NULL,
+ALTER COLUMN "rollableFailure" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "PRB_Outlines" ALTER COLUMN "title" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "goal" DROP NOT NULL,
+ALTER COLUMN "comments" DROP NOT NULL;

@@ -29,7 +29,7 @@ const Info = () => {
     setOutline((outline) => ({
       ...outline,
       info: {
-        ...outline.info,
+        ...outline,
         [property]: event.target.value,
       },
     }));
@@ -58,7 +58,7 @@ const Info = () => {
             id={`title`}
             onChange={(event) => handleChange(event, 'title')}
             placeholder={`Title`}
-            value={outline.info.title}
+            value={outline.title}
           />
           <Label
             className={cn(`sr-only`)}
@@ -71,7 +71,7 @@ const Info = () => {
             id={`description`}
             onChange={(event) => handleChange(event, 'description')}
             placeholder={`Description`}
-            value={outline.info.description}
+            value={outline.description}
           />
           <Label
             className={cn(`sr-only`)}
@@ -84,7 +84,7 @@ const Info = () => {
             id={`goal`}
             onChange={(event) => handleChange(event, 'goal')}
             placeholder={`Goal`}
-            value={outline.info.goal}
+            value={outline.goal}
           />
           <Label
             className={cn(`sr-only`)}
@@ -97,7 +97,7 @@ const Info = () => {
             id={`comments`}
             onChange={(event) => handleChange(event, 'comments')}
             placeholder={`Comments`}
-            value={outline.info.comments}
+            value={outline.comments}
           />
           <Separator className={cn(`my-2 border-base-300`)} />
         </CardContent>

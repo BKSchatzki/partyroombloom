@@ -14,21 +14,54 @@ datasource db {
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  googleId        String    @unique
-  email           String    @unique
-  name            String?
-  picture         String?
-  sessions        Session[]
+  id       Int       @id @default(autoincrement())
+  googleId String    @unique
+  email    String    @unique
+  name     String?
+  picture  String?
+  sessions Session[]
+  outlines Outline[]
+  elements Element[]
 
   @@map("PRB_Users")
 }
 
 model Session {
-  id        String      @id
+  id        String   @id
   expiresAt DateTime
   userId    Int
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 
   @@map("PRB_Sessions")
+}
+
+model Outline {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String?
+  description String?
+  goal        String?
+  comments    String?
+  elements    Element[]
+
+  @@map("PRB_Outlines")
+}
+
+model Element {
+  id              String    @id
+  outlineId       Int
+  outline         Outline   @relation(fields: [outlineId], references: [id], onDelete: Cascade)
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId        String?
+  parent          Element?  @relation("Element", fields: [parentId], references: [id])
+  type            String
+  name            String?
+  description     String?
+  rollableSuccess String?
+  rollableFailure String?
+  children        Element[] @relation("Element")
+
+  @@map("PRB_Elements")
 }

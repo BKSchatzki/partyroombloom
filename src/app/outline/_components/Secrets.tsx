@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 
 import { useAtom } from 'jotai';
@@ -25,6 +27,8 @@ import { cn } from '@/lib/utils';
 
 import DeleteButton from './DeleteButton';
 import Rollable from './Rollable';
+
+(' use client');
 
 const Secrets = ({ elementId }: { elementId: string }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
@@ -64,10 +68,8 @@ const Secrets = ({ elementId }: { elementId: string }) => {
           type: 'secret',
           name: '',
           description: '',
-          rollable: {
-            success: '',
-            failure: '',
-          },
+          rollableSuccess: '',
+          rollableFailure: '',
         },
       ],
     }));

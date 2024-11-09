@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 
 import { useAtom } from 'jotai';
@@ -59,10 +61,8 @@ const Interactables = ({ elementId }: { elementId: string }) => {
           type: 'interactable',
           name: '',
           description: '',
-          rollable: {
-            success: '',
-            failure: '',
-          },
+          rollableSuccess: '',
+          rollableFailure: '',
         },
       ],
     }));
