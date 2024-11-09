@@ -25,7 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from './DeleteButton';
+import DeleteButton from '../../../components/DeleteButton';
 import Rollable from './Rollable';
 
 (' use client');
@@ -76,7 +76,11 @@ const Secrets = ({ elementId }: { elementId: string }) => {
   };
 
   return (
-    <Card className={cn(`relative mb-8 w-full bg-error/10 shadow-lg shadow-base-300`)}>
+    <Card
+      className={cn(
+        `relative mb-8 w-full bg-error/10 shadow-lg shadow-base-300 max-sm:rounded-none`
+      )}
+    >
       <CardTitle className={cn(`absolute left-1/2 top-2.5 line-clamp-1 -translate-x-1/2`)}>
         {thisElement?.name || 'Interactable'}
       </CardTitle>
@@ -88,6 +92,7 @@ const Secrets = ({ elementId }: { elementId: string }) => {
               <DeleteButton
                 first={index === 0}
                 handleDelete={() => handleDelete(element.id)}
+                item={element.name || 'this Secret'}
                 message="Delete Secret"
               />
               <CardTitle className={cn(`relative`)}>

@@ -39,7 +39,7 @@ const LandmarksContainer = () => {
   };
 
   return (
-    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
+    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
       <section
         className={cn(
           `mb-8 mt-4 flex items-center justify-center gap-4 text-primary max-sm:flex-col sm:gap-2`
@@ -68,7 +68,9 @@ const LandmarksContainer = () => {
           />
         ))}
       <Card
-        className={cn(`mx-auto mb-4 w-[99%] rounded-full bg-primary/10 shadow-xl shadow-base-300`)}
+        className={cn(
+          `mx-auto mb-4 w-[99%] rounded-full bg-primary/10 shadow-xl shadow-base-300 max-sm:w-11/12`
+        )}
       >
         <Button
           color={`ghost`}

@@ -119,3 +119,26 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
     return Response.json({ message: 'Error updating outline' }, { status: 500 });
   }
 };
+
+export const DELETE = async (req: NextRequest, { params }: { params: { outlineId: string } }) => {
+  const { user } = await validateRequest();
+  if (!user) {
+    return Response.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+  try {
+    const outlineId = parseInt(params.outlineId);
+    if (isNaN(outlineId)) {
+      return Response.json({ message: 'Invalid outline ID' }, { status: 400 });
+    }
+    const deletedOutline = await prisma.outline.delete({
+      where: {
+        id: outlineId,
+        userId: user.id,
+      },
+    });
+    return Response.json(deletedOutline, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting outline:', error);
+    return Response.json({ message: 'Error deleting outline' }, { status: 500 });
+  }
+};
