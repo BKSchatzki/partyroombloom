@@ -65,7 +65,7 @@ const Landmarks = ({ elementId }: { elementId: string }) => {
           message="Delete Landmark"
         />
       </CardHeader>
-      <CardContent className={cn(`flex flex-col gap-4`)}>
+      <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
         <Label
           className={cn(`sr-only`)}
           htmlFor={`name-${elementId}`}

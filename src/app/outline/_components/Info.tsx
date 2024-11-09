@@ -55,7 +55,7 @@ const Info = () => {
       </section>
       <Card className={cn(`bg-neutral/50 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
         <CardHeader></CardHeader>
-        <CardContent className={cn(`flex flex-col gap-4`)}>
+        <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
           <Label
             className={cn(`sr-only`)}
             htmlFor={`title`}
