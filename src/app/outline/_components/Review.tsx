@@ -161,24 +161,24 @@ const InfoReview = (props) => {
       <span
         className={cn(
           `flex w-full shrink-0 items-center gap-2 px-2 text-3xl text-[#64d8b4] max-sm:flex-col sm:basis-1/3 sm:gap-4`,
-          !props.info.title && `italic opacity-30`
+          !props.title && `italic opacity-30`
         )}
       >
         <Theater className={cn(`size-9`)} />
-        {props.info.title || 'Untitled Scene'}
+        {props.title || 'Untitled Scene'}
       </span>
       <Separator className={cn(`my-0 border-base-300`)} />
-      <span className={cn(!props.info.description && `italic opacity-30`)}>
+      <span className={cn(!props.description && `italic opacity-30`)}>
         <span className={cn(`font-semibold text-[#64d8b4]`)}>Description: </span>
-        {props.info.description || 'A short description to set the scene.'}
+        {props.description || 'A short description to set the scene.'}
       </span>
-      <span className={cn(!props.info.goal && `italic opacity-30`)}>
+      <span className={cn(!props.goal && `italic opacity-30`)}>
         <span className={cn(`font-semibold text-[#64d8b4]`)}>Goal: </span>
-        {props.info.goal || 'What this scene does or where it leads.'}
+        {props.goal || 'What this scene does or where it leads.'}
       </span>
-      <span className={cn(!props.info.comments && `italic opacity-30`)}>
+      <span className={cn(!props.comments && `italic opacity-30`)}>
         <span className={cn(`font-semibold text-[#64d8b4]`)}>Comments: </span>
-        {props.info.comments || 'Extra information to help the Simulator or Future You.'}
+        {props.comments || 'Extra information to help the Simulator or Future You.'}
       </span>
     </Card>
   );

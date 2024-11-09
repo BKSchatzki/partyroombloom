@@ -6,7 +6,17 @@ import React, {
 } from 'react';
 
 import { useAtom } from 'jotai';
+import Link from 'next/link';
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { outlinesListAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -33,23 +43,44 @@ const OutlinesList = () => {
       }
     };
     fetchOutlines();
-  }, []);
+  }, [setOutlinesList]);
 
   return (
-    <div>
+    <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 p-4`)}>
       {outlinesList.map((outline) => (
-        <div
+        <Card
           key={outline.id}
-          className={cn(`flex flex-col gap-2`)}
+          className={cn(
+            `mb-6 bg-neutral/50 shadow-xl shadow-base-300 transition-all duration-100 ease-in-out hover:brightness-125 active:scale-[98%]`
+          )}
         >
-          <span>{outline.id}</span>
-          <span>{outline.title}</span>
-          <span>{outline.description}</span>
-          <span>{outline.goal}</span>
-          <span>{outline.comments}</span>
-        </div>
+          <Link
+            href={`/outline/${outline.id}`}
+            className={cn(`flex flex-col gap-2 p-4`)}
+          >
+            <CardHeader>
+              <CardTitle
+                className={cn(`text-3xl text-[#64d8b4]`, !outline.title && `italic opacity-30`)}
+              >
+                {outline.title || 'Untitled Scene'}
+              </CardTitle>
+              <CardDescription className={cn(!outline.description && `italic opacity-30`)}>
+                {outline.description || 'A short description to set the scene.'}
+              </CardDescription>
+            </CardHeader>
+            <Separator className={cn(`my-0 border-base-300`)} />
+            <CardContent className={cn(`flex flex-col gap-4 pb-0`)}>
+              <span className={cn(!outline.goal && `italic opacity-30`)}>
+                {outline.goal || 'What this scene does or where it leads.'}
+              </span>
+              <span className={cn(!outline.comments && `italic opacity-30`)}>
+                {outline.comments || 'Extra information to help the Simulator or Future You.'}
+              </span>
+            </CardContent>
+          </Link>
+        </Card>
       ))}
-    </div>
+    </ScrollArea>
   );
 };
 
