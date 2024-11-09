@@ -88,6 +88,14 @@ const OutlinesList = () => {
     );
   }
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 p-4`)}>
       {outlinesList.map((outline) => (
