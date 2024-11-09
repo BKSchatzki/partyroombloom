@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { Save } from 'lucide-react';
-import router from 'next/router';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,9 +26,35 @@ import LandmarksContainer from './LandmarksContainer';
 import Review from './Review';
 import SecretsContainer from './SecretsContainer';
 
-const Builder = () => {
+const Builder = ({ outlineId }: { outlineId: number | null }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOutline = async () => {
+      if (!outlineId) {
+        setIsLoading(false);
+        return;
+      }
+      try {
+        const response = await fetch(`/api/outline/${outlineId}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch outline: ${response.status}`);
+        }
+        const data = await response.json();
+        setOutline(data);
+      } catch (error) {
+        setError(
+          error instanceof Error ? error.message : 'An error occurred while fetching the outline.'
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchOutline();
+  }, [outlineId, setOutline]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -49,6 +77,14 @@ const Builder = () => {
       setIsSaving(false);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <Carousel className={cn(`h-full max-w-full`)}>

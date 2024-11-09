@@ -7,7 +7,7 @@ import Builder from './_components/Builder';
 const Outline = () => {
   return (
     <Container>
-      <Builder />
+      <Builder outlineId={null} />
     </Container>
   );
 };
