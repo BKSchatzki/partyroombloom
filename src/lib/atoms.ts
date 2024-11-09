@@ -1,26 +1,9 @@
 import { atomWithStorage } from 'jotai/utils';
 
-type Outline = {
-  info: {
-    title: string;
-    description: string;
-    goal: string;
-    comments: string;
-  };
-  elements: Element[];
-};
-
-type Element = {
-  id: string;
-  parentId: string | null;
-  type: 'landmark' | 'interactable' | 'secret';
-  name: string;
-  description: string;
-  rollableSuccess: string;
-  rollableFailure: string;
-};
+import type { Outline } from './types';
 
 const outlineInit: Outline = {
+  id: null,
   info: {
     title: '',
     description: '',
