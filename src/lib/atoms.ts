@@ -16,10 +16,8 @@ type Element = {
   type: 'landmark' | 'interactable' | 'secret';
   name: string;
   description: string;
-  rollable: {
-    success: string;
-    failure: string;
-  };
+  rollableSuccess: string;
+  rollableFailure: string;
 };
 
 const outlineInit: Outline = {

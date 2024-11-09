@@ -59,10 +59,8 @@ const Interactables = ({ elementId }: { elementId: string }) => {
           type: 'interactable',
           name: '',
           description: '',
-          rollable: {
-            success: '',
-            failure: '',
-          },
+          rollableSuccess: '',
+          rollableFailure: '',
         },
       ],
     }));

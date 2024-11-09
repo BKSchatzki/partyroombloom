@@ -51,26 +51,26 @@ const SecretsReview = (props) => {
               <span
                 className={cn(
                   `flex items-center gap-2 text-warning`,
-                  !secret.rollable.success && `italic opacity-30`
+                  !secret.rollableSuccess && `italic opacity-30`
                 )}
               >
                 <ThumbsUp className={cn(`size-4`)} />
                 Success
               </span>
-              <span className={cn(!secret.rollable.success && `italic opacity-30`)}>
-                {secret.rollable.success || 'Outcome of a successful roll.'}
+              <span className={cn(!secret.rollableSuccess && `italic opacity-30`)}>
+                {secret.rollableSuccess || 'Outcome of a successful roll.'}
               </span>
               <span
                 className={cn(
                   `flex items-center gap-2 text-warning`,
-                  !secret.rollable.failure && `italic opacity-30`
+                  !secret.rollableFailure && `italic opacity-30`
                 )}
               >
                 <ThumbsDown className={cn(`size-4`)} />
                 Failure
               </span>
-              <span className={cn(!secret.rollable.failure && `italic opacity-30`)}>
-                {secret.rollable.failure || 'Outcome of a failed roll.'}
+              <span className={cn(!secret.rollableFailure && `italic opacity-30`)}>
+                {secret.rollableFailure || 'Outcome of a failed roll.'}
               </span>
             </Card>
           </Card>

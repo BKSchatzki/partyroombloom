@@ -64,10 +64,8 @@ const Secrets = ({ elementId }: { elementId: string }) => {
           type: 'secret',
           name: '',
           description: '',
-          rollable: {
-            success: '',
-            failure: '',
-          },
+          rollableSuccess: '',
+          rollableFailure: '',
         },
       ],
     }));

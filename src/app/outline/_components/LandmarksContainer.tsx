@@ -3,7 +3,10 @@
 import React from 'react';
 
 import { useAtom } from 'jotai';
-import { Plus, Pyramid } from 'lucide-react';
+import {
+  Plus,
+  Pyramid,
+} from 'lucide-react';
 import { v7 } from 'uuid';
 
 import { Button } from '@/components/ui/button';
@@ -28,10 +31,8 @@ const LandmarksContainer = () => {
           type: 'landmark',
           name: '',
           description: '',
-          rollable: {
-            success: '',
-            failure: '',
-          },
+          rollableSuccess: '',
+          rollableFailure: '',
         },
       ],
     }));

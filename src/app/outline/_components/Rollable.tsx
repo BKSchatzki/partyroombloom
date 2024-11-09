@@ -24,10 +24,7 @@ const Rollable = ({ elementId }: { elementId: string }) => {
         element.id === thisElement.id
           ? {
               ...element,
-              rollable: {
-                ...element.rollable,
-                [property]: event.target.value,
-              },
+              [property]: event.target.value,
             }
           : element
       ),
@@ -46,9 +43,9 @@ const Rollable = ({ elementId }: { elementId: string }) => {
         <Textarea
           className={cn(`no-scrollbar`)}
           id={`success-${elementId}`}
-          onChange={(event) => handleChange(event, 'success')}
+          onChange={(event) => handleChange(event, 'rollableSuccess')}
           placeholder={`Success`}
-          value={thisElement?.rollable.success}
+          value={thisElement?.rollableSuccess}
         />
         <Label
           className={cn(`sr-only`)}
@@ -59,9 +56,9 @@ const Rollable = ({ elementId }: { elementId: string }) => {
         <Textarea
           className={cn(`no-scrollbar`)}
           id={`failure-${elementId}`}
-          onChange={(event) => handleChange(event, 'failure')}
+          onChange={(event) => handleChange(event, 'rollableFailure')}
           placeholder={`Failure`}
-          value={thisElement?.rollable.failure}
+          value={thisElement?.rollableFailure}
         />
       </CardContent>
     </Card>
