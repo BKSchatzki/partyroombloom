@@ -25,7 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from './DeleteButton';
+import DeleteButton from '../../../components/DeleteButton';
 import Rollable from './Rollable';
 
 (' use client');
@@ -88,6 +88,7 @@ const Secrets = ({ elementId }: { elementId: string }) => {
               <DeleteButton
                 first={index === 0}
                 handleDelete={() => handleDelete(element.id)}
+                item={element.name || 'this Secret'}
                 message="Delete Secret"
               />
               <CardTitle className={cn(`relative`)}>

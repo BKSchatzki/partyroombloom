@@ -15,7 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from './DeleteButton';
+import DeleteButton from '../../../components/DeleteButton';
 
 const Landmarks = ({ elementId }: { elementId: string }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
@@ -61,6 +61,7 @@ const Landmarks = ({ elementId }: { elementId: string }) => {
         <DeleteButton
           first={true}
           handleDelete={handleDelete}
+          item={thisElement?.name || 'this Landmark'}
           message="Delete Landmark"
         />
       </CardHeader>

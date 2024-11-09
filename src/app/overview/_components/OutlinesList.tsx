@@ -8,6 +8,7 @@ import React, {
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 
+import DeleteButton from '@/components/DeleteButton';
 import {
   Card,
   CardContent,
@@ -45,15 +46,38 @@ const OutlinesList = () => {
     fetchOutlines();
   }, [setOutlinesList]);
 
+  const handleDelete = async (outlineId: number) => {
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/outline/${outlineId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      setOutlinesList(outlinesList.filter((outline) => outline.id !== outlineId));
+    } catch (error) {
+      console.error('Error deleting outline:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 p-4`)}>
       {outlinesList.map((outline) => (
         <Card
           key={outline.id}
           className={cn(
-            `mb-6 bg-neutral/50 shadow-xl shadow-base-300 transition-all duration-100 ease-in-out hover:brightness-125 active:scale-[98%]`
+            `relative mb-6 bg-neutral/50 shadow-xl shadow-base-300 transition-all duration-100 ease-in-out hover:brightness-125`
           )}
         >
+          <DeleteButton
+            first={true}
+            handleDelete={() => handleDelete(outline.id as number)}
+            item={outline.title}
+            message={`Delete Outline ${outline.title}`}
+          />
           <Link
             href={`/outline/${outline.id}`}
             className={cn(`flex flex-col gap-2 p-4`)}
@@ -69,7 +93,7 @@ const OutlinesList = () => {
               </CardDescription>
             </CardHeader>
             <Separator className={cn(`my-0 border-base-300`)} />
-            <CardContent className={cn(`flex flex-col gap-4 pb-0`)}>
+            <CardContent className={cn(`flex flex-col gap-4`)}>
               <span className={cn(!outline.goal && `italic opacity-30`)}>
                 {outline.goal || 'What this scene does or where it leads.'}
               </span>

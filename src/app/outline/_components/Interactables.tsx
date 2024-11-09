@@ -21,7 +21,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from './DeleteButton';
+import DeleteButton from '../../../components/DeleteButton';
 
 const Interactables = ({ elementId }: { elementId: string }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
@@ -83,6 +83,7 @@ const Interactables = ({ elementId }: { elementId: string }) => {
               <DeleteButton
                 first={index === 0}
                 handleDelete={() => handleDelete(element.id)}
+                item={element.name || 'this Interactable'}
                 message="Delete Interactable"
               />
               <CardTitle className={cn(`relative`)}>
