@@ -81,7 +81,7 @@ const Secrets = ({ elementId }: { elementId: string }) => {
         `relative mb-8 w-full bg-error/10 shadow-lg shadow-base-300 max-sm:rounded-none`
       )}
     >
-      <CardTitle className={cn(`absolute left-1/2 top-2.5 line-clamp-1 -translate-x-1/2`)}>
+      <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Interactable'}
       </CardTitle>
       {outline.elements
@@ -105,7 +105,7 @@ const Secrets = ({ elementId }: { elementId: string }) => {
                 </div>
               </CardTitle>
             </CardHeader>
-            <CardContent className={cn(`flex flex-col gap-4`)}>
+            <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
               <Label
                 className={cn(`sr-only`)}
                 htmlFor={`name-${element.id}`}
@@ -132,7 +132,9 @@ const Secrets = ({ elementId }: { elementId: string }) => {
                 placeholder={`Description`}
                 value={element.description}
               />
-              <Rollable elementId={element.id} />
+              <div className={cn(`max-sm:mx-[-0.5rem]`)}>
+                <Rollable elementId={element.id} />
+              </div>
             </CardContent>
             <Separator className={cn(`my-2 mb-0`)} />
           </div>

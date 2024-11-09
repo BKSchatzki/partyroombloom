@@ -34,8 +34,8 @@ const Rollable = ({ elementId }: { elementId: string }) => {
   };
 
   return (
-    <Card className={cn(`w-full bg-warning/10 shadow-xl shadow-base-300`)}>
-      <CardContent className={cn(`flex flex-col gap-4 pt-4`)}>
+    <Card className={cn(`w-full bg-warning/10 shadow-lg shadow-base-200 max-sm:rounded-none`)}>
+      <CardContent className={cn(`flex flex-col gap-4 pt-4 max-sm:px-2`)}>
         <Label
           className={cn(`sr-only`)}
           htmlFor={`success-${elementId}`}

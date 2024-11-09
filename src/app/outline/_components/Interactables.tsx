@@ -74,7 +74,7 @@ const Interactables = ({ elementId }: { elementId: string }) => {
         `relative mb-8 w-full bg-info/10 shadow-lg shadow-base-300 max-sm:rounded-none`
       )}
     >
-      <CardTitle className={cn(`absolute left-1/2 top-2.5 line-clamp-1 -translate-x-1/2`)}>
+      <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Landmark'}
       </CardTitle>
       {outline.elements
@@ -100,7 +100,7 @@ const Interactables = ({ elementId }: { elementId: string }) => {
                 </div>
               </CardTitle>
             </CardHeader>
-            <CardContent className={cn(`flex flex-col gap-4`)}>
+            <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
               <Label
                 className={cn(`sr-only`)}
                 htmlFor={`name-${element.id}`}
