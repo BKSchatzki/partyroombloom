@@ -18,7 +18,10 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  outlineAtom,
+  outlinesListAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import Info from './Info';
@@ -29,6 +32,7 @@ import SecretsContainer from './SecretsContainer';
 
 const Builder = ({ outlineId }: { outlineId: number | null }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
+  const [outlinesList] = useAtom(outlinesListAtom);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +53,12 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
         });
         return;
       }
+      const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
+      if (preloadedOutline) {
+        setOutline(preloadedOutline);
+        setIsLoading(false);
+        return;
+      }
       try {
         const response = await fetch(`/api/outline/${outlineId}`);
         if (!response.ok) {
@@ -65,7 +75,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
       }
     };
     fetchOutline();
-  }, [outlineId, setOutline]);
+  }, [outlineId, setOutline, outlinesList]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -145,11 +155,12 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
           <Button
             onClick={handleSave}
             color={`secondary`}
+            disabled={isSaving}
             outlined={true}
             className={cn(`absolute bottom-0 right-20 flex items-center gap-2`)}
           >
             <Save className={cn(`size-5`)} />
-            Save Outline
+            {isSaving ? `Saving...` : `Save Outline`}
           </Button>
         </div>
       </div>

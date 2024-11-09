@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -37,18 +38,15 @@ const DeleteButton = ({
     >
       <Dialog>
         <DialogTrigger>
-          <Button
+          <div
             className={cn(
-              `rounded-bl-xl rounded-br-none rounded-tl-none`,
+              `btn btn-outline btn-error btn-sm rounded-bl-xl rounded-br-none rounded-tl-none`,
               first ? 'rounded-tr-xl max-sm:rounded-tr-none' : 'rounded-tr-none'
             )}
-            color={`error`}
-            outlined={true}
-            size={`sm`}
           >
             <X className={cn(`size-5`)} />
             <span className={cn(`sr-only`)}>{message}</span>
-          </Button>
+          </div>
         </DialogTrigger>
         <DialogContent className={cn(`bg-base-200 border-none text-base-content`)}>
           <DialogHeader>
@@ -58,7 +56,7 @@ const DeleteButton = ({
               of it.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className={cn(`gap-2`)}>
             <Button
               color={`error`}
               onClick={handleDelete}
@@ -66,6 +64,9 @@ const DeleteButton = ({
             >
               Confirm Delete
             </Button>
+            <DialogClose asChild>
+              <Button>Cancel</Button>
+            </DialogClose>
           </DialogFooter>
         </DialogContent>
       </Dialog>

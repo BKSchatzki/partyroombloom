@@ -55,7 +55,7 @@ model Element {
   userId          Int
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   parentId        String?
-  parent          Element?  @relation("Element", fields: [parentId], references: [id])
+  parent          Element?  @relation("Element", fields: [parentId], references: [id], onDelete: Cascade)
   type            String
   name            String?
   description     String?
