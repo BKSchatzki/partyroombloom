@@ -30,10 +30,7 @@ const Info = () => {
   ) => {
     setOutline((outline) => ({
       ...outline,
-      info: {
-        ...outline,
-        [property]: event.target.value,
-      },
+      [property]: event.target.value,
     }));
   };
 
