@@ -36,6 +36,16 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
     const fetchOutline = async () => {
       if (!outlineId) {
         setIsLoading(false);
+        setOutline({
+          id: null,
+          info: {
+            title: '',
+            description: '',
+            goal: '',
+            comments: '',
+          },
+          elements: [],
+        });
         return;
       }
       try {
