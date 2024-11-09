@@ -1,8 +1,3 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react';
-
 import { redirect } from 'next/navigation';
 
 import Container from '@/components/Container';

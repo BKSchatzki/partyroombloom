@@ -31,15 +31,12 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
     }
     const formattedOutline: Outline = {
       id: outline.id,
-      info: {
-        title: outline.title ?? '',
-        description: outline.description ?? '',
-        goal: outline.goal ?? '',
-        comments: outline.comments ?? '',
-      },
+      title: outline.title ?? '',
+      description: outline.description ?? '',
+      goal: outline.goal ?? '',
+      comments: outline.comments ?? '',
       elements: outline.elements.map((element) => ({
         id: element.id,
-        outlineId: element.outlineId,
         parentId: element.parentId,
         type: element.type as 'landmark' | 'interactable' | 'secret',
         name: element.name ?? '',
@@ -73,10 +70,10 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
         userId: user.id,
       },
       data: {
-        title: outline.info.title ?? '',
-        description: outline.info.description ?? '',
-        goal: outline.info.goal ?? '',
-        comments: outline.info.comments ?? '',
+        title: outline.title ?? '',
+        description: outline.description ?? '',
+        goal: outline.goal ?? '',
+        comments: outline.comments ?? '',
       },
     });
     const landmarks = outline.elements.filter((element) => element.type === 'landmark');

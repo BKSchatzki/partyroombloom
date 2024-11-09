@@ -41,12 +41,10 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
         setIsLoading(false);
         setOutline({
           id: null,
-          info: {
-            title: '',
-            description: '',
-            goal: '',
-            comments: '',
-          },
+          title: '',
+          description: '',
+          goal: '',
+          comments: '',
           elements: [],
         });
         return;

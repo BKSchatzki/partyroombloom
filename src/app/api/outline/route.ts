@@ -7,6 +7,42 @@ import {
   Outline,
 } from '@/lib/types';
 
+export const GET = async (req: NextRequest) => {
+  const { user } = await validateRequest();
+  if (!user) {
+    return Response.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+  try {
+    const outlines = await prisma.outline.findMany({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        elements: true,
+      },
+    });
+    const formattedOutlinesList = outlines.map((outline) => ({
+      id: outline.id,
+      title: outline.title ?? '',
+      description: outline.description ?? '',
+      goal: outline.goal ?? '',
+      comments: outline.comments ?? '',
+      elements: outline.elements.map((element) => ({
+        id: element.id,
+        parentId: element.parentId,
+        type: element.type,
+        name: element.name ?? '',
+        description: element.description ?? '',
+        rollableSuccess: element.rollableSuccess ?? '',
+        rollableFailure: element.rollableFailure ?? '',
+      })),
+    }));
+    return Response.json(formattedOutlinesList, { status: 200 });
+  } catch (error) {
+    return Response.json({ message: 'Error fetching outlines' }, { status: 500 });
+  }
+};
+
 export const POST = async (req: NextRequest) => {
   const { user } = await validateRequest();
   if (!user) {
@@ -18,10 +54,10 @@ export const POST = async (req: NextRequest) => {
     const createdOutline = await prisma.outline.create({
       data: {
         userId: user.id,
-        title: outline.info.title ?? '',
-        description: outline.info.description ?? '',
-        goal: outline.info.goal ?? '',
-        comments: outline.info.comments ?? '',
+        title: outline.title ?? '',
+        description: outline.description ?? '',
+        goal: outline.goal ?? '',
+        comments: outline.comments ?? '',
       },
     });
     const elementPromises = outline.elements.map((element: Element) =>
