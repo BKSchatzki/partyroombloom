@@ -1,24 +1,16 @@
 'use client';
 
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { outlinesListAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -64,6 +56,26 @@ const OutlinesList = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className={cn(`flex h-full w-full flex-col gap-4 p-4`)}>
+        <Skeleton className={cn(`flex h-80 w-full flex-col items-center justify-center`)}>
+          <span className="loading loading-spinner loading-lg"></span>
+        </Skeleton>
+        <Skeleton className={cn(`flex h-80 w-full flex-col items-center justify-center`)}>
+          <span className="loading loading-spinner loading-lg"></span>
+        </Skeleton>
+        <Skeleton className={cn(`flex h-80 w-full flex-col items-center justify-center`)}>
+          <span className="loading loading-spinner loading-lg"></span>
+        </Skeleton>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   if (outlinesList.length === 0) {
     return (
       <div className={cn(`flex h-full w-full flex-col items-center justify-center p-4`)}>
@@ -86,14 +98,6 @@ const OutlinesList = () => {
         </Card>
       </div>
     );
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
   }
 
   return (
