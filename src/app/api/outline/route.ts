@@ -15,7 +15,11 @@ export const GET = async (req: NextRequest) => {
         userId: user.id,
       },
       include: {
-        elements: true,
+        elements: {
+          orderBy: {
+            userCreatedAt: 'asc',
+          },
+        },
       },
       orderBy: {
         updatedAt: 'desc',
