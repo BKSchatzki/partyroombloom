@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { Save } from 'lucide-react';
@@ -18,10 +15,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  outlineAtom,
-  outlinesListAtom,
-} from '@/lib/atoms';
+import { outlineAtom, outlinesListAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import Info from './Info';
@@ -119,10 +113,6 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -133,7 +123,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
         <CarouselContent>
           <CarouselItem className={cn(`basis-full py-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
-              <Info />
+              <Info isLoading={isLoading} />
             </ScrollArea>
           </CarouselItem>
           <CarouselItem className={cn(`basis-full py-4`)}>
