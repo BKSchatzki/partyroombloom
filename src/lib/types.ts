@@ -15,4 +15,5 @@ export type Element = {
   description?: string;
   rollableSuccess?: string;
   rollableFailure?: string;
+  userCreatedAt: string;
 };

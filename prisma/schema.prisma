@@ -14,14 +14,16 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  googleId String    @unique
-  email    String    @unique
-  name     String?
-  picture  String?
-  sessions Session[]
-  outlines Outline[]
-  elements Element[]
+  id        Int       @id @default(autoincrement())
+  googleId  String    @unique
+  email     String    @unique
+  name      String?
+  picture   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt @default(now())
+  sessions  Session[]
+  outlines  Outline[]
+  elements  Element[]
 
   @@map("PRB_Users")
 }
@@ -29,6 +31,7 @@ model User {
 model Session {
   id        String   @id
   expiresAt DateTime
+  createdAt DateTime @default(now())
   userId    Int
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 
@@ -43,6 +46,8 @@ model Outline {
   description String?
   goal        String?
   comments    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt @default(now())
   elements    Element[]
 
   @@map("PRB_Outlines")
@@ -61,6 +66,9 @@ model Element {
   description     String?
   rollableSuccess String?
   rollableFailure String?
+  userCreatedAt   DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt @default(now())
   children        Element[] @relation("Element")
 
   @@map("PRB_Elements")

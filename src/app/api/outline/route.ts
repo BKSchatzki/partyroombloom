@@ -2,10 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import {
-  Element,
-  Outline,
-} from '@/lib/types';
+import { Element, Outline } from '@/lib/types';
 
 export const GET = async (req: NextRequest) => {
   const { user } = await validateRequest();
@@ -19,6 +16,9 @@ export const GET = async (req: NextRequest) => {
       },
       include: {
         elements: true,
+      },
+      orderBy: {
+        updatedAt: 'desc',
       },
     });
     const formattedOutlinesList = outlines.map((outline) => ({
@@ -35,6 +35,7 @@ export const GET = async (req: NextRequest) => {
         description: element.description ?? '',
         rollableSuccess: element.rollableSuccess ?? '',
         rollableFailure: element.rollableFailure ?? '',
+        userCreatedAt: element.userCreatedAt.toISOString(),
       })),
     }));
     return Response.json(formattedOutlinesList, { status: 200 });
@@ -72,6 +73,7 @@ export const POST = async (req: NextRequest) => {
           description: element.description ?? '',
           rollableSuccess: element.rollableSuccess ?? '',
           rollableFailure: element.rollableFailure ?? '',
+          userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
         },
       })
     );
