@@ -8,7 +8,7 @@ import type {
 
 const outlinesListInit: Outline[] = [];
 
-const outlineInit: Outline = {
+export const outlineInit: Outline = {
   id: null,
   title: '',
   description: '',
@@ -19,4 +19,4 @@ const outlineInit: Outline = {
 
 export const outlineAtom = atomWithStorage<Outline>('outline', outlineInit);
 export const outlinesListAtom = atomWithStorage('outlinesList', outlinesListInit);
-export const conversationAtom = atom<Conversation>([]);
+export const conversationAtom = atomWithStorage<Conversation>('conversation', []);

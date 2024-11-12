@@ -1,43 +1,49 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { outlinesListAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 const OutlinesList = () => {
   const [outlinesList, setOutlinesList] = useAtom<Outline[]>(outlinesListAtom);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchOutlines = async () => {
-      try {
-        const response = await fetch('/api/outline');
-        if (!response.ok) {
-          throw new Error(`Failed to fetch outlines: ${response.status}`);
-        }
-        const data = await response.json();
-        setOutlinesList(data);
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'An error occurred.');
-      } finally {
-        setIsLoading(false);
+  const queryClient = useQueryClient();
+
+  const { isLoading, error } = useQuery({
+    queryKey: ['outlinesList'],
+    queryFn: async () => {
+      const response = await fetch('/api/outline');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch outlines: ${response.status}`);
       }
-    };
-    fetchOutlines();
-  }, [setOutlinesList]);
+      const data = await response.json();
+      setOutlinesList(data);
+      return data;
+    },
+  });
 
   const handleDelete = async (outlineId: number) => {
     setIsSaving(true);
@@ -56,6 +62,13 @@ const OutlinesList = () => {
     }
   };
 
+  const mutation = useMutation({
+    mutationFn: handleDelete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['outlinesList'] });
+    },
+  });
+
   if (isLoading) {
     return (
       <div className={cn(`flex h-full w-full flex-col gap-4 p-4`)}>
@@ -73,7 +86,7 @@ const OutlinesList = () => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {JSON.stringify(error)}</div>;
   }
 
   if (outlinesList.length === 0) {

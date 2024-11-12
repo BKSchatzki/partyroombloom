@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import Nav from '@/components/Nav';
+import Providers from '@/components/Providers';
 import { validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
@@ -24,16 +25,18 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className)}>
-        <div className={cn(`grid h-screen grid-rows-[auto,1fr] text-base-content`)}>
-          <Nav user={user} />
-          <main
-            className={cn(
-              `no-scrollbar bg-base-200 flex flex-col items-center justify-start overflow-y-scroll`
-            )}
-          >
-            {children}
-          </main>
-        </div>
+        <Providers>
+          <div className={cn(`grid h-screen grid-rows-[auto,1fr] text-base-content`)}>
+            <Nav user={user} />
+            <main
+              className={cn(
+                `no-scrollbar bg-base-200 flex flex-col items-center justify-start overflow-y-scroll`
+              )}
+            >
+              {children}
+            </main>
+          </div>
+        </Providers>
       </body>
     </html>
   );
