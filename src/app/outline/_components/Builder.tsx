@@ -91,7 +91,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
           throw new Error(`Error: ${response.status}`);
         }
         const data = await response.json();
-        router.push(`/outline/${data.id}`);
+        router.push(`/overview`);
       } catch (error) {
         console.error('Error saving outline:', error);
       } finally {
