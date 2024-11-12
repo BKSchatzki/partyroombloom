@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import { useAtom } from 'jotai';
 
 import {
@@ -27,9 +25,8 @@ import ChatOptions from './ChatOptions';
 const Chat = () => {
   const [outline] = useAtom(outlineAtom);
   const [conversation, setConversation] = useAtom(conversationAtom);
-  const [isSaving, setIsSaving] = useState(false);
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error } = useQuery({
     queryKey: ['conversation'],
     queryFn: async () => {
       if (conversation.length) {

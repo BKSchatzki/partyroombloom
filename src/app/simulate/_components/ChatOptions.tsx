@@ -3,7 +3,6 @@
 import React from 'react';
 
 import { Dices } from 'lucide-react';
-import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Label } from '@/components/ui/label';
@@ -21,7 +20,6 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { mockStructuredChat } from '@/mock/mockStructuredChat';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 const ChatOptions = ({
   prompt,
@@ -34,53 +32,13 @@ const ChatOptions = ({
   index: number;
   disabled: boolean;
 }) => {
-  const ChatOptionsSchema = z
-    .object({
-      choice: z.string(),
-      comments: z.string().optional(),
-      rollResult: z.number().nullable().optional(),
-    })
-    .refine(
-      (data) => {
-        if (data.choice === 'I just have some thoughts.' && !data.comments) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: 'Comments are required when the default choice is selected.',
-        path: ['comments'],
-      }
-    )
-    .refine(
-      (data) => {
-        if (
-          data.choice !== 'I just have some thoughts.' &&
-          !data.rollResult &&
-          options.find((option) => option.description === data.choice && option.roll)
-        ) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: 'Roll result is required for the selected option.',
-        path: ['rollResult'],
-      }
-    );
-
-  const form = useForm({
-    resolver: zodResolver(ChatOptionsSchema),
-    defaultValues: {
-      choice: `I just have some thoughts.`,
-      comments: '',
-      rollResult: null,
-    },
-  });
-
   const rolls = [
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-    26, 27, 28, 29, 30,
+    'Critical Failure',
+    'Normal Failure',
+    'Close Failure',
+    'Close Success',
+    'Normal Success',
+    'Critical Success',
   ];
 
   return (

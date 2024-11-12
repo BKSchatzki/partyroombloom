@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -20,17 +18,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { outlinesListAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const OutlinesList = () => {
   const [outlinesList, setOutlinesList] = useAtom<Outline[]>(outlinesListAtom);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const queryClient = useQueryClient();
 
   const { isLoading, error } = useQuery({
     queryKey: ['outlinesList'],
@@ -46,7 +37,6 @@ const OutlinesList = () => {
   });
 
   const handleDelete = async (outlineId: number) => {
-    setIsSaving(true);
     try {
       const response = await fetch(`/api/outline/${outlineId}`, {
         method: 'DELETE',
@@ -57,17 +47,8 @@ const OutlinesList = () => {
       setOutlinesList(outlinesList.filter((outline) => outline.id !== outlineId));
     } catch (error) {
       console.error('Error deleting outline:', error);
-    } finally {
-      setIsSaving(false);
     }
   };
-
-  const mutation = useMutation({
-    mutationFn: handleDelete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['outlinesList'] });
-    },
-  });
 
   if (isLoading) {
     return (

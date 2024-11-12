@@ -59,26 +59,3 @@ export type AssistantMessage = BaseMessage & {
 export type Message = SystemMessage | UserMessage | AssistantMessage;
 
 export type Conversation = Message[];
-
-// export type Message = {
-//   role: 'system' | 'user' | 'assistant';
-//   content: {
-//     headline?: string;
-//     narration?: string[];
-//     prompt?: string;
-//     options: Array<{
-//       description?: string;
-//       roll: boolean | null;
-//     }>;
-//     choice?: string;
-//     comments?: string;
-//     rollResult:
-//       | 'Critical Failure'
-//       | 'Normal Failure'
-//       | 'Close Failure'
-//       | 'Close Success'
-//       | 'Normal Success'
-//       | 'Critical Success'
-//       | null;
-//   };
-// };
