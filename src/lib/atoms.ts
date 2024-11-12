@@ -1,6 +1,10 @@
+import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-import type { Outline } from './types';
+import type {
+  Conversation,
+  Outline,
+} from './types';
 
 const outlinesListInit: Outline[] = [];
 
@@ -13,5 +17,6 @@ const outlineInit: Outline = {
   elements: [],
 };
 
-export const outlineAtom = atomWithStorage('outline', outlineInit);
+export const outlineAtom = atomWithStorage<Outline>('outline', outlineInit);
 export const outlinesListAtom = atomWithStorage('outlinesList', outlinesListInit);
+export const conversationAtom = atom<Conversation>([]);
