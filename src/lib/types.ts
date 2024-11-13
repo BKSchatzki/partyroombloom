@@ -27,7 +27,7 @@ type SystemMessage = BaseMessage & {
   content: string;
 };
 
-type UserMessage = BaseMessage & {
+export type UserMessage = BaseMessage & {
   role: 'user';
   content: {
     choice: string;
