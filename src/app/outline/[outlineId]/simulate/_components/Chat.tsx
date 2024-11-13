@@ -22,7 +22,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import ChatOptions from './ChatOptions';
 
-const Chat = () => {
+const Chat = ({ outlineId }: { outlineId: string }) => {
   const [outline] = useAtom(outlineAtom);
   const [conversation, setConversation] = useAtom(conversationAtom);
 

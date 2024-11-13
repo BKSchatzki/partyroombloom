@@ -4,10 +4,7 @@ import { useAtom } from 'jotai';
 import {
   Leaf,
   Pencil,
-  Plus,
   Sparkle,
-  Theater,
-  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -68,7 +65,7 @@ const OutlinesList = () => {
     <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 pt-4 sm:px-4`)}>
       <Link
         href={`/outline`}
-        className={cn(`mb-4 block h-full w-full`)}
+        className={cn(`mb-4 block h-full w-full px-4`)}
       >
         <Card
           className={cn(
@@ -100,10 +97,10 @@ const OutlinesList = () => {
                 key={outline.id}
                 value={`${outline.id}`}
               >
-                <AccordionTrigger iconSize={9}>
+                <AccordionTrigger iconSize={7}>
                   <span
                     className={cn(
-                      `flex w-full shrink-0 gap-2 text-balance p-4 text-3xl text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:basis-1/3 sm:gap-4`,
+                      `flex w-full shrink-0 gap-2 text-balance p-4 text-2xl text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:basis-1/3 sm:gap-4`,
                       !outline.title && `italic opacity-30`
                     )}
                   >
@@ -148,7 +145,7 @@ const OutlinesList = () => {
                       </Button>
                     </Link>
                     <Link
-                      href={`/outline/${outline.id}`}
+                      href={`/outline/${outline.id}/simulate`}
                       className={cn(`col-span-12 sm:col-span-4`)}
                     >
                       <Button

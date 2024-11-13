@@ -139,7 +139,7 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
             )}
           >
             <AccordionItem value={`${landmark.id}`}>
-              <AccordionTrigger iconSize={7}>
+              <AccordionTrigger iconSize={6}>
                 <div className={cn(`flex flex-col gap-2 p-4 hover:brightness-125`)}>
                   <span
                     className={cn(

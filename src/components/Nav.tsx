@@ -58,7 +58,7 @@ const Nav = ({ user }: { user: User | null }) => {
                 </Button>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href={`/outline`}>
                 <Button
                   color={`secondary`}
@@ -81,7 +81,7 @@ const Nav = ({ user }: { user: User | null }) => {
                   Simulate
                 </Button>
               </Link>
-            </li>
+            </li> */}
             <li>
               <SignOut />
             </li>
@@ -109,7 +109,7 @@ const Nav = ({ user }: { user: User | null }) => {
                   </Link>
                 </li>
                 <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} />
-                <li>
+                {/* <li>
                   <Link href={`/outline`}>
                     <DrawerClose
                       className={cn(
@@ -134,7 +134,7 @@ const Nav = ({ user }: { user: User | null }) => {
                     </DrawerClose>
                   </Link>
                 </li>
-                <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} />
+                <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} /> */}
                 <li>
                   <SignOut classProps={'btn-wide'} />
                 </li>
