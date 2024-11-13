@@ -145,7 +145,7 @@ const OutlinesList = () => {
                       </Button>
                     </Link>
                     <Link
-                      href={`/outline/${outline.id}`}
+                      href={`/simulate`}
                       className={cn(`col-span-12 sm:col-span-4`)}
                     >
                       <Button
