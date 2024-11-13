@@ -22,7 +22,7 @@ type BaseMessage = {
   role: 'system' | 'user' | 'assistant';
 };
 
-type SystemMessage = BaseMessage & {
+export type SystemMessage = BaseMessage & {
   role: 'system';
   content: string;
 };
@@ -33,12 +33,12 @@ export type UserMessage = BaseMessage & {
     choice: string;
     comments?: string;
     rollResult:
-      | 'Critical Failure'
-      | 'Normal Failure'
-      | 'Close Failure'
-      | 'Close Success'
-      | 'Normal Success'
       | 'Critical Success'
+      | 'Normal Success'
+      | 'Close Success'
+      | 'Close Failure'
+      | 'Normal Failure'
+      | 'Critical Failure'
       | null;
   };
 };
@@ -51,7 +51,7 @@ export type AssistantMessage = BaseMessage & {
     prompt?: string;
     options: Array<{
       description?: string;
-      roll: boolean | null;
+      roll: boolean;
     }>;
   };
 };

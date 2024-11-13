@@ -6,45 +6,57 @@ import { DungeonMasterResponseSchema } from './schemas';
 import {
   Conversation,
   Outline,
+  SystemMessage,
+  UserMessage,
 } from './types';
 
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const convertToOpenAIMessages = (messages: Conversation) => {
-  return messages.map((message) => {
-    if (message.role === 'user' || message.role === 'system') {
-      return {
-        role: message.role,
-        content:
-          typeof message.content === 'string' ? message.content : JSON.stringify(message.content),
-      };
-    }
-    return {
-      role: 'assistant',
-      content: JSON.stringify(message.content),
-    };
-  });
-};
-
-export const getStructuredResponse = async (input: Outline, conversation: Conversation) => {
-  const initialSystemPrompt = {
+export const getStructuredResponse = async (
+  input: Outline | UserMessage['content'],
+  conversation: Conversation
+) => {
+  const initialSystemPrompt: SystemMessage = {
     role: 'system',
     content: simulateOutlinePrompt,
   };
+
   const userMessage = {
     role: 'user',
-    content: JSON.stringify(input),
+    content: typeof input === 'string' ? input : JSON.stringify(input),
   };
+
+  const formattedConversation = conversation.map((message) => ({
+    role: message.role,
+    content:
+      typeof message.content === 'string' ? message.content : JSON.stringify(message.content),
+  }));
+
   const messages = conversation.length
-    ? convertToOpenAIMessages(conversation)
-    : convertToOpenAIMessages([initialSystemPrompt, userMessage]);
+    ? [...formattedConversation, userMessage]
+    : [initialSystemPrompt, userMessage];
+
   const completion = await openaiClient.beta.chat.completions.parse({
     model: 'gpt-4o-mini',
     messages,
     response_format: zodResponseFormat(DungeonMasterResponseSchema, 'assistant_response'),
   });
-  const responseMessage = completion.choices[0].message.parsed;
-  return responseMessage;
+
+  const parsedMessages = messages.map((msg) => ({
+    ...msg,
+    content:
+      (msg.role === 'user' || msg.role === 'assistant') &&
+      msg.content &&
+      typeof msg.content === 'string'
+        ? JSON.parse(msg.content)
+        : msg.content,
+  }));
+
+  const assistantMessage = completion.choices[0].message.parsed;
+
+  return {
+    updatedConversation: [...parsedMessages, { role: 'assistant', content: assistantMessage }],
+  };
 };
