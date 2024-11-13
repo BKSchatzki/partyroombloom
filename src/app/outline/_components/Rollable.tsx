@@ -7,7 +7,6 @@ import { useAtom } from 'jotai';
 import {
   Card,
   CardContent,
-  CardHeader,
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';

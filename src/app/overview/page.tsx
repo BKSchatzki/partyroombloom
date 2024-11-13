@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 
 import Container from '@/components/Container';
 import { validateRequest } from '@/lib/auth';
-import { cn } from '@/lib/utils';
 
 import OutlinesList from './_components/OutlinesList';
 

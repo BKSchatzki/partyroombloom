@@ -2,7 +2,10 @@
 
 import React from 'react';
 
-import { X } from 'lucide-react';
+import {
+  Trash2,
+  X,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -19,16 +22,52 @@ import {
 } from './ui/dialog';
 
 const DeleteButton = ({
-  first,
+  block = false,
+  first = true,
   handleDelete,
   item,
   message,
 }: {
-  first: boolean;
+  block?: boolean;
+  first?: boolean;
   handleDelete: any;
   item: string;
   message: string;
 }) => {
+  if (block) {
+    return (
+      <Dialog>
+        <div className={cn(`rounded-3xl bg-error/25`)}>
+          <DialogTrigger className={cn(`btn btn-outline btn-error btn-block`)}>
+            <Trash2 className={cn(`size-5`)} />
+            {message}
+          </DialogTrigger>
+        </div>
+        <DialogContent className={cn(`bg-base-200 border-none text-base-content`)}>
+          <DialogHeader>
+            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogDescription className={cn(`text-base-content/75`)}>
+              If you delete {item}, there is no going back. Think twice before you decide to get rid
+              of it.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className={cn(`gap-2`)}>
+            <Button
+              color={`error`}
+              onClick={handleDelete}
+              className={cn(`bg-error/25 text-error hover:text-black`)}
+            >
+              Confirm Delete
+            </Button>
+            <DialogClose asChild>
+              <Button>Cancel</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <div
       className={cn(

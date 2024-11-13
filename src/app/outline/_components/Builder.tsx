@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { Save } from 'lucide-react';
@@ -15,8 +15,13 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { outlineAtom, outlinesListAtom } from '@/lib/atoms';
+import {
+  outlineAtom,
+  outlineInit,
+  outlinesListAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 
 import Info from './Info';
 import InteractablesContainer from './InteractablesContainer';
@@ -27,49 +32,31 @@ import SecretsContainer from './SecretsContainer';
 const Builder = ({ outlineId }: { outlineId: number | null }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchOutline = async () => {
-      if (!outlineId) {
-        setIsLoading(false);
-        setOutline({
-          id: null,
-          title: '',
-          description: '',
-          goal: '',
-          comments: '',
-          elements: [],
-        });
-        return;
+  const { isLoading, error } = useQuery({
+    queryKey: ['outline'],
+    queryFn: async () => {
+      if (outlineId === null) {
+        setOutline(outlineInit);
+        return outlineInit;
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
       if (preloadedOutline) {
         setOutline(preloadedOutline);
-        setIsLoading(false);
-        return;
+        return preloadedOutline;
       }
-      try {
-        const response = await fetch(`/api/outline/${outlineId}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch outline: ${response.status}`);
-        }
-        const data = await response.json();
-        setOutline(data);
-      } catch (error) {
-        setError(
-          error instanceof Error ? error.message : 'An error occurred while fetching the outline.'
-        );
-      } finally {
-        setIsLoading(false);
+      const response = await fetch(`/api/outline/${outlineId}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch outline: ${response.status}`);
       }
-    };
-    fetchOutline();
-  }, [outlineId, setOutline, outlinesList]);
+      const data = await response.json();
+      setOutline(data);
+      return data;
+    },
+  });
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -104,7 +91,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
           throw new Error(`Error: ${response.status}`);
         }
         const data = await response.json();
-        router.push(`/outline/${data.id}`);
+        router.push(`/overview`);
       } catch (error) {
         console.error('Error saving outline:', error);
       } finally {
@@ -114,7 +101,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
   };
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {JSON.stringify(error)}</div>;
   }
 
   return (
