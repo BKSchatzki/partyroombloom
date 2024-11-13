@@ -6,6 +6,10 @@ import {
 } from 'react';
 
 import { useAtom } from 'jotai';
+import {
+  Check,
+  Sparkles,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -36,6 +40,7 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
   const outline = outlinesList.find((outline) => outline.id === parseInt(outlineId));
   const [conversation, setConversation] = useAtom(conversationAtom);
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
+  const [isSaving, setIsSaving] = useState(false);
   const [embla, setEmbla] = useState<CarouselApi>();
 
   const { isLoading, error } = useQuery({
@@ -68,6 +73,7 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
   });
 
   const handleSubmit = async (userMessage: UserMessage) => {
+    setIsSaving(true);
     try {
       const response = await fetch('/api/simulate/', {
         method: 'POST',
@@ -88,10 +94,13 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
 
       setConversation(data.updatedConversation);
       setUserMessage(userMessageInit);
+      setIsSaving(false);
       return data.updatedConversation;
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       throw error;
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -104,7 +113,7 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
 
   if (isLoading) {
     return (
-      <Skeleton className={cn(`flex h-96 w-full flex-col items-center justify-center`)}>
+      <Skeleton className={cn(`flex h-screen w-full flex-col items-center p-8`)}>
         <span className="loading loading-spinner loading-lg"></span>
       </Skeleton>
     );
@@ -129,7 +138,6 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
                   className={cn(`basis-full py-4`)}
                 >
                   <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
-                    {/* <div key={message.content.headline}> */}
                     {message.role === 'assistant' ? (
                       <div className={cn(`mx-auto flex flex-col gap-6 p-4`)}>
                         <h3 className={cn(`text-2xl font-bold`)}>{message.content.headline}</h3>
@@ -147,13 +155,27 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
                         />
                         <Button
                           color={`primary`}
+                          disabled={isSaving || index !== conversation.length - 1}
                           onClick={() => handleSubmit(userMessage)}
                         >
-                          Submit
+                          {isSaving ? (
+                            <span className={cn(`flex items-center gap-2`)}>
+                              <Sparkles className={cn(`size-3 animate-spin`)} />
+                              Thinking...
+                            </span>
+                          ) : index !== conversation.length - 1 ? (
+                            <span className={cn(`flex items-center gap-2`)}>
+                              <Check className={cn(`size-3`)} /> Submit
+                            </span>
+                          ) : (
+                            <span className={cn(`flex items-center gap-2`)}>
+                              <Sparkles className={cn(`size-3`)} />
+                              Send
+                            </span>
+                          )}
                         </Button>
                       </div>
                     ) : null}
-                    {/* </div> */}
                   </ScrollArea>
                 </CarouselItem>
               ) : null
