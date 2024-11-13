@@ -4,10 +4,10 @@ import Container from '@/components/Container';
 
 import Chat from './_components/Chat';
 
-const Simulate = () => {
+const Simulate = ({ params }: { params: { outlineId: string } }) => {
   return (
     <Container>
-      <Chat />
+      <Chat outlineId={params.outlineId} />
     </Container>
   );
 };
