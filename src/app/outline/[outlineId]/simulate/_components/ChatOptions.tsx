@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import { useAtom } from 'jotai';
 import { Dices } from 'lucide-react';
 import { z } from 'zod';
 
@@ -18,8 +19,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  conversationAtom,
+  userMessageAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
-import { mockStructuredChat } from '@/mock/mockStructuredChat';
 
 const ChatOptions = ({
   prompt,
@@ -32,20 +36,38 @@ const ChatOptions = ({
   index: number;
   disabled: boolean;
 }) => {
+  const [userMessage, setUserMessage] = useAtom(userMessageAtom);
+  const [conversation, setConversation] = useAtom(conversationAtom);
+
   const rolls = [
-    'Critical Failure',
-    'Normal Failure',
-    'Close Failure',
-    'Close Success',
-    'Normal Success',
     'Critical Success',
+    'Normal Success',
+    'Close Success',
+    'Close Failure',
+    'Normal Failure',
+    'Critical Failure',
   ];
+
+  const handleChange = (property: string, value: string) => {
+    setUserMessage((prev) => ({
+      ...prev,
+      content: {
+        ...prev.content,
+        [property]: value,
+      },
+    }));
+  };
 
   return (
     <div className={cn(`flex flex-col gap-4`)}>
       <p className={cn(`text-lg font-bold`)}>{prompt}</p>
       <RadioGroup
-        defaultValue={mockStructuredChat[index + 1]?.content.choice || 'I just have some thoughts.'}
+        value={
+          index !== conversation.length - 1
+            ? conversation[index + 1].content.choice
+            : userMessage.content.choice || ''
+        }
+        onValueChange={(value) => handleChange('choice', value)}
         className={cn(`flex flex-col gap-4`)}
       >
         {options.map((option) => (
@@ -62,7 +84,7 @@ const ChatOptions = ({
             <Label
               htmlFor={option.description}
               className={cn(
-                `flex min-h-8 flex-wrap items-center gap-2 ${disabled ? `opacity-50` : ``}`
+                `flex min-h-8 w-full flex-col items-start gap-2 bg-neutral/50 p-4 ${disabled ? `opacity-50` : ``}`
               )}
             >
               <span>{option.description}</span>
@@ -71,19 +93,21 @@ const ChatOptions = ({
                   className={cn(`flex items-center justify-end gap-2 rounded-full bg-neutral ps-2`)}
                 >
                   <Dices className={cn(`size-4`)} />
-                  <span>{option.roll?.skill}</span>
-                  <span>{option.roll?.attribute}</span>
-                  <Select disabled={disabled}>
+                  <Select
+                    disabled={disabled}
+                    value={
+                      index !== conversation.length - 1
+                        ? conversation[index + 1].content.rollResult
+                        : userMessage.content.rollResult || ''
+                    }
+                    onValueChange={(value) => handleChange('rollResult', value)}
+                  >
                     <SelectTrigger
                       className={cn(
-                        `w-20 rounded-full bg-base-300 text-center scrollbar-thin scrollbar-track-warning/25 scrollbar-thumb-warning`
+                        `w-40 rounded-full bg-base-300 text-center scrollbar-thin scrollbar-track-warning/25 scrollbar-thumb-warning`
                       )}
                     >
-                      <SelectValue
-                        placeholder={
-                          mockStructuredChat[index + 1]?.content.rollResult?.toString() || `-`
-                        }
-                      />
+                      <SelectValue placeholder={`-`} />
                     </SelectTrigger>
                     <SelectContent>
                       {rolls.map((roll, index) => (
@@ -110,7 +134,9 @@ const ChatOptions = ({
           />
           <Label
             htmlFor={`default`}
-            className={cn(`flex min-h-8 items-center gap-2 ${disabled ? `opacity-50` : ``}`)}
+            className={cn(
+              `flex min-h-8 w-full flex-col gap-2 bg-neutral/50 p-4 ${disabled ? `opacity-50` : ``}`
+            )}
           >
             I just have some thoughts.
           </Label>
@@ -120,7 +146,12 @@ const ChatOptions = ({
         className={cn(`no-scrollbar`)}
         disabled={disabled}
         placeholder={`Type your thoughts here...`}
-        value={mockStructuredChat[index + 1]?.content.comments || ''}
+        value={
+          index !== conversation.length - 1
+            ? conversation[index + 1].content.comments
+            : userMessage.content.comments || ''
+        }
+        onChange={(event) => handleChange('comments', event.target.value)}
       />
     </div>
   );

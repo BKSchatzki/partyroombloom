@@ -22,7 +22,7 @@ type BaseMessage = {
   role: 'system' | 'user' | 'assistant';
 };
 
-type SystemMessage = BaseMessage & {
+export type SystemMessage = BaseMessage & {
   role: 'system';
   content: string;
 };
