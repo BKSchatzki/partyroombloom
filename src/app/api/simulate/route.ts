@@ -14,6 +14,7 @@ export const POST = async (req: NextRequest) => {
     }
 
     const response = await getStructuredResponse(input, conversation);
+
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     console.error('Error in API route:', error);

@@ -2,18 +2,25 @@ import { NextRequest } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { Element, Outline } from '@/lib/types';
+import {
+  Element,
+  Outline,
+} from '@/lib/types';
 
 export const GET = async (req: NextRequest, { params }: { params: { outlineId: string } }) => {
   const { user } = await validateRequest();
+
   if (!user) {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
+
   try {
     const outlineId = parseInt(params.outlineId);
+
     if (isNaN(outlineId)) {
       return Response.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
+
     const outline = await prisma.outline.findUnique({
       where: {
         id: outlineId,
@@ -23,9 +30,11 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
         elements: true,
       },
     });
+
     if (!outline) {
       return Response.json({ message: 'Outline not found' }, { status: 404 });
     }
+
     const formattedOutline: Outline = {
       id: outline.id,
       title: outline.title ?? '',
@@ -43,6 +52,7 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
         userCreatedAt: element.userCreatedAt.toISOString(),
       })),
     };
+
     return Response.json(formattedOutline, { status: 200 });
   } catch (error) {
     console.error('Error fetching outline:', error);
@@ -52,14 +62,18 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
 
 export const PUT = async (req: NextRequest, { params }: { params: { outlineId: string } }) => {
   const { user } = await validateRequest();
+
   if (!user) {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
+
   try {
     const outlineId = parseInt(params.outlineId);
+
     if (isNaN(outlineId)) {
       return Response.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
+
     const body = await req.json();
     const outline: Outline = body.outline;
     const updatedOutline = await prisma.outline.update({
@@ -74,9 +88,11 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
         comments: outline.comments ?? '',
       },
     });
+
     const landmarks = outline.elements.filter((element) => element.type === 'landmark');
     const interactables = outline.elements.filter((element) => element.type === 'interactable');
     const secrets = outline.elements.filter((element) => element.type === 'secret');
+
     const upsertElements = async (elements: Element[]) => {
       const elementPromises = elements.map((element: Element) =>
         prisma.element.upsert({
@@ -108,11 +124,14 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
           },
         })
       );
+
       return Promise.all(elementPromises);
     };
+
     await upsertElements(landmarks);
     await upsertElements(interactables);
     await upsertElements(secrets);
+
     return Response.json(updatedOutline, { status: 200 });
   } catch (error) {
     console.error('Error updating outline:', error);
@@ -122,20 +141,25 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
 
 export const DELETE = async (req: NextRequest, { params }: { params: { outlineId: string } }) => {
   const { user } = await validateRequest();
+
   if (!user) {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
+
   try {
     const outlineId = parseInt(params.outlineId);
+
     if (isNaN(outlineId)) {
       return Response.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
+
     const deletedOutline = await prisma.outline.delete({
       where: {
         id: outlineId,
         userId: user.id,
       },
     });
+
     return Response.json(deletedOutline, { status: 200 });
   } catch (error) {
     console.error('Error deleting outline:', error);

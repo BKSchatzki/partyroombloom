@@ -23,14 +23,17 @@ export async function GET(request: Request): Promise<Response> {
         Authorization: `Bearer ${tokens.accessToken}`,
       },
     });
+
     if (!googleUserResponse.ok) {
       const errorDetails = await googleUserResponse.json();
       throw new Error(`Google user info fetch failed: ${errorDetails.error}`);
     }
+
     const googleUser: GoogleUser = await googleUserResponse.json();
     const existingUser = await db.user.findUnique({
       where: { googleId: googleUser.sub },
     });
+
     if (existingUser) {
       const session = await lucia.createSession(existingUser.id, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
@@ -42,6 +45,7 @@ export async function GET(request: Request): Promise<Response> {
         },
       });
     }
+
     await db.user.create({
       data: {
         googleId: googleUser.sub,
@@ -50,12 +54,14 @@ export async function GET(request: Request): Promise<Response> {
         picture: googleUser.picture,
       },
     });
+
     const newUser = await db.user.findUnique({
       where: { googleId: googleUser.sub },
     });
     const session = await lucia.createSession(newUser!.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
     cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+
     return new Response(null, {
       status: 302,
       headers: {

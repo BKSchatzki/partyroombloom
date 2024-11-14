@@ -2,13 +2,18 @@ import { NextRequest } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { Element, Outline } from '@/lib/types';
+import {
+  Element,
+  Outline,
+} from '@/lib/types';
 
 export const GET = async (req: NextRequest) => {
   const { user } = await validateRequest();
+
   if (!user) {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
+
   try {
     const outlines = await prisma.outline.findMany({
       where: {
@@ -25,6 +30,7 @@ export const GET = async (req: NextRequest) => {
         updatedAt: 'desc',
       },
     });
+
     const formattedOutlinesList = outlines.map((outline) => ({
       id: outline.id,
       title: outline.title ?? '',
@@ -42,6 +48,7 @@ export const GET = async (req: NextRequest) => {
         userCreatedAt: element.userCreatedAt.toISOString(),
       })),
     }));
+
     return Response.json(formattedOutlinesList, { status: 200 });
   } catch (error) {
     return Response.json({ message: 'Error fetching outlines' }, { status: 500 });
@@ -50,9 +57,11 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   const { user } = await validateRequest();
+
   if (!user) {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
+
   try {
     const body = await req.json();
     const outline: Outline = body.outline;
@@ -65,9 +74,11 @@ export const POST = async (req: NextRequest) => {
         comments: outline.comments ?? '',
       },
     });
+
     const landmarks = outline.elements.filter((element) => element.type === 'landmark');
     const interactables = outline.elements.filter((element) => element.type === 'interactable');
     const secrets = outline.elements.filter((element) => element.type === 'secret');
+
     const createElements = async (elements: Element[]) => {
       const elementPromises = elements.map((element: Element) =>
         prisma.element.create({
@@ -85,11 +96,14 @@ export const POST = async (req: NextRequest) => {
           },
         })
       );
+
       return Promise.all(elementPromises);
     };
+
     await createElements(landmarks);
     await createElements(interactables);
     await createElements(secrets);
+
     return Response.json({ id: createdOutline.id }, { status: 200 });
   } catch (error) {
     console.error('Error saving outline:', error);
