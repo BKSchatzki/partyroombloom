@@ -52,6 +52,25 @@ interface DatabaseUserAttributes {
   picture?: string;
 }
 
+const retryOperation = async <T>(
+  operation: () => Promise<T>,
+  key: string,
+  retryLimit = 3,
+  retryInterval = 1000
+) => {
+  let lastError;
+  for (let i = 0; i < retryLimit; i++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      console.warn(`Retry ${key} operation: Attempt ${i + 1} of ${retryLimit}`);
+      await new Promise((resolve) => setTimeout(resolve, retryInterval));
+    }
+  }
+  throw lastError;
+};
+
 export const validateRequest = cache(
   async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
     const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
@@ -62,7 +81,12 @@ export const validateRequest = cache(
       };
     }
 
-    const result = await lucia.validateSession(sessionId);
+    const result = await retryOperation(
+      () => lucia.validateSession(sessionId),
+      'Lucia Validate Session',
+      3,
+      1000
+    );
     // Next.js throws when you attempt to set cookie when rendering page
     try {
       if (result.session && result.session.fresh) {
