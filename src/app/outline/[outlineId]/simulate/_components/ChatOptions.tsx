@@ -4,12 +4,11 @@ import React from 'react';
 
 import { useAtom } from 'jotai';
 import { Dices } from 'lucide-react';
-import { z } from 'zod';
 
 import { Label } from '@/components/ui/label';
 import {
   RadioGroup,
-  RadioGroupItem,
+  RadioGroupItemDaisy,
 } from '@/components/ui/radio-group';
 import {
   Select,
@@ -75,7 +74,7 @@ const ChatOptions = ({
             key={option.description}
             className={cn(`flex items-center gap-4`)}
           >
-            <RadioGroupItem
+            <RadioGroupItemDaisy
               id={option.description}
               value={option.description}
               disabled={disabled}
@@ -127,7 +126,7 @@ const ChatOptions = ({
           </div>
         ))}
         <div className={cn(`flex items-center gap-4`)}>
-          <RadioGroupItem
+          <RadioGroupItemDaisy
             id={`default`}
             value={`I just have some thoughts.`}
             disabled={disabled}

@@ -42,4 +42,18 @@ const RadioGroupItem = React.forwardRef<
 });
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
 
-export { RadioGroup, RadioGroupItem };
+const RadioGroupItemDaisy = React.forwardRef<
+  React.ElementRef<typeof RadioGroupPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
+>(({ className, ...props }, ref) => {
+  return (
+    <RadioGroupPrimitive.Item
+      ref={ref}
+      className={cn(`radio`, className)}
+      {...props}
+    ></RadioGroupPrimitive.Item>
+  );
+});
+RadioGroupItemDaisy.displayName = 'RadioGroupItemDaisy';
+
+export { RadioGroup, RadioGroupItem, RadioGroupItemDaisy };
