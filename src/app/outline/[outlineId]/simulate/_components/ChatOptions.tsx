@@ -82,12 +82,10 @@ function RollSelect({
 }
 
 const ChatOptions = ({
-  prompt,
   options,
   index,
   disabled,
 }: {
-  prompt: string;
   options: Array<any>;
   index: number;
   disabled: boolean;
@@ -122,7 +120,6 @@ const ChatOptions = ({
 
   return (
     <div className={cn(`flex flex-col gap-4`)}>
-      <p className={cn(`text-lg font-bold`)}>{prompt}</p>
       <RadioGroup
         value={
           index !== conversation.length - 1

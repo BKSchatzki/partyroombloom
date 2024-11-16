@@ -147,8 +147,8 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
                           ))}
                         </div>
                         <Separator className={cn(`my-2 border-base-300`)} />
+                        <p className={cn(`text-lg font-bold`)}>{message.content.prompt || ''}</p>
                         <ChatOptions
-                          prompt={message.content.prompt || ''}
                           options={message.content.options || []}
                           index={index}
                           disabled={index !== conversation.length - 1}
