@@ -154,9 +154,9 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
                           disabled={index !== conversation.length - 1}
                         />
                         <Button
-                          color={`primary`}
                           disabled={isSaving || index !== conversation.length - 1}
                           onClick={() => handleSubmit(userMessage)}
+                          className={cn(`bg-indigo-600 hover:bg-indigo-600 hover:brightness-90`)}
                         >
                           {isSaving ? (
                             <span className={cn(`flex items-center gap-2`)}>

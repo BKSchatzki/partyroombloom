@@ -24,6 +24,63 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
+function RollSelect({
+  rollResult,
+  handleChange,
+  index,
+  disabled,
+}: {
+  rollResult: string | null;
+  handleChange: any;
+  index: number;
+  disabled: boolean;
+}) {
+  const [conversation] = useAtom(conversationAtom);
+
+  const rolls = [
+    'Critical Success',
+    'Normal Success',
+    'Close Success',
+    'Close Failure',
+    'Normal Failure',
+    'Critical Failure',
+  ];
+
+  return (
+    <div
+      className={cn(`flex items-center justify-end gap-2 rounded-full bg-warning/50 p-0.5 ps-2`)}
+    >
+      <Dices className={cn(`size-4`)} />
+      <Select
+        disabled={disabled}
+        value={
+          index !== conversation.length - 1 ? conversation[index + 1].rollResult || '' : rollResult
+        }
+        onValueChange={(value) => handleChange('rollResult', value)}
+      >
+        <SelectTrigger
+          className={cn(
+            `w-40 rounded-full bg-base-300 text-center text-base-content scrollbar-thin scrollbar-track-warning/25 scrollbar-thumb-warning`
+          )}
+        >
+          <SelectValue placeholder={`-`} />
+        </SelectTrigger>
+        <SelectContent>
+          {rolls.map((roll: string, index: number) => (
+            <SelectItem
+              key={index}
+              value={roll}
+              className={cn(`bg-base-300`)}
+            >
+              {roll}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
 const ChatOptions = ({
   prompt,
   options,
@@ -36,18 +93,24 @@ const ChatOptions = ({
   disabled: boolean;
 }) => {
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
-  const [conversation, setConversation] = useAtom(conversationAtom);
-
-  const rolls = [
-    'Critical Success',
-    'Normal Success',
-    'Close Success',
-    'Close Failure',
-    'Normal Failure',
-    'Critical Failure',
-  ];
+  const [conversation] = useAtom(conversationAtom);
 
   const handleChange = (property: string, value: string) => {
+    if (
+      property === 'choice' &&
+      conversation[index].content.options.find(
+        (option: { description: string; roll: boolean }) => option.description === value
+      ).roll === false
+    ) {
+      setUserMessage((prev) => ({
+        ...prev,
+        content: {
+          ...prev.content,
+          [property]: value,
+          rollResult: null,
+        },
+      }));
+    }
     setUserMessage((prev) => ({
       ...prev,
       content: {
@@ -70,58 +133,29 @@ const ChatOptions = ({
         className={cn(`flex flex-col gap-4`)}
       >
         {options.map((option) => (
-          <div
-            key={option.description}
-            className={cn(`flex items-center gap-4`)}
-          >
+          <div key={option.description}>
             <RadioGroupItem
               id={option.description}
+              name={`choices`}
               value={option.description}
               disabled={disabled}
-              className={cn(`peer hidden min-h-4 min-w-4`)}
+              className={cn(`peer sr-only min-h-4 min-w-4`)}
             />
             <Label
               htmlFor={option.description}
               className={cn(
-                `card card-bordered card-compact min-h-16 w-full items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/10 p-4 text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/30`,
+                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/10 p-4 text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/30`,
                 disabled ? `opacity-50` : `hover:bg-indigo-600/20`
               )}
             >
-              <span>{option.description}</span>
+              {option.description}
               {option.roll && (
-                <div
-                  className={cn(`flex items-center justify-end gap-2 rounded-full bg-neutral ps-2`)}
-                >
-                  <Dices className={cn(`size-4`)} />
-                  <Select
-                    disabled={disabled}
-                    value={
-                      index !== conversation.length - 1
-                        ? conversation[index + 1].content.rollResult
-                        : userMessage.content.rollResult || ''
-                    }
-                    onValueChange={(value) => handleChange('rollResult', value)}
-                  >
-                    <SelectTrigger
-                      className={cn(
-                        `w-40 rounded-full bg-base-300 text-center scrollbar-thin scrollbar-track-warning/25 scrollbar-thumb-warning`
-                      )}
-                    >
-                      <SelectValue placeholder={`-`} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {rolls.map((roll, index) => (
-                        <SelectItem
-                          key={index}
-                          value={roll.toString()}
-                          className={cn(`bg-base-300`)}
-                        >
-                          {roll.toString()}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <RollSelect
+                  rollResult={userMessage.content.rollResult}
+                  handleChange={handleChange}
+                  index={index}
+                  disabled={disabled}
+                />
               )}
             </Label>
           </div>
