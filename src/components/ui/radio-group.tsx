@@ -28,10 +28,7 @@ const RadioGroupItem = React.forwardRef<
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
-      className={cn(
-        'aspect-square h-4 w-4 rounded-full border border-slate-200 border-slate-900 text-slate-900 ring-offset-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-50 dark:border-slate-800 dark:text-slate-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300',
-        className
-      )}
+      className={cn('radio', className)}
       {...props}
     >
       <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
@@ -42,18 +39,4 @@ const RadioGroupItem = React.forwardRef<
 });
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
 
-const RadioGroupItemDaisy = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, ...props }, ref) => {
-  return (
-    <RadioGroupPrimitive.Item
-      ref={ref}
-      className={cn(`radio`, className)}
-      {...props}
-    ></RadioGroupPrimitive.Item>
-  );
-});
-RadioGroupItemDaisy.displayName = 'RadioGroupItemDaisy';
-
-export { RadioGroup, RadioGroupItem, RadioGroupItemDaisy };
+export { RadioGroup, RadioGroupItem };

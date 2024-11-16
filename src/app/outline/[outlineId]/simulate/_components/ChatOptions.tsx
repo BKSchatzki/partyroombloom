@@ -8,7 +8,7 @@ import { Dices } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import {
   RadioGroup,
-  RadioGroupItemDaisy,
+  RadioGroupItem,
 } from '@/components/ui/radio-group';
 import {
   Select,
@@ -74,16 +74,17 @@ const ChatOptions = ({
             key={option.description}
             className={cn(`flex items-center gap-4`)}
           >
-            <RadioGroupItemDaisy
+            <RadioGroupItem
               id={option.description}
               value={option.description}
               disabled={disabled}
-              className={cn(`min-h-4 min-w-4`)}
+              className={cn(`peer hidden min-h-4 min-w-4`)}
             />
             <Label
               htmlFor={option.description}
               className={cn(
-                `flex min-h-8 w-full flex-col items-start gap-2 bg-neutral/50 p-4 ${disabled ? `opacity-50` : ``}`
+                `card card-bordered card-compact min-h-16 w-full items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/10 p-4 text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/30`,
+                disabled ? `opacity-50` : `hover:bg-indigo-600/20`
               )}
             >
               <span>{option.description}</span>
@@ -126,15 +127,17 @@ const ChatOptions = ({
           </div>
         ))}
         <div className={cn(`flex items-center gap-4`)}>
-          <RadioGroupItemDaisy
-            id={`default`}
+          <RadioGroupItem
+            id={`thoughts`}
             value={`I just have some thoughts.`}
             disabled={disabled}
+            className={cn(`peer hidden min-h-4 min-w-4`)}
           />
           <Label
-            htmlFor={`default`}
+            htmlFor={`thoughts`}
             className={cn(
-              `flex min-h-8 w-full flex-col gap-2 bg-neutral/50 p-4 ${disabled ? `opacity-50` : ``}`
+              `card card-bordered card-compact min-h-16 w-full items-center justify-center gap-2 text-balance bg-indigo-600/10 p-4 text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-2 peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/30`,
+              disabled ? `opacity-50` : `hover:bg-indigo-600/20`
             )}
           >
             I just have some thoughts.
