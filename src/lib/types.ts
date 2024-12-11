@@ -59,3 +59,14 @@ export type AssistantMessage = BaseMessage & {
 export type Message = SystemMessage | UserMessage | AssistantMessage;
 
 export type Conversation = Message[];
+
+// Type Guards
+export const isSystemMessage = (message: Message): message is SystemMessage => {
+  return message.role === 'system';
+};
+export const isUserMessage = (message: Message): message is UserMessage => {
+  return message.role === 'user';
+};
+export const isAssistantMessage = (message: Message): message is AssistantMessage => {
+  return message.role === 'assistant';
+};
