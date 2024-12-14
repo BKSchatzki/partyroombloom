@@ -156,23 +156,6 @@ const ChatOptions = ({
             </Label>
           </div>
         ))}
-        <div>
-          <RadioGroupItem
-            id={`thoughts`}
-            value={`I just have some thoughts.`}
-            disabled={disabled}
-            className={cn(`peer sr-only min-h-4 min-w-4`)}
-          />
-          <Label
-            htmlFor={`thoughts`}
-            className={cn(
-              `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/10 p-4 text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/30`,
-              disabled ? `opacity-50` : `hover:bg-indigo-600/20`
-            )}
-          >
-            I just have some thoughts.
-          </Label>
-        </div>
       </RadioGroup>
       <Textarea
         className={cn(`no-scrollbar`)}
