@@ -127,7 +127,9 @@ const ChatOptions = ({
             : userMessage.content.choice || ''
         }
         onValueChange={(value) => handleChange('choice', value)}
-        className={cn(`flex flex-col gap-4`)}
+        className={cn(
+          `flex flex-col gap-4 rounded-2xl ring-base-content focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-base-content`
+        )}
       >
         {options.map((option) => (
           <div key={option.description}>
