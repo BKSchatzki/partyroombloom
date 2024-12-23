@@ -1,5 +1,6 @@
 import { OpenAI } from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mjs';
 
 import { simulateOutlinePrompt } from './prompts';
 import { DungeonMasterResponseSchema } from './schemas';
@@ -40,7 +41,7 @@ export const getStructuredResponse = async (
 
   const completion = await openaiClient.beta.chat.completions.parse({
     model: 'gpt-4o-mini',
-    messages,
+    messages: messages as ChatCompletionMessageParam[],
     response_format: zodResponseFormat(DungeonMasterResponseSchema, 'assistant_response'),
   });
 
