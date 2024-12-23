@@ -5,11 +5,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { Lock } from 'lucide-react';
 
-import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';

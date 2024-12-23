@@ -2,10 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import {
-  Element,
-  Outline,
-} from '@/lib/types';
+import { Element, Outline } from '@/lib/types';
 
 export const GET = async (req: NextRequest) => {
   const { user } = await validateRequest();

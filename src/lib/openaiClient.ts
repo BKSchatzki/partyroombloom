@@ -4,12 +4,7 @@ import { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mj
 
 import { simulateOutlinePrompt } from './prompts';
 import { DungeonMasterResponseSchema } from './schemas';
-import {
-  Conversation,
-  Outline,
-  SystemMessage,
-  UserMessage,
-} from './types';
+import { Conversation, Outline, SystemMessage, UserMessage } from './types';
 
 const openaiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

@@ -1,10 +1,7 @@
 import { cache } from 'react';
 
 import { Google } from 'arctic';
-import type {
-  Session,
-  User,
-} from 'lucia';
+import type { Session, User } from 'lucia';
 import { Lucia } from 'lucia';
 import { cookies } from 'next/headers';
 

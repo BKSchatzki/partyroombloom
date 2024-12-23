@@ -3,11 +3,7 @@
 import { useAtom } from 'jotai';
 import { MousePointerClick } from 'lucide-react';
 
-import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';

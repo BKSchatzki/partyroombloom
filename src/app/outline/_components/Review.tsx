@@ -3,14 +3,7 @@
 import React from 'react';
 
 import { useAtom } from 'jotai';
-import {
-  Lock,
-  MousePointerClick,
-  Pyramid,
-  Theater,
-  ThumbsDown,
-  ThumbsUp,
-} from 'lucide-react';
+import { Lock, MousePointerClick, Pyramid, Theater, ThumbsDown, ThumbsUp } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';

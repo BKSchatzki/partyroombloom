@@ -1,11 +1,7 @@
 'use client';
 
 import { useAtom } from 'jotai';
-import {
-  Leaf,
-  Pencil,
-  Sparkle,
-} from 'lucide-react';
+import { Leaf, Pencil, Sparkle } from 'lucide-react';
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';

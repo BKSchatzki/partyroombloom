@@ -5,10 +5,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-import {
-  lucia,
-  validateRequest,
-} from '@/lib/auth';
+import { lucia, validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
 export const SignIn = async () => {

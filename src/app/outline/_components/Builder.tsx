@@ -15,11 +15,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  outlineAtom,
-  outlineInit,
-  outlinesListAtom,
-} from '@/lib/atoms';
+import { outlineAtom, outlineInit, outlinesListAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 

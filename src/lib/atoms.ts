@@ -1,11 +1,6 @@
-import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-import type {
-  Conversation,
-  Outline,
-  UserMessage,
-} from './types';
+import type { Conversation, Outline, UserMessage } from './types';
 
 const outlinesListInit: Outline[] = [];
 

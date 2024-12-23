@@ -4,10 +4,7 @@ import React from 'react';
 
 import { useAtom } from 'jotai';
 
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { outlineAtom } from '@/lib/atoms';
