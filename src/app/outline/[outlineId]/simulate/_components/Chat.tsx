@@ -1,15 +1,9 @@
 'use client';
 
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAtom } from 'jotai';
-import {
-  Check,
-  Sparkles,
-} from 'lucide-react';
+import { Check, Sparkles } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,12 +17,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  conversationAtom,
-  outlinesListAtom,
-  userMessageAtom,
-  userMessageInit,
-} from '@/lib/atoms';
+import { conversationAtom, outlinesListAtom, userMessageAtom, userMessageInit } from '@/lib/atoms';
 import type { UserMessage } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -156,7 +145,9 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
                         <Button
                           disabled={isSaving || index !== conversation.length - 1}
                           onClick={() => handleSubmit(userMessage)}
-                          className={cn(`bg-indigo-600 hover:bg-indigo-600 hover:brightness-90`)}
+                          className={cn(
+                            `bg-indigo-600 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30`
+                          )}
                         >
                           {isSaving ? (
                             <span className={cn(`flex items-center gap-2`)}>
