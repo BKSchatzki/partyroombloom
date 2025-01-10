@@ -108,7 +108,12 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
     if (!embla) {
       return;
     }
-    embla.scrollTo(conversation.length - 1);
+    embla.on('init', () => {
+      embla.scrollTo(conversation.length - 1);
+    });
+    embla.on('slidesChanged', () => {
+      embla.scrollTo(conversation.length - 1);
+    });
   }, [embla, conversation.length]);
 
   if (isLoading) {
