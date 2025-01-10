@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useAtom } from 'jotai';
 import { Dices } from 'lucide-react';
@@ -86,8 +86,10 @@ const ChatOptions = ({
             <Label
               htmlFor={option.description}
               className={cn(
-                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/10 p-4 text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/30`,
-                disabled ? `opacity-50` : `hover:bg-indigo-600/20`
+                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 border-2 border-indigo-600/30 bg-indigo-600/20 p-4 leading-normal text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/50`,
+                disabled
+                  ? `opacity-50`
+                  : `ring-indigo-500 ring-offset-2 ring-offset-base-100 peer-focus:peer-aria-checked:ring-2 hover:bg-indigo-600/20`
               )}
             >
               {option.description}
@@ -145,7 +147,9 @@ function RollSelect({
 
   return (
     <div
-      className={cn(`flex items-center justify-end gap-2 rounded-full bg-warning/50 p-0.5 ps-2`)}
+      className={cn(
+        `flex items-center justify-end gap-2 rounded-full bg-warning/50 p-0.5 ps-2 ring-warning/75 ring-offset-2 ring-offset-base-300 has-[:focus]:ring-2`
+      )}
     >
       <Dices className={cn(`size-4`)} />
       <Select
