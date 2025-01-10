@@ -149,9 +149,11 @@ const OutlinesList = () => {
                       className={cn(`col-span-12 sm:col-span-4`)}
                     >
                       <Button
-                        color={`primary`}
+                        color={`ghost`}
                         size={`block`}
-                        className={cn(`max-w-full`)}
+                        className={cn(
+                          `max-w-full border border-indigo-700 bg-indigo-600 text-indigo-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30`
+                        )}
                       >
                         <Sparkle className={cn(`size-5`)} />
                         Simulate Scene
