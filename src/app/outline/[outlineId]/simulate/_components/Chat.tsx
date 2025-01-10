@@ -1,9 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import { useAtom } from 'jotai';
-import { Check, Sparkles } from 'lucide-react';
+import {
+  Check,
+  Sparkles,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -17,7 +23,12 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { conversationAtom, outlinesListAtom, userMessageAtom, userMessageInit } from '@/lib/atoms';
+import {
+  conversationAtom,
+  outlinesListAtom,
+  userMessageAtom,
+  userMessageInit,
+} from '@/lib/atoms';
 import type { UserMessage } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';

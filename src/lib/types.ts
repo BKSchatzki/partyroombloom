@@ -1,3 +1,7 @@
+// ---------------
+// Outline Types
+// ---------------
+
 export type Element = {
   id: string;
   parentId: string | null;
@@ -17,6 +21,10 @@ export type Outline = {
   comments?: string;
   elements: Array<Element>;
 };
+
+// ------------------
+// Conversation Types
+// ------------------
 
 type BaseMessage = {
   role: 'system' | 'user' | 'assistant';

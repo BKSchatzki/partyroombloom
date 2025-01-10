@@ -6,7 +6,10 @@ import { useAtom } from 'jotai';
 import { Dices } from 'lucide-react';
 
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@/components/ui/radio-group';
 import {
   Select,
   SelectContent,
@@ -15,8 +18,108 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { conversationAtom, userMessageAtom } from '@/lib/atoms';
+import {
+  conversationAtom,
+  userMessageAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
+
+const ChatOptions = ({
+  options,
+  index,
+  disabled,
+}: {
+  options: Array<any>;
+  index: number;
+  disabled: boolean;
+}) => {
+  const [userMessage, setUserMessage] = useAtom(userMessageAtom);
+  const [conversation] = useAtom(conversationAtom);
+
+  const handleChange = (property: string, value: string) => {
+    if (
+      // Check if changed property is choice and whether it has roll
+      property === 'choice' &&
+      options.find((option: { description: string; roll: boolean }) => option.description === value)
+        .roll === false
+    ) {
+      // If true, update value of current property and reset rollResult value to null
+      setUserMessage((prev) => ({
+        ...prev,
+        content: {
+          ...prev.content,
+          [property]: value,
+          rollResult: null,
+        },
+      }));
+      return;
+    } else {
+      // Otherwise, just update value of current property
+      setUserMessage((prev) => ({
+        ...prev,
+        content: {
+          ...prev.content,
+          [property]: value,
+        },
+      }));
+      return;
+    }
+  };
+
+  return (
+    <div className={cn(`flex flex-col gap-4`)}>
+      <RadioGroup
+        value={
+          disabled ? conversation[index + 1]?.content.choice : userMessage.content.choice || ''
+        }
+        onValueChange={(value) => handleChange('choice', value)}
+        className={cn(`flex flex-col gap-4 rounded-2xl`)}
+      >
+        {options.map((option) => (
+          <div key={option.description}>
+            <RadioGroupItem
+              id={option.description}
+              value={option.description}
+              disabled={disabled}
+              className={cn(`peer sr-only min-h-4 min-w-4`)}
+            />
+            <Label
+              htmlFor={option.description}
+              className={cn(
+                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/10 p-4 text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/30`,
+                disabled ? `opacity-50` : `hover:bg-indigo-600/20`
+              )}
+            >
+              {option.description}
+              {!option.roll ? null : userMessage.content.choice === option.description ||
+                conversation[index + 1]?.content.choice === option.description ? (
+                <RollSelect
+                  rollResult={
+                    disabled
+                      ? conversation[index + 1]?.content.rollResult
+                      : userMessage.content.rollResult
+                  }
+                  handleChange={handleChange}
+                  index={index}
+                  disabled={disabled}
+                />
+              ) : null}
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
+      <Textarea
+        className={cn(`no-scrollbar`)}
+        disabled={disabled}
+        placeholder={`Type your thoughts here...`}
+        value={
+          disabled ? conversation[index + 1]?.content.comments : userMessage.content.comments || ''
+        }
+        onChange={(event) => handleChange('comments', event.target.value)}
+      />
+    </div>
+  );
+};
 
 function RollSelect({
   rollResult,
@@ -48,7 +151,9 @@ function RollSelect({
       <Select
         disabled={disabled}
         value={
-          index !== conversation.length - 1 ? conversation[index + 1].rollResult || '' : rollResult
+          index !== conversation.length - 1
+            ? conversation[index + 1].content.rollResult || ''
+            : rollResult
         }
         onValueChange={(value) => handleChange('rollResult', value)}
       >
@@ -74,96 +179,5 @@ function RollSelect({
     </div>
   );
 }
-
-const ChatOptions = ({
-  options,
-  index,
-  disabled,
-}: {
-  options: Array<any>;
-  index: number;
-  disabled: boolean;
-}) => {
-  const [userMessage, setUserMessage] = useAtom(userMessageAtom);
-  const [conversation] = useAtom(conversationAtom);
-
-  const handleChange = (property: string, value: string) => {
-    if (
-      property === 'choice' &&
-      conversation[index].content.options.find(
-        (option: { description: string; roll: boolean }) => option.description === value
-      ).roll === false
-    ) {
-      setUserMessage((prev) => ({
-        ...prev,
-        content: {
-          ...prev.content,
-          [property]: value,
-          rollResult: null,
-        },
-      }));
-    }
-    setUserMessage((prev) => ({
-      ...prev,
-      content: {
-        ...prev.content,
-        [property]: value,
-      },
-    }));
-  };
-
-  return (
-    <div className={cn(`flex flex-col gap-4`)}>
-      <RadioGroup
-        value={
-          index !== conversation.length - 1
-            ? conversation[index + 1].content.choice
-            : userMessage.content.choice || ''
-        }
-        onValueChange={(value) => handleChange('choice', value)}
-        className={cn(`flex flex-col gap-4 rounded-2xl`)}
-      >
-        {options.map((option) => (
-          <div key={option.description}>
-            <RadioGroupItem
-              id={option.description}
-              value={option.description}
-              disabled={disabled}
-              className={cn(`peer sr-only min-h-4 min-w-4`)}
-            />
-            <Label
-              htmlFor={option.description}
-              className={cn(
-                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/10 p-4 text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/30`,
-                disabled ? `opacity-50` : `hover:bg-indigo-600/20`
-              )}
-            >
-              {option.description}
-              {option.roll && (
-                <RollSelect
-                  rollResult={userMessage.content.rollResult}
-                  handleChange={handleChange}
-                  index={index}
-                  disabled={disabled}
-                />
-              )}
-            </Label>
-          </div>
-        ))}
-      </RadioGroup>
-      <Textarea
-        className={cn(`no-scrollbar`)}
-        disabled={disabled}
-        placeholder={`Type your thoughts here...`}
-        value={
-          index !== conversation.length - 1
-            ? conversation[index + 1].content.comments
-            : userMessage.content.comments || ''
-        }
-        onChange={(event) => handleChange('comments', event.target.value)}
-      />
-    </div>
-  );
-};
 
 export default ChatOptions;
