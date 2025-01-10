@@ -189,8 +189,18 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
             )}
           </CarouselContent>
           <div className={cn(`relative h-16`)}>
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious
+              color={`default`}
+              className={cn(
+                `border-indigo-600 text-indigo-600 hover:border-indigo-600 hover:bg-indigo-600 focus-visible:outline-indigo-600 disabled:border-indigo-600/30 disabled:bg-indigo-600/10 disabled:text-indigo-600/30`
+              )}
+            />
+            <CarouselNext
+              color={`default`}
+              className={cn(
+                `border-indigo-600 text-indigo-600 hover:border-indigo-600 hover:bg-indigo-600 focus-visible:outline-indigo-600 disabled:border-indigo-600/30 disabled:bg-indigo-600/10 disabled:text-indigo-600/30`
+              )}
+            />
           </div>
         </div>
       </Carousel>
