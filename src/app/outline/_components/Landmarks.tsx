@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useAtom } from 'jotai';
 
@@ -21,18 +21,18 @@ const Landmarks = ({ elementId }: { elementId: string }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
   const thisElement = outline.elements.find((element) => element.id === elementId);
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    property: string
-  ) => {
-    if (!thisElement) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.map((element) =>
-        element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
-      ),
-    }));
-  };
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
+      if (!thisElement) return;
+      setOutline((outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
+        ),
+      }));
+    },
+    [setOutline, thisElement]
+  );
 
   const handleDelete = () => {
     if (!thisElement) return;

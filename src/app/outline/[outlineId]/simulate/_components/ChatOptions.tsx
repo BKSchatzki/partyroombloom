@@ -36,35 +36,39 @@ const ChatOptions = ({
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
   const [conversation] = useAtom(conversationAtom);
 
-  const handleChange = (property: string, value: string) => {
-    if (
-      // Check if changed property is choice and whether it has roll
-      property === 'choice' &&
-      options.find((option: { description: string; roll: boolean }) => option.description === value)
-        .roll === false
-    ) {
-      // If true, update value of current property and reset rollResult value to null
-      setUserMessage((prev) => ({
-        ...prev,
-        content: {
-          ...prev.content,
-          [property]: value,
-          rollResult: null,
-        },
-      }));
-      return;
-    } else {
-      // Otherwise, just update value of current property
-      setUserMessage((prev) => ({
-        ...prev,
-        content: {
-          ...prev.content,
-          [property]: value,
-        },
-      }));
-      return;
-    }
-  };
+  const handleChange = useCallback(
+    (property: string, value: string) => {
+      if (
+        // Check if changed property is choice and whether it has roll
+        property === 'choice' &&
+        options.find(
+          (option: { description: string; roll: boolean }) => option.description === value
+        ).roll === false
+      ) {
+        // If true, update value of current property and reset rollResult value to null
+        setUserMessage((prev) => ({
+          ...prev,
+          content: {
+            ...prev.content,
+            [property]: value,
+            rollResult: null,
+          },
+        }));
+        return;
+      } else {
+        // Otherwise, just update value of current property
+        setUserMessage((prev) => ({
+          ...prev,
+          content: {
+            ...prev.content,
+            [property]: value,
+          },
+        }));
+        return;
+      }
+    },
+    [options, setUserMessage]
+  );
 
   return (
     <div className={cn(`flex flex-col gap-4`)}>

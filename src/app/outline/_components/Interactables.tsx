@@ -1,13 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import { v7 } from 'uuid';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -21,19 +27,22 @@ const Interactables = ({ elementId }: { elementId: string }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
   const thisElement = outline.elements.find((element) => element.id === elementId);
 
-  const handleChange = (
-    id: string,
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    property: string
-  ) => {
-    if (!id) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.map((element) =>
-        element.id === id ? { ...element, [property]: event.target.value } : element
-      ),
-    }));
-  };
+  const handleChange = useCallback(
+    (
+      id: string,
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      property: string
+    ) => {
+      if (!id) return;
+      setOutline((outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === id ? { ...element, [property]: event.target.value } : element
+        ),
+      }));
+    },
+    [setOutline]
+  );
 
   const handleDelete = (id: string) => {
     if (!id) return;

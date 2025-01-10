@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useAtom } from 'jotai';
 import { Theater } from 'lucide-react';
@@ -21,15 +21,15 @@ import { cn } from '@/lib/utils';
 const Info = ({ isLoading }: { isLoading: boolean }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    property: string
-  ) => {
-    setOutline((outline) => ({
-      ...outline,
-      [property]: event.target.value,
-    }));
-  };
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
+      setOutline((outline) => ({
+        ...outline,
+        [property]: event.target.value,
+      }));
+    },
+    [setOutline]
+  );
 
   return (
     <div>
