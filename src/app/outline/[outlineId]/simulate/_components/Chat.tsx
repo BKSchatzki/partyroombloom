@@ -50,7 +50,7 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
         return conversation;
       }
 
-      const response = await fetch('/api/simulate/', {
+      const response = await fetch('/api/simulate/converse', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
   const handleSubmit = async (userMessage: UserMessage) => {
     setIsSaving(true);
     try {
-      const response = await fetch('/api/simulate/', {
+      const response = await fetch('/api/simulate/converse', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
