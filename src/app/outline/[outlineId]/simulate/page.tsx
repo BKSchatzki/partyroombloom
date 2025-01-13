@@ -7,7 +7,10 @@ import Chat from './_components/Chat';
 const Simulate = ({ params }: { params: { outlineId: string } }) => {
   return (
     <Container>
-      <Chat outlineId={params.outlineId} />
+      <Chat
+        outlineId={params.outlineId}
+        simulateId={null}
+      />
     </Container>
   );
 };

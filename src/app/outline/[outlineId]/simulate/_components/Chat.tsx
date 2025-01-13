@@ -8,8 +8,10 @@ import {
 import { useAtom } from 'jotai';
 import {
   Check,
+  Save,
   Sparkles,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -35,13 +37,15 @@ import { useQuery } from '@tanstack/react-query';
 
 import ChatOptions from './ChatOptions';
 
-const Chat = ({ outlineId }: { outlineId: string }) => {
+const Chat = ({ outlineId, simulateId }: { outlineId: string; simulateId: number | null }) => {
   const [outlinesList] = useAtom(outlinesListAtom);
   const outline = outlinesList.find((outline) => outline.id === parseInt(outlineId));
   const [conversation, setConversation] = useAtom(conversationAtom);
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
   const [isSaving, setIsSaving] = useState(false);
   const [embla, setEmbla] = useState<CarouselApi>();
+
+  const router = useRouter();
 
   const { isLoading, error } = useQuery({
     queryKey: ['conversation'],
@@ -101,6 +105,48 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
       throw error;
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    if (simulateId) {
+      try {
+        const response = await fetch(`/api/simulate/${simulateId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ conversation }),
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('Error saving conversation:', error);
+      } finally {
+        setIsSaving(false);
+      }
+    }
+    if (!simulateId) {
+      try {
+        const response = await fetch('/api/simulate/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ conversation, outline }),
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        router.push(`/overview`);
+      } catch (error) {
+        console.error('Error saving conversation:', error);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -192,15 +238,27 @@ const Chat = ({ outlineId }: { outlineId: string }) => {
             <CarouselPrevious
               color={`default`}
               className={cn(
-                `border-indigo-600 text-indigo-600 hover:border-indigo-600 hover:bg-indigo-600 focus-visible:outline-indigo-600 disabled:border-indigo-600/30 disabled:bg-indigo-600/10 disabled:text-indigo-600/30`
+                `border-indigo-500 text-indigo-500 hover:border-indigo-500 hover:bg-indigo-500 focus-visible:outline-indigo-500 disabled:border-indigo-500/30 disabled:bg-indigo-500/10 disabled:text-indigo-500/30`
               )}
             />
             <CarouselNext
               color={`default`}
               className={cn(
-                `border-indigo-600 text-indigo-600 hover:border-indigo-600 hover:bg-indigo-600 focus-visible:outline-indigo-600 disabled:border-indigo-600/30 disabled:bg-indigo-600/10 disabled:text-indigo-600/30`
+                `border-indigo-500 text-indigo-500 hover:border-indigo-500 hover:bg-indigo-500 focus-visible:outline-indigo-500 disabled:border-indigo-500/30 disabled:bg-indigo-500/10 disabled:text-indigo-500/30`
               )}
             />
+            <Button
+              onClick={handleSave}
+              color={`default`}
+              disabled={isSaving}
+              outlined={true}
+              className={cn(
+                `hover: absolute bottom-0 right-20 flex items-center gap-2 border-indigo-500 text-indigo-500 hover:border-indigo-500 hover:bg-indigo-500`
+              )}
+            >
+              <Save className={cn(`size-5`)} />
+              {isSaving ? `Saving...` : `Save Outline`}
+            </Button>
           </div>
         </div>
       </Carousel>
