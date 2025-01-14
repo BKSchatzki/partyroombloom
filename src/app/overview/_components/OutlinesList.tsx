@@ -78,11 +78,12 @@ const OutlinesList = () => {
     <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 pt-4 sm:px-4`)}>
       <Link
         href={`/outline`}
-        className={cn(`mb-4 block h-full w-full px-4`)}
+        className={cn(`group mb-4 block h-full w-full px-4 pt-1 outline-none`)}
+        tabIndex={0}
       >
         <Card
           className={cn(
-            `flex h-[136px] w-full flex-row items-center justify-center gap-2 text-balance border-2 border-dashed border-[#64d8b4] bg-secondary/10 text-2xl text-[#64d8b4] transition-all duration-100 ease-in-out hover:bg-secondary/20 hover:brightness-125`
+            `flex h-[136px] w-full flex-row items-center justify-center gap-2 text-balance border-2 border-dashed border-[#64d8b4] bg-secondary/10 text-2xl text-[#64d8b4] ring-secondary ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out group-focus:ring-2 hover:bg-secondary/20 hover:brightness-125`
           )}
         >
           <Leaf className={cn(`size-7`)} />
@@ -114,7 +115,12 @@ const OutlinesList = () => {
                 key={outline.id}
                 value={`${outline.id}`}
               >
-                <AccordionTrigger iconSize={7}>
+                <AccordionTrigger
+                  iconSize={7}
+                  className={cn(
+                    `rounded-2xl outline-none ring-inset ring-secondary focus:ring-2 [&[data-state=open]]:rounded-b-none`
+                  )}
+                >
                   <span
                     className={cn(
                       `flex w-full shrink-0 gap-2 text-balance p-4 pe-12 text-2xl text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:basis-1/3 sm:gap-4`,
@@ -170,7 +176,7 @@ const OutlinesList = () => {
                           color={`ghost`}
                           size={`block`}
                           className={cn(
-                            `max-w-full border border-indigo-700 bg-indigo-600 font-semibold text-base-content transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30`
+                            `max-w-full border border-indigo-700 bg-indigo-600 font-semibold text-base-content outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30`
                           )}
                         >
                           <Sparkle className={cn(`size-5`)} />
@@ -181,7 +187,7 @@ const OutlinesList = () => {
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           className={cn(
-                            `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-indigo-700 bg-indigo-600 font-semibold text-base-content transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30 sm:col-span-4`
+                            `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-indigo-700 bg-indigo-600 font-semibold text-base-content outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 sm:col-span-4`
                           )}
                         >
                           <ChevronDown className={cn(`size-5`)} />
@@ -224,7 +230,6 @@ const OutlinesList = () => {
                       </DropdownMenu>
                     )}
                   </div>
-
                   <Preview outline={outline} />
                 </AccordionContent>
               </AccordionItem>

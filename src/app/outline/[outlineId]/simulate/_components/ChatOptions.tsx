@@ -71,7 +71,7 @@ const ChatOptions = ({
   );
 
   return (
-    <div className={cn(`flex flex-col gap-4`)}>
+    <div className={cn(`flex flex-col gap-4 max-sm:px-1`)}>
       <RadioGroup
         value={
           disabled ? conversation[index + 1]?.content.choice : userMessage.content.choice || ''
