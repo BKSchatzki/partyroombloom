@@ -183,10 +183,12 @@ const OutlinesList = () => {
                           <ChevronDown className={cn(`size-5`)} />
                           Select Simulation
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className={cn(`rounded-2xl bg-base-300`)}>
+                        <DropdownMenuContent
+                          className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}
+                        >
                           <DropdownMenuItem
                             className={cn(
-                              `rounded-xl font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
+                              `rounded-xl bg-indigo-600/30 px-4 py-2 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
                             )}
                           >
                             <Link
@@ -197,12 +199,12 @@ const OutlinesList = () => {
                               New Simulation
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator />
+                          <DropdownMenuSeparator className={cn(`-my-0.5`)} />
                           {outline.conversations.map((conversation) => (
                             <DropdownMenuItem
                               key={conversation.createdAt}
                               className={cn(
-                                `rounded-xl font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
+                                `rounded-xl bg-indigo-600/10 px-4 py-2 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
                               )}
                             >
                               <Link

@@ -90,7 +90,7 @@ const ChatOptions = ({
             <Label
               htmlFor={option.description}
               className={cn(
-                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 border-2 border-indigo-600/30 bg-indigo-600/20 p-4 leading-normal text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/50`,
+                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/20 p-4 text-center leading-normal text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/50`,
                 disabled
                   ? `opacity-50`
                   : `ring-indigo-500 ring-offset-2 ring-offset-base-100 peer-focus:peer-aria-checked:ring-2 hover:bg-indigo-600/20`
