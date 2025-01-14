@@ -90,7 +90,11 @@ const OutlinesList = () => {
         </Card>
       </Link>
       {isLoading || isLocalLoading ? (
-        <Skeleton className={cn(`flex h-screen w-full flex-col items-center rounded-none p-8`)}>
+        <Skeleton
+          className={cn(
+            `flex h-[calc(100vh-14.5rem)] w-full flex-col items-center rounded-none p-8`
+          )}
+        >
           <span className="loading loading-spinner loading-lg"></span>
         </Skeleton>
       ) : (
