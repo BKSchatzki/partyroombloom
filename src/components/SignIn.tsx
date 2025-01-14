@@ -2,6 +2,7 @@ import '@/styles/google.css';
 
 import { LogOut } from 'lucide-react';
 import { cookies } from 'next/headers';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,7 @@ import { cn } from '@/lib/utils';
 
 export const SignIn = async () => {
   return (
-    <a
+    <Link
       href={`/login/google`}
       className="gsi-material-button block"
     >
@@ -52,7 +53,7 @@ export const SignIn = async () => {
         <span className="gsi-material-button-contents">Continue with Google</span>
         <span style={{ display: 'none' }}>Continue with Google</span>
       </div>
-    </a>
+    </Link>
   );
 };
 
