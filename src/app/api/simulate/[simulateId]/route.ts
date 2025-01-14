@@ -72,6 +72,30 @@ export const PUT = async (req: NextRequest, { params }: { params: { simulateId: 
   }
 };
 
-export const DELETE = async (req: NextRequest, { params }: { params: { outlineId: string } }) => {
-  //
+export const DELETE = async (req: NextRequest, { params }: { params: { simulateId: string } }) => {
+  const { user } = await validateRequest();
+
+  if (!user) {
+    return Response.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const simulateId = parseInt(params.simulateId);
+
+    if (isNaN(simulateId)) {
+      return Response.json({ message: 'Invalid simulate ID' }, { status: 400 });
+    }
+
+    const deletedConversation = await prisma.conversation.delete({
+      where: {
+        id: simulateId,
+        userId: user.id,
+      },
+    });
+
+    return Response.json(deletedConversation, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting conversation:', error);
+    return Response.json({ message: 'Error deleting conversation' }, { status: 500 });
+  }
 };
