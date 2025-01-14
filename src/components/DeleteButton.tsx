@@ -46,7 +46,7 @@ const DeleteButton = ({
         <DialogContent className={cn(`bg-base-200 border-none text-base-content`)}>
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription className={cn(`text-balance text-base-content/75`)}>
+            <DialogDescription className={cn(`text-base-content/75`)}>
               If you delete {item}, there is no going back. Think twice before you decide to get rid
               of it.
             </DialogDescription>
