@@ -30,7 +30,7 @@ export default async function RootLayout({
             <Nav user={user} />
             <main
               className={cn(
-                `no-scrollbar bg-base-200 flex flex-col items-center justify-start overflow-y-scroll`
+                `no-scrollbar bg-flowers flex flex-col items-center justify-start overflow-y-scroll`
               )}
             >
               {children}
