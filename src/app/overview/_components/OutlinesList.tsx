@@ -118,7 +118,7 @@ const OutlinesList = () => {
                 <AccordionTrigger
                   iconSize={7}
                   className={cn(
-                    `rounded-2xl outline-none ring-inset ring-secondary focus:ring-2 [&[data-state=open]]:rounded-b-none`
+                    `rounded-2xl outline-none ring-inset ring-secondary focus:ring-2 max-sm:rounded-none [&[data-state=open]]:rounded-b-none`
                   )}
                 >
                   <span

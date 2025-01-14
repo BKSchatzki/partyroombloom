@@ -142,7 +142,7 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
               <AccordionTrigger
                 iconSize={6}
                 className={cn(
-                  `rounded-2xl outline-none ring-inset ring-primary focus:ring-2 [&[data-state=open]]:rounded-b-none`
+                  `rounded-2xl outline-none ring-inset ring-primary focus:ring-2 max-sm:rounded-none [&[data-state=open]]:rounded-b-none`
                 )}
               >
                 <div className={cn(`flex flex-col gap-2 p-4 hover:brightness-125`)}>
