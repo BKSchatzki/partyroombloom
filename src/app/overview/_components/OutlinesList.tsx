@@ -117,7 +117,7 @@ const OutlinesList = () => {
                 <AccordionTrigger iconSize={7}>
                   <span
                     className={cn(
-                      `flex w-full shrink-0 gap-2 text-balance p-4 text-2xl text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:basis-1/3 sm:gap-4`,
+                      `flex w-full shrink-0 gap-2 text-balance p-4 pe-12 text-2xl text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:basis-1/3 sm:gap-4`,
                       !outline.title && `italic opacity-30`
                     )}
                   >
