@@ -33,6 +33,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLocalLoading, setIsLocalLoading] = useState(true);
 
   const router = useRouter();
 
@@ -53,6 +54,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
         throw new Error(`Failed to fetch outline: ${response.status}`);
       }
       const data = await response.json();
+      setIsLocalLoading(false);
       setOutline(data);
       return data;
     },
@@ -110,7 +112,7 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
         <CarouselContent>
           <CarouselItem className={cn(`basis-full py-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
-              <Info isLoading={isLoading} />
+              <Info isLoading={isLoading || isLocalLoading} />
             </ScrollArea>
           </CarouselItem>
           <CarouselItem className={cn(`basis-full py-4`)}>

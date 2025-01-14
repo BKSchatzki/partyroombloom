@@ -1,7 +1,12 @@
 'use client';
 
+import { useState } from 'react';
+
+import dayjs from 'dayjs';
 import { useAtom } from 'jotai';
 import {
+  ArrowRight,
+  ChevronDown,
   Leaf,
   Pencil,
   Sparkle,
@@ -17,8 +22,14 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { outlinesListAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -29,6 +40,7 @@ import Preview from './Preview';
 
 const OutlinesList = () => {
   const [outlinesList, setOutlinesList] = useAtom<Outline[]>(outlinesListAtom);
+  const [isLocalLoading, setIsLocalLoading] = useState(true);
 
   const { isLoading, error } = useQuery({
     queryKey: ['outlinesList'],
@@ -38,6 +50,7 @@ const OutlinesList = () => {
         throw new Error(`Failed to fetch outlines: ${response.status}`);
       }
       const data = await response.json();
+      setIsLocalLoading(false);
       setOutlinesList(data);
       return data;
     },
@@ -76,7 +89,7 @@ const OutlinesList = () => {
           New Outline
         </Card>
       </Link>
-      {isLoading ? (
+      {isLoading || isLocalLoading ? (
         <Skeleton className={cn(`flex h-screen w-full flex-col items-center p-8`)}>
           <span className="loading loading-spinner loading-lg"></span>
         </Skeleton>
@@ -144,22 +157,59 @@ const OutlinesList = () => {
                         Edit Outline
                       </Button>
                     </Link>
-                    <Link
-                      href={`/outline/${outline.id}/simulate`}
-                      className={cn(`col-span-12 sm:col-span-4`)}
-                    >
-                      <Button
-                        color={`ghost`}
-                        size={`block`}
-                        className={cn(
-                          `max-w-full border border-indigo-700 bg-indigo-600 text-indigo-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30`
-                        )}
+                    {outline.conversations.length === 0 ? (
+                      <Link
+                        href={`/outline/${outline.id}/simulate`}
+                        className={cn(`col-span-12 sm:col-span-4`)}
                       >
-                        <Sparkle className={cn(`size-5`)} />
-                        Simulate Scene
-                      </Button>
-                    </Link>
+                        <Button
+                          color={`ghost`}
+                          size={`block`}
+                          className={cn(
+                            `max-w-full border border-indigo-700 bg-indigo-600 font-semibold text-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30`
+                          )}
+                        >
+                          <Sparkle className={cn(`size-5`)} />
+                          Simulate Scene
+                        </Button>
+                      </Link>
+                    ) : (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          className={cn(
+                            `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-indigo-700 bg-indigo-600 font-semibold text-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30 sm:col-span-4`
+                          )}
+                        >
+                          <ChevronDown className={cn(`size-5`)} />
+                          Scene Simulations
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem>
+                            <Link
+                              href={`/outline/${outline.id}/simulate`}
+                              className={cn(`flex w-full items-center gap-2`)}
+                            >
+                              <Sparkle className={cn(`size-5`)} />
+                              New Simulation
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {outline.conversations.map((conversation) => (
+                            <DropdownMenuItem key={conversation.createdAt}>
+                              <Link
+                                href={`/outline/${outline.id}/simulate/${conversation.id}`}
+                                className={cn(`flex w-full items-center gap-2`)}
+                              >
+                                <ArrowRight className={cn(`size-5`)} />
+                                {dayjs(conversation.createdAt).format('ddd MMM D, YYYY - h:mm A')}
+                              </Link>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                   </div>
+
                   <Preview outline={outline} />
                 </AccordionContent>
               </AccordionItem>

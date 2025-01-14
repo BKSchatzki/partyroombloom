@@ -20,6 +20,12 @@ export type Outline = {
   goal?: string;
   comments?: string;
   elements: Array<Element>;
+  conversations: Array<ConversationRel>;
+};
+
+export type ConversationRel = {
+  id: number;
+  createdAt: string;
 };
 
 // ------------------

@@ -57,7 +57,5 @@ export const getStructuredResponse = async (
 
   const assistantMessage = completion.choices[0].message.parsed;
 
-  return {
-    updatedConversation: [...parsedMessages, { role: 'assistant', content: assistantMessage }],
-  };
+  return [...parsedMessages, { role: 'assistant', content: assistantMessage }];
 };

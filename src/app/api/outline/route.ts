@@ -25,6 +25,11 @@ export const GET = async (req: NextRequest) => {
             userCreatedAt: 'asc',
           },
         },
+        conversations: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
       },
       orderBy: {
         updatedAt: 'desc',
@@ -46,6 +51,10 @@ export const GET = async (req: NextRequest) => {
         rollableSuccess: element.rollableSuccess ?? '',
         rollableFailure: element.rollableFailure ?? '',
         userCreatedAt: element.userCreatedAt.toISOString(),
+      })),
+      conversations: outline.conversations.map((conversation) => ({
+        id: conversation.id,
+        createdAt: conversation.createdAt.toISOString(),
       })),
     }));
 
