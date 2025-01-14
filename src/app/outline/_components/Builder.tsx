@@ -42,11 +42,13 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
     queryFn: async () => {
       if (outlineId === null) {
         setOutline(outlineInit);
+        setIsLocalLoading(false);
         return outlineInit;
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
       if (preloadedOutline) {
         setOutline(preloadedOutline);
+        setIsLocalLoading(false);
         return preloadedOutline;
       }
       const response = await fetch(`/api/outline/${outlineId}`);
@@ -54,8 +56,8 @@ const Builder = ({ outlineId }: { outlineId: number | null }) => {
         throw new Error(`Failed to fetch outline: ${response.status}`);
       }
       const data = await response.json();
-      setIsLocalLoading(false);
       setOutline(data);
+      setIsLocalLoading(false);
       return data;
     },
   });
