@@ -29,6 +29,8 @@ import Rollable from './Rollable';
 const Secrets = ({ elementId }: { elementId: string }) => {
   const [outline, setOutline] = useAtom(outlineAtom);
   const thisElement = outline.elements.find((element) => element.id === elementId);
+  const hasElements =
+    outline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
 
   const handleChange = useCallback(
     (
@@ -142,7 +144,8 @@ const Secrets = ({ elementId }: { elementId: string }) => {
       <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
         <Card
           className={cn(
-            `mx-auto mb-2 mt-6 w-[99%] rounded-full bg-error/10 shadow-xl shadow-base-300`
+            `mx-auto mb-2 w-[99%] rounded-full bg-error/10 shadow-xl shadow-base-300`,
+            !hasElements && `mt-6`
           )}
         >
           <Button
