@@ -90,7 +90,7 @@ const OutlinesList = () => {
         </Card>
       </Link>
       {isLoading || isLocalLoading ? (
-        <Skeleton className={cn(`flex h-screen w-full flex-col items-center p-8`)}>
+        <Skeleton className={cn(`flex h-screen w-full flex-col items-center rounded-none p-8`)}>
           <span className="loading loading-spinner loading-lg"></span>
         </Skeleton>
       ) : (
@@ -166,7 +166,7 @@ const OutlinesList = () => {
                           color={`ghost`}
                           size={`block`}
                           className={cn(
-                            `max-w-full border border-indigo-700 bg-indigo-600 font-semibold text-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30`
+                            `max-w-full border border-indigo-700 bg-indigo-600 font-semibold text-base-content transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30`
                           )}
                         >
                           <Sparkle className={cn(`size-5`)} />
@@ -177,17 +177,21 @@ const OutlinesList = () => {
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           className={cn(
-                            `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-indigo-700 bg-indigo-600 font-semibold text-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30 sm:col-span-4`
+                            `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-indigo-700 bg-indigo-600 font-semibold text-base-content transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 disabled:bg-indigo-600/30 sm:col-span-4`
                           )}
                         >
                           <ChevronDown className={cn(`size-5`)} />
-                          Scene Simulations
+                          Select Simulation
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem>
+                        <DropdownMenuContent className={cn(`rounded-2xl bg-base-300`)}>
+                          <DropdownMenuItem
+                            className={cn(
+                              `rounded-xl font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
+                            )}
+                          >
                             <Link
                               href={`/outline/${outline.id}/simulate`}
-                              className={cn(`flex w-full items-center gap-2`)}
+                              className={cn(`flex w-full items-center gap-2 text-lg`)}
                             >
                               <Sparkle className={cn(`size-5`)} />
                               New Simulation
@@ -195,12 +199,17 @@ const OutlinesList = () => {
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           {outline.conversations.map((conversation) => (
-                            <DropdownMenuItem key={conversation.createdAt}>
+                            <DropdownMenuItem
+                              key={conversation.createdAt}
+                              className={cn(
+                                `rounded-xl font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
+                              )}
+                            >
                               <Link
                                 href={`/outline/${outline.id}/simulate/${conversation.id}`}
                                 className={cn(`flex w-full items-center gap-2`)}
                               >
-                                <ArrowRight className={cn(`size-5`)} />
+                                <ArrowRight className={cn(`size-4`)} />
                                 {dayjs(conversation.createdAt).format('ddd MMM D, YYYY - h:mm A')}
                               </Link>
                             </DropdownMenuItem>

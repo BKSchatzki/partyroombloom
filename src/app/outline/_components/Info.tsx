@@ -53,7 +53,9 @@ const Info = ({ isLoading }: { isLoading: boolean }) => {
         </p>
       </section>
       {isLoading ? (
-        <Skeleton className={cn(`flex h-96 w-full flex-col items-center justify-center`)}>
+        <Skeleton
+          className={cn(`flex h-96 w-full flex-col items-center justify-center rounded-none`)}
+        >
           <span className="loading loading-spinner loading-lg"></span>
         </Skeleton>
       ) : (

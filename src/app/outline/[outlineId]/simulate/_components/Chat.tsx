@@ -176,7 +176,7 @@ const Chat = ({
 
   if (isLoading || isLocalLoading) {
     return (
-      <Skeleton className={cn(`flex h-screen w-full flex-col items-center p-8`)}>
+      <Skeleton className={cn(`flex h-screen w-full flex-col items-center rounded-none p-8`)}>
         <span className="loading loading-spinner loading-lg"></span>
       </Skeleton>
     );
