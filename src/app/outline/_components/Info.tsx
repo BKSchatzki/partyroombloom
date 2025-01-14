@@ -32,7 +32,7 @@ const Info = ({ isLoading }: { isLoading: boolean }) => {
   );
 
   return (
-    <div>
+    <div className={cn(`pb-4`)}>
       <section
         className={cn(
           `mb-8 mt-4 flex items-center justify-center gap-4 text-[#64d8b4] max-sm:flex-col sm:gap-2`
