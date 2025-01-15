@@ -56,7 +56,7 @@ const Info = ({ isLoading }: { isLoading: boolean }) => {
         <Skeleton
           className={cn(`flex h-96 w-full flex-col items-center justify-center rounded-none`)}
         >
-          <span className="loading loading-spinner loading-lg"></span>
+          <span className={cn(`loading loading-spinner loading-lg`)}></span>
         </Skeleton>
       ) : (
         <Card className={cn(`bg-neutral/50 shadow-xl shadow-base-300 max-sm:rounded-none`)}>

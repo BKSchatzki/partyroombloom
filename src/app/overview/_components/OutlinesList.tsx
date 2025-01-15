@@ -96,7 +96,7 @@ const OutlinesList = () => {
             `flex h-[calc(100vh-14.5rem)] w-full flex-col items-center rounded-none p-8`
           )}
         >
-          <span className="loading loading-spinner loading-lg"></span>
+          <span className={cn(`loading loading-spinner loading-lg`)}></span>
         </Skeleton>
       ) : (
         <Accordion
