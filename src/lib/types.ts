@@ -2,6 +2,13 @@
 // Outline Types
 // ---------------
 
+export type TutorialStep = {
+  id: number;
+  target: string;
+  content: string;
+  action?: () => void;
+};
+
 export type Element = {
   id: string;
   parentId: string | null;

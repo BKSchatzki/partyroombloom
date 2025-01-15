@@ -29,7 +29,13 @@ import LandmarksContainer from './LandmarksContainer';
 import Review from './Review';
 import SecretsContainer from './SecretsContainer';
 
-const Builder = ({ outlineId }: { outlineId: number | null }) => {
+const Builder = ({
+  outlineId,
+  tutorialMode = false,
+}: {
+  outlineId: number | null;
+  tutorialMode?: boolean;
+}) => {
   const [outline, setOutline] = useAtom(outlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);

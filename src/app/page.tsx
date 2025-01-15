@@ -35,7 +35,12 @@ export default async function Home() {
           </p>
         </div>
         <div className={cn(`flex gap-4`)}>
-          <button className={cn(`btn btn-primary`)}>How it works</button>
+          <Link
+            href={`/tutorial`}
+            className={cn(`btn btn-primary`)}
+          >
+            How it works
+          </Link>
           <Link
             href={`/login/google`}
             className={cn(`btn btn-outline`)}

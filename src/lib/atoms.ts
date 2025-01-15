@@ -15,6 +15,7 @@ export const outlineInit: Outline = {
   goal: '',
   comments: '',
   elements: [],
+  conversations: [],
 };
 
 export const userMessageInit: UserMessage = {
