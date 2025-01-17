@@ -1,15 +1,24 @@
+'use client';
+
+import { useState } from 'react';
+
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 import Container from '@/components/Container';
-import { validateRequest } from '@/lib/auth';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-export default async function Home() {
-  const { user } = await validateRequest();
-  // if (user) {
-  //   redirect('/overview');
-  // }
+export default function Home() {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  if (isRedirecting)
+    return (
+      <Container>
+        <div className={cn(`flex h-full w-full flex-col items-center rounded-none p-16`)}>
+          <span className={cn(`loading loading-spinner loading-lg`)}></span>
+        </div>
+      </Container>
+    );
 
   return (
     <Container className={cn(`max-w-[72rem] gap-16`)}>
@@ -41,12 +50,12 @@ export default async function Home() {
           >
             How it works
           </Link>
-          <Link
-            href={`/login/google`}
+          <Button
+            onClick={() => setIsRedirecting(true)}
             className={cn(`btn btn-outline`)}
           >
-            Get started
-          </Link>
+            <Link href={`/login/google`}>Get started</Link>
+          </Button>
         </div>
       </div>
     </Container>
