@@ -72,12 +72,12 @@ const Secrets = ({ elementId, outlineId }: { elementId: string; outlineId: numbe
         ...outline,
         elements: outline.elements.filter((element) => element.id !== id),
       }));
-      if (outlineId) {
-        setOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.filter((element) => element.id !== id),
-        }));
-      }
+    }
+    if (outlineId) {
+      setOutline((outline) => ({
+        ...outline,
+        elements: outline.elements.filter((element) => element.id !== id),
+      }));
     }
   };
 
