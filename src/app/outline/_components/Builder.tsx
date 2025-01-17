@@ -120,7 +120,7 @@ const Builder = ({
         <CarouselContent>
           <CarouselItem className={cn(`basis-full py-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
-              <Info isLoading={isLoading || isLocalLoading} />
+              <Info />
             </ScrollArea>
           </CarouselItem>
           <CarouselItem className={cn(`basis-full py-4`)}>

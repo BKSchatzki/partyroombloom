@@ -12,7 +12,7 @@ const Container = ({
   return (
     <div
       className={cn(
-        `bg-base-100 flex h-full w-full max-w-[48rem] flex-col items-center justify-start border-x-2 border-[#302a2a]`,
+        `bg-base-100 flex h-full w-full max-w-[48rem] flex-col items-center justify-start border-[#302a2a] md:border-x-2`,
         className
       )}
     >
