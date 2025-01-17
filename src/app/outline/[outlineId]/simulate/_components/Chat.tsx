@@ -151,7 +151,6 @@ const Chat = ({
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
-        const data = await response.json();
         router.push(`/overview`);
       } catch (error) {
         console.error('Error saving conversation:', error);
@@ -223,16 +222,16 @@ const Chat = ({
                       >
                         {isSaving ? (
                           <span className={cn(`flex items-center gap-2`)}>
-                            <Sparkles className={cn(`size-3 animate-spin`)} />
+                            <Sparkles className={cn(`size-5 animate-spin`)} />
                             Thinking...
                           </span>
                         ) : index !== conversation.length - 1 ? (
                           <span className={cn(`flex items-center gap-2`)}>
-                            <Check className={cn(`size-3`)} /> Submit
+                            <Check className={cn(`size-5`)} /> Done
                           </span>
                         ) : (
                           <span className={cn(`flex items-center gap-2`)}>
-                            <Sparkles className={cn(`size-3`)} />
+                            <Sparkles className={cn(`size-5`)} />
                             Send
                           </span>
                         )}
@@ -267,7 +266,7 @@ const Chat = ({
             )}
           >
             <Save className={cn(`size-5`)} />
-            {isSaving ? `Saving...` : `Save Outline`}
+            {isSaving ? `Saving...` : `Save Conversation`}
           </Button>
         </div>
       </div>

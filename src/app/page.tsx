@@ -52,7 +52,7 @@ const Hero = ({ user }: { user: User | null }) => {
           className={cn(`btn btn-primary`)}
         >
           How it works
-          <GraduationCap />
+          <GraduationCap className={cn(`size-5`)} />
         </Link>
         {user ? (
           <Link
@@ -60,7 +60,7 @@ const Hero = ({ user }: { user: User | null }) => {
             className={cn(`btn btn-neutral`)}
           >
             Go to overview
-            <ArrowRight />
+            <ArrowRight className={cn(`size-5`)} />
           </Link>
         ) : (
           <SignIn />

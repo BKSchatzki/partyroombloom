@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import {
   Grid2X2,
+  Home,
   RefreshCw,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -18,7 +19,7 @@ const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: ()
 
   return (
     <div className={cn(`flex h-full flex-col items-center justify-center gap-8`)}>
-      <h2 className={cn(`text-xl font-bold`)}>Oops! Something went wrong!</h2>
+      <h2 className={cn(`text-xl font-bold`)}>Hmmm. It must be here somewhere.</h2>
       <div className={`join`}>
         <Link href={`/overview`}>
           <Button
@@ -30,15 +31,16 @@ const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: ()
             Back to Overview
           </Button>
         </Link>
-        <Button
-          color={`default`}
-          outlined={true}
-          onClick={() => reset()}
-          className={cn(`btn btn-outline join-item btn-md flex items-center gap-2`)}
-        >
-          <RefreshCw className={cn(`size-5`)} />
-          Try Again
-        </Button>
+        <Link href={`/`}>
+          <Button
+            color={`default`}
+            outlined={true}
+            className={cn(`btn btn-outline join-item btn-md flex items-center gap-2`)}
+          >
+            <Home className={cn(`size-5`)} />
+            Home
+          </Button>
+        </Link>
       </div>
     </div>
   );
