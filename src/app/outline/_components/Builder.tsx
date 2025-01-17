@@ -39,7 +39,6 @@ const Builder = ({
   const [outline, setOutline] = useAtom(outlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);
-  const [isLocalLoading, setIsLocalLoading] = useState(true);
 
   const router = useRouter();
 
@@ -48,13 +47,11 @@ const Builder = ({
     queryFn: async () => {
       if (outlineId === null) {
         setOutline(outlineInit);
-        setIsLocalLoading(false);
         return outlineInit;
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
       if (preloadedOutline) {
         setOutline(preloadedOutline);
-        setIsLocalLoading(false);
         return preloadedOutline;
       }
       const response = await fetch(`/api/outline/${outlineId}`);
@@ -63,7 +60,6 @@ const Builder = ({
       }
       const data = await response.json();
       setOutline(data);
-      setIsLocalLoading(false);
       return data;
     },
   });
