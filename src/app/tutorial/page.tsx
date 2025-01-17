@@ -7,7 +7,10 @@ import Builder from '../outline/_components/Builder';
 const Tutorial = () => {
   return (
     <Container>
-      <Builder outlineId={null} />
+      <Builder
+        outlineId={null}
+        tutorialMode={true}
+      />
     </Container>
   );
 };

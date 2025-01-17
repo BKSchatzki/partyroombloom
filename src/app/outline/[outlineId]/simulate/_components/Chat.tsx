@@ -24,7 +24,6 @@ import {
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   conversationAtom,
   outlinesListAtom,
@@ -176,9 +175,9 @@ const Chat = ({
 
   if (isLoading || isLocalLoading) {
     return (
-      <Skeleton className={cn(`flex h-screen w-full flex-col items-center rounded-none p-8`)}>
+      <div className={cn(`flex h-screen w-full flex-col items-center rounded-none p-16`)}>
         <span className={cn(`loading loading-spinner loading-lg`)}></span>
-      </Skeleton>
+      </div>
     );
   }
 

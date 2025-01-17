@@ -13,12 +13,11 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { outlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-const Info = ({ isLoading }: { isLoading: boolean }) => {
+const Info = () => {
   const [outline, setOutline] = useAtom(outlineAtom);
 
   const handleChange = useCallback(
@@ -52,72 +51,65 @@ const Info = ({ isLoading }: { isLoading: boolean }) => {
           including some flavor and movement. Include a goal and any relevant comments.
         </p>
       </section>
-      {isLoading ? (
-        <Skeleton
-          className={cn(`flex h-96 w-full flex-col items-center justify-center rounded-none`)}
-        >
-          <span className={cn(`loading loading-spinner loading-lg`)}></span>
-        </Skeleton>
-      ) : (
-        <Card className={cn(`bg-neutral/50 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
-          <CardHeader></CardHeader>
-          <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-            <Label
-              className={cn(`sr-only`)}
-              htmlFor={`title`}
-            >
-              Title
-            </Label>
-            <Input
-              className={cn(`w-full`)}
-              id={`title`}
-              onChange={(event) => handleChange(event, 'title')}
-              placeholder={`Title`}
-              value={outline.title}
-            />
-            <Label
-              className={cn(`sr-only`)}
-              htmlFor={`description`}
-            >
-              Description
-            </Label>
-            <Textarea
-              className={cn(`no-scrollbar`)}
-              id={`description`}
-              onChange={(event) => handleChange(event, 'description')}
-              placeholder={`Description`}
-              value={outline.description}
-            />
-            <Label
-              className={cn(`sr-only`)}
-              htmlFor={`goal`}
-            >
-              Goal
-            </Label>
-            <Textarea
-              className={cn(`no-scrollbar`)}
-              id={`goal`}
-              onChange={(event) => handleChange(event, 'goal')}
-              placeholder={`Goal`}
-              value={outline.goal}
-            />
-            <Label
-              className={cn(`sr-only`)}
-              htmlFor={`comments`}
-            >
-              Comments
-            </Label>
-            <Textarea
-              className={cn(`no-scrollbar`)}
-              id={`comments`}
-              onChange={(event) => handleChange(event, 'comments')}
-              placeholder={`Comments`}
-              value={outline.comments}
-            />
-          </CardContent>
-          <CardFooter className={cn(`flex flex-col items-start gap-4`)}></CardFooter>
-        </Card>
-      )}
+
+      <Card className={cn(`bg-neutral/50 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
+        <CardHeader></CardHeader>
+        <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
+          <Label
+            className={cn(`sr-only`)}
+            htmlFor={`title`}
+          >
+            Title
+          </Label>
+          <Input
+            className={cn(`w-full`)}
+            id={`title`}
+            onChange={(event) => handleChange(event, 'title')}
+            placeholder={`Title`}
+            value={outline.title}
+          />
+          <Label
+            className={cn(`sr-only`)}
+            htmlFor={`description`}
+          >
+            Description
+          </Label>
+          <Textarea
+            className={cn(`no-scrollbar`)}
+            id={`description`}
+            onChange={(event) => handleChange(event, 'description')}
+            placeholder={`Description`}
+            value={outline.description}
+          />
+          <Label
+            className={cn(`sr-only`)}
+            htmlFor={`goal`}
+          >
+            Goal
+          </Label>
+          <Textarea
+            className={cn(`no-scrollbar`)}
+            id={`goal`}
+            onChange={(event) => handleChange(event, 'goal')}
+            placeholder={`Goal`}
+            value={outline.goal}
+          />
+          <Label
+            className={cn(`sr-only`)}
+            htmlFor={`comments`}
+          >
+            Comments
+          </Label>
+          <Textarea
+            className={cn(`no-scrollbar`)}
+            id={`comments`}
+            onChange={(event) => handleChange(event, 'comments')}
+            placeholder={`Comments`}
+            value={outline.comments}
+          />
+        </CardContent>
+        <CardFooter className={cn(`flex flex-col items-start gap-4`)}></CardFooter>
+      </Card>
     </div>
   );
 };

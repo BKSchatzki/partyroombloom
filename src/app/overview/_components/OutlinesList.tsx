@@ -30,7 +30,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
 import { outlinesListAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -91,13 +90,13 @@ const OutlinesList = () => {
         </Card>
       </Link>
       {isLoading || isLocalLoading ? (
-        <Skeleton
+        <div
           className={cn(
-            `flex h-[calc(100vh-14.5rem)] w-full flex-col items-center rounded-none p-8`
+            `flex h-[calc(100vh-14.5rem)] w-full flex-col items-center rounded-none p-16`
           )}
         >
           <span className={cn(`loading loading-spinner loading-lg`)}></span>
-        </Skeleton>
+        </div>
       ) : (
         <Accordion
           type={`single`}
