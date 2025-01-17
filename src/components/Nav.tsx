@@ -30,7 +30,11 @@ import { cn } from '@/lib/utils';
 
 const Nav = ({ user }: { user: User | null }) => {
   return (
-    <nav className={cn('navbar flex items-center justify-between bg-base-300 px-4')}>
+    <nav
+      className={cn(
+        'navbar flex items-center justify-between border-b-2 border-[#302a2a] bg-base-300 px-4'
+      )}
+    >
       <Link href={`/`}>
         <Flower className={cn(`size-8`)} />
         <h2

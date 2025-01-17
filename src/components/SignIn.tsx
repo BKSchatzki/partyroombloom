@@ -16,7 +16,7 @@ export const SignIn = async () => {
   return (
     <Link
       href={`/login/google`}
-      className="gsi-material-button block"
+      className="gsi-material-button btn block hover:bg-white"
     >
       <div className="gsi-material-button-state"></div>
       <div className="gsi-material-button-content-wrapper">
