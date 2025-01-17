@@ -15,7 +15,10 @@ import {
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+} from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -186,13 +189,14 @@ const InfoReview = ({ outline }: { outline: Outline }) => {
   );
 };
 
-const Review = () => {
+const Review = ({ outlineId }: { outlineId: number | null }) => {
+  const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
-      <InfoReview outline={outline}></InfoReview>
-      <LandmarksReview outline={outline}></LandmarksReview>
+      <InfoReview outline={outlineId ? outline : newOutline}></InfoReview>
+      <LandmarksReview outline={outlineId ? outline : newOutline}></LandmarksReview>
     </ScrollArea>
   );
 };

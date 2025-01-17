@@ -12,47 +12,85 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import DeleteButton from '../../../components/DeleteButton';
 
-const Landmarks = ({ elementId }: { elementId: string }) => {
+const Landmarks = ({ elementId, outlineId }: { elementId: string; outlineId: number | null }) => {
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
-  const thisElement = outline.elements.find((element) => element.id === elementId);
+
+  const thisElement = outlineId
+    ? outline.elements.find((element) => element.id === elementId)
+    : newOutline.elements.find((element) => element.id === elementId);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
       if (!thisElement) return;
-      setOutline((outline) => ({
-        ...outline,
-        elements: outline.elements.map((element) =>
-          element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
-        ),
-      }));
+      if (!outlineId) {
+        setNewOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
+          ),
+        }));
+      }
+      if (outlineId) {
+        setOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
+          ),
+        }));
+      }
     },
-    [setOutline, thisElement]
+    [outlineId, setNewOutline, setOutline, thisElement]
   );
 
   const handleDelete = () => {
     if (!thisElement) return;
-    setOutline((outline) => {
-      const deleteCascade = (parentId: string): string[] => {
-        const children = outline.elements
-          .filter((element) => element.parentId === parentId)
-          .map((element) => element.id);
-        const descendants = children.flatMap((childId) => deleteCascade(childId));
-        return [...children, ...descendants];
-      };
-      const elementsToDelete = deleteCascade(thisElement.id);
-      const updatedElements = outline.elements.filter(
-        (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
-      );
-      return {
-        ...outline,
-        elements: updatedElements,
-      };
-    });
+    if (!outlineId) {
+      setNewOutline((outline) => {
+        const deleteCascade = (parentId: string): string[] => {
+          const children = outline.elements
+            .filter((element) => element.parentId === parentId)
+            .map((element) => element.id);
+          const descendants = children.flatMap((childId) => deleteCascade(childId));
+          return [...children, ...descendants];
+        };
+        const elementsToDelete = deleteCascade(thisElement.id);
+        const updatedElements = outline.elements.filter(
+          (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
+        );
+        return {
+          ...outline,
+          elements: updatedElements,
+        };
+      });
+    }
+    if (outlineId) {
+      setOutline((outline) => {
+        const deleteCascade = (parentId: string): string[] => {
+          const children = outline.elements
+            .filter((element) => element.parentId === parentId)
+            .map((element) => element.id);
+          const descendants = children.flatMap((childId) => deleteCascade(childId));
+          return [...children, ...descendants];
+        };
+        const elementsToDelete = deleteCascade(thisElement.id);
+        const updatedElements = outline.elements.filter(
+          (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
+        );
+        return {
+          ...outline,
+          elements: updatedElements,
+        };
+      });
+    }
   };
 
   return (

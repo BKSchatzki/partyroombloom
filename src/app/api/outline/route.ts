@@ -73,7 +73,7 @@ export const POST = async (req: NextRequest) => {
 
   try {
     const body = await req.json();
-    const outline: Outline = body.outline;
+    const outline: Outline = body.payload;
     const createdOutline = await prisma.outline.create({
       data: {
         userId: user.id,

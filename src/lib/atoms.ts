@@ -27,6 +27,7 @@ export const userMessageInit: UserMessage = {
   },
 };
 
+export const newOutlineAtom = atomWithStorage<Outline>('newOutline', outlineInit);
 export const outlineAtom = atomWithStorage<Outline>('outline', outlineInit);
 export const outlinesListAtom = atomWithStorage<Outline[]>('outlinesList', outlinesListInit);
 export const conversationAtom = atomWithStorage<Conversation>('conversation', []);

@@ -18,16 +18,30 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import DeleteButton from '../../../components/DeleteButton';
 
-const Interactables = ({ elementId }: { elementId: string }) => {
+const Interactables = ({
+  elementId,
+  outlineId,
+}: {
+  elementId: string;
+  outlineId: number | null;
+}) => {
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
-  const thisElement = outline.elements.find((element) => element.id === elementId);
-  const hasElements =
-    outline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
+
+  const thisElement = outlineId
+    ? outline.elements.find((element) => element.id === elementId)
+    : newOutline.elements.find((element) => element.id === elementId);
+  const hasElements = outlineId
+    ? outline.elements.filter((element) => element.parentId === thisElement?.id).length > 0
+    : newOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
 
   const handleChange = useCallback(
     (
@@ -36,42 +50,84 @@ const Interactables = ({ elementId }: { elementId: string }) => {
       property: string
     ) => {
       if (!id) return;
-      setOutline((outline) => ({
-        ...outline,
-        elements: outline.elements.map((element) =>
-          element.id === id ? { ...element, [property]: event.target.value } : element
-        ),
-      }));
+      if (!outlineId) {
+        setNewOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === id ? { ...element, [property]: event.target.value } : element
+          ),
+        }));
+      }
+      if (outlineId) {
+        setOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === id ? { ...element, [property]: event.target.value } : element
+          ),
+        }));
+      }
     },
-    [setOutline]
+    [outlineId, setNewOutline, setOutline]
   );
 
   const handleDelete = (id: string) => {
     if (!id) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.filter((element) => element.id !== id && element.parentId !== id),
-    }));
+    if (!outlineId) {
+      setNewOutline((outline) => ({
+        ...outline,
+        elements: outline.elements.filter(
+          (element) => element.id !== id && element.parentId !== id
+        ),
+      }));
+    }
+    if (outlineId) {
+      setOutline((outline) => ({
+        ...outline,
+        elements: outline.elements.filter(
+          (element) => element.id !== id && element.parentId !== id
+        ),
+      }));
+    }
   };
 
   const handleAddInteractable = () => {
     if (!thisElement) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: [
-        ...outline.elements,
-        {
-          id: v7(),
-          parentId: thisElement.id,
-          type: 'interactable',
-          name: '',
-          description: '',
-          rollableSuccess: '',
-          rollableFailure: '',
-          userCreatedAt: new Date().toISOString(),
-        },
-      ],
-    }));
+    if (!outlineId) {
+      setNewOutline((outline) => ({
+        ...outline,
+        elements: [
+          ...outline.elements,
+          {
+            id: v7(),
+            parentId: thisElement.id,
+            type: 'interactable',
+            name: '',
+            description: '',
+            rollableSuccess: '',
+            rollableFailure: '',
+            userCreatedAt: new Date().toISOString(),
+          },
+        ],
+      }));
+    }
+    if (outlineId) {
+      setOutline((outline) => ({
+        ...outline,
+        elements: [
+          ...outline.elements,
+          {
+            id: v7(),
+            parentId: thisElement.id,
+            type: 'interactable',
+            name: '',
+            description: '',
+            rollableSuccess: '',
+            rollableFailure: '',
+            userCreatedAt: new Date().toISOString(),
+          },
+        ],
+      }));
+    }
   };
 
   return (
@@ -83,60 +139,115 @@ const Interactables = ({ elementId }: { elementId: string }) => {
       <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Landmark'}
       </CardTitle>
-      {outline.elements
-        .filter(
-          (element) => element.parentId === thisElement?.id && element.type === 'interactable'
-        )
-        .map((element, index) => (
-          <div key={element.id}>
-            <CardHeader className={cn(`relative pt-7`)}>
-              <DeleteButton
-                first={index === 0}
-                handleDelete={() => handleDelete(element.id)}
-                item={element.name || 'this Interactable'}
-                message="Delete Interactable"
-              />
-              <CardTitle className={cn(`relative`)}>
-                <div
-                  className={cn(
-                    `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
-                  )}
-                >
-                  <span className={cn(`sr-only`)}>Interactable</span>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-              <Label
-                className={cn(`sr-only`)}
-                htmlFor={`name-${element.id}`}
-              >
-                Interactable Name
-              </Label>
-              <Input
-                className={cn(`w-full`)}
-                id={`name-${element.id}`}
-                onChange={(event) => handleChange(element.id, event, 'name')}
-                placeholder={`Name`}
-                value={element.name}
-              />
-              <Label
-                className={cn(`sr-only`)}
-                htmlFor={`description-${element.id}`}
-              >
-                Interactable Description
-              </Label>
-              <Textarea
-                className={cn(`no-scrollbar`)}
-                id={`description-${element.id}`}
-                onChange={(event) => handleChange(element.id, event, 'description')}
-                placeholder={`Description`}
-                value={element.description}
-              />
-            </CardContent>
-            <Separator className={cn(`my-2 mb-0`)} />
-          </div>
-        ))}
+      {outlineId
+        ? outline.elements
+            .filter(
+              (element) => element.parentId === thisElement?.id && element.type === 'interactable'
+            )
+            .map((element, index) => (
+              <div key={element.id}>
+                <CardHeader className={cn(`relative pt-7`)}>
+                  <DeleteButton
+                    first={index === 0}
+                    handleDelete={() => handleDelete(element.id)}
+                    item={element.name || 'this Interactable'}
+                    message="Delete Interactable"
+                  />
+                  <CardTitle className={cn(`relative`)}>
+                    <div
+                      className={cn(
+                        `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
+                      )}
+                    >
+                      <span className={cn(`sr-only`)}>Interactable</span>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
+                  <Label
+                    className={cn(`sr-only`)}
+                    htmlFor={`name-${element.id}`}
+                  >
+                    Interactable Name
+                  </Label>
+                  <Input
+                    className={cn(`w-full`)}
+                    id={`name-${element.id}`}
+                    onChange={(event) => handleChange(element.id, event, 'name')}
+                    placeholder={`Name`}
+                    value={element.name}
+                  />
+                  <Label
+                    className={cn(`sr-only`)}
+                    htmlFor={`description-${element.id}`}
+                  >
+                    Interactable Description
+                  </Label>
+                  <Textarea
+                    className={cn(`no-scrollbar`)}
+                    id={`description-${element.id}`}
+                    onChange={(event) => handleChange(element.id, event, 'description')}
+                    placeholder={`Description`}
+                    value={element.description}
+                  />
+                </CardContent>
+                <Separator className={cn(`my-2 mb-0`)} />
+              </div>
+            ))
+        : newOutline.elements
+            .filter(
+              (element) => element.parentId === thisElement?.id && element.type === 'interactable'
+            )
+            .map((element, index) => (
+              <div key={element.id}>
+                <CardHeader className={cn(`relative pt-7`)}>
+                  <DeleteButton
+                    first={index === 0}
+                    handleDelete={() => handleDelete(element.id)}
+                    item={element.name || 'this Interactable'}
+                    message="Delete Interactable"
+                  />
+                  <CardTitle className={cn(`relative`)}>
+                    <div
+                      className={cn(
+                        `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
+                      )}
+                    >
+                      <span className={cn(`sr-only`)}>Interactable</span>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
+                  <Label
+                    className={cn(`sr-only`)}
+                    htmlFor={`name-${element.id}`}
+                  >
+                    Interactable Name
+                  </Label>
+                  <Input
+                    className={cn(`w-full`)}
+                    id={`name-${element.id}`}
+                    onChange={(event) => handleChange(element.id, event, 'name')}
+                    placeholder={`Name`}
+                    value={element.name}
+                  />
+                  <Label
+                    className={cn(`sr-only`)}
+                    htmlFor={`description-${element.id}`}
+                  >
+                    Interactable Description
+                  </Label>
+                  <Textarea
+                    className={cn(`no-scrollbar`)}
+                    id={`description-${element.id}`}
+                    onChange={(event) => handleChange(element.id, event, 'description')}
+                    placeholder={`Description`}
+                    value={element.description}
+                  />
+                </CardContent>
+                <Separator className={cn(`my-2 mb-0`)} />
+              </div>
+            ))}
       <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
         <Card
           className={cn(

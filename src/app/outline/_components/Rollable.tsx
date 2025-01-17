@@ -10,29 +10,51 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-const Rollable = ({ elementId }: { elementId: string }) => {
+const Rollable = ({ elementId, outlineId }: { elementId: string; outlineId: number | null }) => {
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
-  const thisElement = outline.elements.find((element) => element.id === elementId);
+
+  const thisElement = outlineId
+    ? outline.elements.find((element) => element.id === elementId)
+    : newOutline.elements.find((element) => element.id === elementId);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>, property: string) => {
       if (!thisElement) return;
-      setOutline((outline) => ({
-        ...outline,
-        elements: outline.elements.map((element) =>
-          element.id === thisElement.id
-            ? {
-                ...element,
-                [property]: event.target.value,
-              }
-            : element
-        ),
-      }));
+      if (!outlineId) {
+        setNewOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === thisElement.id
+              ? {
+                  ...element,
+                  [property]: event.target.value,
+                }
+              : element
+          ),
+        }));
+      }
+      if (outlineId) {
+        setOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === thisElement.id
+              ? {
+                  ...element,
+                  [property]: event.target.value,
+                }
+              : element
+          ),
+        }));
+      }
     },
-    [setOutline, thisElement]
+    [outlineId, setNewOutline, setOutline, thisElement]
   );
 
   return (

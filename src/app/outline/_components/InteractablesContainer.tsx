@@ -9,15 +9,21 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import Interactables from './Interactables';
 
-const InteractablesContainer = () => {
+const InteractablesContainer = ({ outlineId }: { outlineId: number | null }) => {
+  const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
-  const landmarks = outline.elements.filter((element) => element.type === 'landmark');
+  const landmarks = outlineId
+    ? outline.elements.filter((element) => element.type === 'landmark')
+    : newOutline.elements.filter((element) => element.type === 'landmark');
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
@@ -53,8 +59,9 @@ const InteractablesContainer = () => {
       ) : (
         landmarks.map((element) => (
           <Interactables
-            elementId={element.id}
             key={element.id}
+            elementId={element.id}
+            outlineId={outlineId}
           />
         ))
       )}

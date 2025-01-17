@@ -12,31 +12,55 @@ import { v7 } from 'uuid';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import Landmarks from './Landmarks';
 
-const LandmarksContainer = () => {
+const LandmarksContainer = ({ outlineId }: { outlineId: number | null }) => {
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
   const handleAddLandmark = () => {
-    setOutline((outline) => ({
-      ...outline,
-      elements: [
-        ...outline.elements,
-        {
-          id: v7(),
-          parentId: null,
-          type: 'landmark',
-          name: '',
-          description: '',
-          rollableSuccess: '',
-          rollableFailure: '',
-          userCreatedAt: new Date().toISOString(),
-        },
-      ],
-    }));
+    if (!outlineId) {
+      setNewOutline((outline) => ({
+        ...outline,
+        elements: [
+          ...outline.elements,
+          {
+            id: v7(),
+            parentId: null,
+            type: 'landmark',
+            name: '',
+            description: '',
+            rollableSuccess: '',
+            rollableFailure: '',
+            userCreatedAt: new Date().toISOString(),
+          },
+        ],
+      }));
+    }
+    if (outlineId) {
+      setOutline((outline) => ({
+        ...outline,
+        elements: [
+          ...outline.elements,
+          {
+            id: v7(),
+            parentId: null,
+            type: 'landmark',
+            name: '',
+            description: '',
+            rollableSuccess: '',
+            rollableFailure: '',
+            userCreatedAt: new Date().toISOString(),
+          },
+        ],
+      }));
+    }
   };
 
   return (
@@ -60,14 +84,25 @@ const LandmarksContainer = () => {
           and are immediately available to the player characters upon entering the scene.
         </p>
       </section>
-      {outline.elements
-        .filter((element) => element.type === 'landmark')
-        .map((element) => (
-          <Landmarks
-            key={element.id}
-            elementId={element.id}
-          />
-        ))}
+      {outlineId
+        ? outline.elements
+            .filter((element) => element.type === 'landmark')
+            .map((element) => (
+              <Landmarks
+                key={element.id}
+                elementId={element.id}
+                outlineId={outlineId}
+              />
+            ))
+        : newOutline.elements
+            .filter((element) => element.type === 'landmark')
+            .map((element) => (
+              <Landmarks
+                key={element.id}
+                elementId={element.id}
+                outlineId={outlineId}
+              />
+            ))}
       <Card
         className={cn(
           `mx-auto mb-4 w-[99%] rounded-full bg-primary/10 shadow-xl shadow-base-300 max-sm:w-11/12`

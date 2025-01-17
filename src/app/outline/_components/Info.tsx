@@ -14,20 +14,32 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-const Info = () => {
+const Info = ({ outlineId }: { outlineId: number | null }) => {
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
-      setOutline((outline) => ({
-        ...outline,
-        [property]: event.target.value,
-      }));
+      if (!outlineId) {
+        setNewOutline((outline) => ({
+          ...outline,
+          [property]: event.target.value,
+        }));
+      }
+      if (outlineId) {
+        setOutline((outline) => ({
+          ...outline,
+          [property]: event.target.value,
+        }));
+      }
     },
-    [setOutline]
+    [outlineId, setNewOutline, setOutline]
   );
 
   return (
@@ -66,7 +78,7 @@ const Info = () => {
             id={`title`}
             onChange={(event) => handleChange(event, 'title')}
             placeholder={`Title`}
-            value={outline.title}
+            value={outlineId ? outline.title : newOutline.title}
           />
           <Label
             className={cn(`sr-only`)}
@@ -79,7 +91,7 @@ const Info = () => {
             id={`description`}
             onChange={(event) => handleChange(event, 'description')}
             placeholder={`Description`}
-            value={outline.description}
+            value={outlineId ? outline.description : newOutline.description}
           />
           <Label
             className={cn(`sr-only`)}
@@ -92,7 +104,7 @@ const Info = () => {
             id={`goal`}
             onChange={(event) => handleChange(event, 'goal')}
             placeholder={`Goal`}
-            value={outline.goal}
+            value={outlineId ? outline.goal : newOutline.goal}
           />
           <Label
             className={cn(`sr-only`)}
@@ -105,7 +117,7 @@ const Info = () => {
             id={`comments`}
             onChange={(event) => handleChange(event, 'comments')}
             placeholder={`Comments`}
-            value={outline.comments}
+            value={outlineId ? outline.comments : newOutline.comments}
           />
         </CardContent>
         <CardFooter className={cn(`flex flex-col items-start gap-4`)}></CardFooter>

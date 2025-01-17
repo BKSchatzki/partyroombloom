@@ -11,21 +11,33 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import Secrets from './Secrets';
 
-const InteractablesContainer = () => {
+const InteractablesContainer = ({ outlineId }: { outlineId: number | null }) => {
+  const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
-  const interactablesSorted = outline.elements
-    .filter((element) => element.type === 'interactable')
-    .sort(
-      (a, b) =>
-        outline.elements.findIndex((element) => element.id === a.parentId) -
-        outline.elements.findIndex((element) => element.id === b.parentId)
-    );
+  const interactablesSorted = outlineId
+    ? outline.elements
+        .filter((element) => element.type === 'interactable')
+        .sort(
+          (a, b) =>
+            outline.elements.findIndex((element) => element.id === a.parentId) -
+            outline.elements.findIndex((element) => element.id === b.parentId)
+        )
+    : newOutline.elements
+        .filter((element) => element.type === 'interactable')
+        .sort(
+          (a, b) =>
+            outline.elements.findIndex((element) => element.id === a.parentId) -
+            outline.elements.findIndex((element) => element.id === b.parentId)
+        );
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
@@ -63,6 +75,7 @@ const InteractablesContainer = () => {
           <Secrets
             key={element.id}
             elementId={element.id}
+            outlineId={outlineId}
           />
         ))
       )}

@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
+  newOutlineAtom,
   outlineAtom,
   outlineInit,
   outlinesListAtom,
@@ -36,6 +37,7 @@ const Builder = ({
   outlineId: number | null;
   tutorialMode?: boolean;
 }) => {
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);
@@ -46,8 +48,7 @@ const Builder = ({
     queryKey: ['outline'],
     queryFn: async () => {
       if (outlineId === null) {
-        setOutline(outlineInit);
-        return outlineInit;
+        return newOutline;
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
       if (preloadedOutline) {
@@ -66,6 +67,7 @@ const Builder = ({
 
   const handleSave = async () => {
     setIsSaving(true);
+    const payload = outlineId ? outline : newOutline;
     if (outlineId) {
       try {
         const response = await fetch(`/api/outline/${outlineId}`, {
@@ -73,7 +75,7 @@ const Builder = ({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ outline }),
+          body: JSON.stringify({ payload }),
         });
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
@@ -91,17 +93,17 @@ const Builder = ({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ outline }),
+          body: JSON.stringify({ payload }),
         });
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
-        const data = await response.json();
         router.push(`/overview`);
       } catch (error) {
         console.error('Error saving outline:', error);
       } finally {
         setIsSaving(false);
+        setNewOutline(outlineInit);
       }
     }
   };
@@ -116,20 +118,20 @@ const Builder = ({
         <CarouselContent>
           <CarouselItem className={cn(`basis-full py-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
-              <Info />
+              <Info outlineId={outlineId} />
             </ScrollArea>
           </CarouselItem>
           <CarouselItem className={cn(`basis-full py-4`)}>
-            <LandmarksContainer />
+            <LandmarksContainer outlineId={outlineId} />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full py-4`)}>
-            <InteractablesContainer />
+            <InteractablesContainer outlineId={outlineId} />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full py-4`)}>
-            <SecretsContainer />
+            <SecretsContainer outlineId={outlineId} />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full py-4`)}>
-            <Review />
+            <Review outlineId={outlineId} />
           </CarouselItem>
         </CarouselContent>
         <div className={cn(`relative h-16`)}>
