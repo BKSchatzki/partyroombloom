@@ -51,7 +51,6 @@ export const SignIn = async () => {
           </svg>
         </div>
         <span className="gsi-material-button-contents">Continue with Google</span>
-        <span style={{ display: 'none' }}>Continue with Google</span>
       </div>
     </Link>
   );
