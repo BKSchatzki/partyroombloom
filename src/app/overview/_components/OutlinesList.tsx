@@ -156,7 +156,10 @@ const OutlinesListComponent = () => {
                       </Button>
                     </Link>
                     <SimulateDropdown outline={outline} />
-                    <BackupsDropdown outline={outline}>
+                    <BackupsDropdown
+                      outline={outline}
+                      setOutline={null}
+                    >
                       <ChevronDown className={cn(`size-5`)} />
                       Backup
                     </BackupsDropdown>

@@ -143,6 +143,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
           <div className={cn(`absolute bottom-0 right-20 flex items-center gap-4`)}>
             <BackupsDropdown
               outline={outlineId ? outline : newOutline}
+              setOutline={outlineId ? null : setNewOutline}
               className={cn(`px-4 py-2 text-sm`)}
             >
               <ChevronUp className={cn(`size-5`)} />
