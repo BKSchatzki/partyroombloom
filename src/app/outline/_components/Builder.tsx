@@ -3,14 +3,10 @@
 import { useState } from 'react';
 
 import { useAtom } from 'jotai';
-import {
-  Braces,
-  Save,
-} from 'lucide-react';
+import { Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import OutlineJsonSave from '@/components/OutlineJsonSave';
-import OutlinePdfGen from '@/components/OutlinePdfGen';
+import BackupsDropdown from '@/app/overview/_components/BackupsDropdown';
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
@@ -143,20 +139,10 @@ const Builder = ({
           <CarouselPrevious />
           <CarouselNext />
           <div className={cn(`absolute bottom-0 right-20 flex items-center gap-4`)}>
-            <OutlineJsonSave
-              outline={outlineId ? outline : newOutline}
-              className={cn(`btn-outline btn-info`)}
-            >
-              <Braces className={cn(`size-5`)} />
-              JSON
-            </OutlineJsonSave>
-            <OutlinePdfGen
-              outline={outlineId ? outline : newOutline}
-              className={cn(`btn btn-outline btn-warning`)}
-            >
-              <Save className={cn(`size-5`)} />
-              <span>PDF</span>
-            </OutlinePdfGen>
+            <BackupsDropdown
+              outline={outline}
+              className={cn(`px-4 py-2 text-sm`)}
+            />
             <Button
               onClick={handleSave}
               color={`secondary`}

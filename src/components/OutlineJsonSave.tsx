@@ -6,8 +6,6 @@ import { saveAs } from 'file-saver';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import { Button } from './ui/button';
-
 const OutlineJsonSave = ({
   outline,
   className,
@@ -22,14 +20,14 @@ const OutlineJsonSave = ({
   });
 
   return (
-    <Button
+    <button
       onClick={() =>
         saveAs(fileToSave, `${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}.json`)
       }
       className={cn(``, className)}
     >
       {children}
-    </Button>
+    </button>
   );
 };
 

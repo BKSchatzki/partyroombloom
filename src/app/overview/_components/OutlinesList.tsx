@@ -4,16 +4,12 @@ import { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import {
-  Braces,
-  FileText,
   Leaf,
   Pencil,
 } from 'lucide-react';
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';
-import OutlineJsonSave from '@/components/OutlineJsonSave';
-import OutlinePdfGen from '@/components/OutlinePdfGen';
 import {
   Accordion,
   AccordionContent,
@@ -28,6 +24,7 @@ import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
+import BackupsDropdown from './BackupsDropdown';
 import Preview from './Preview';
 import SimulateDropdown from './SimulateDropdown';
 
@@ -164,23 +161,8 @@ const OutlinesList = () => {
                     </Link>
                     {/* SIMULATE DROPDOWN */}
                     <SimulateDropdown outline={outline} />
-                    {/* PDF BUTTON */}
-                    <OutlinePdfGen
-                      outline={outline}
-                      className={cn(`btn btn-warning col-span-12 sm:col-span-2`)}
-                    >
-                      <FileText className={cn(`size-5`)} />
-                      PDF
-                    </OutlinePdfGen>
-                    {/* JSON BUTTON */}
-
-                    <OutlineJsonSave
-                      outline={outline}
-                      className={cn(`btn btn-info col-span-12 sm:col-span-2`)}
-                    >
-                      <Braces className={cn(`size-5`)} />
-                      JSON
-                    </OutlineJsonSave>
+                    {/* BACKUPS DROPDOWN */}
+                    <BackupsDropdown outline={outline} />
                   </div>
                   <Preview outline={outline} />
                 </AccordionContent>
