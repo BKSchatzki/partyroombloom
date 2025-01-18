@@ -6,6 +6,7 @@ import { useAtom } from 'jotai';
 import { Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import PdfGenerator from '@/components/PdfGenerator';
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
@@ -137,16 +138,25 @@ const Builder = ({
         <div className={cn(`relative h-16`)}>
           <CarouselPrevious />
           <CarouselNext />
-          <Button
-            onClick={handleSave}
-            color={`secondary`}
-            disabled={isSaving}
-            outlined={true}
-            className={cn(`absolute bottom-0 right-20 flex items-center gap-2`)}
-          >
-            <Save className={cn(`size-5`)} />
-            {isSaving ? `Saving...` : `Save Outline`}
-          </Button>
+          <div className={cn(`absolute bottom-0 right-20 flex items-center gap-4`)}>
+            <Button
+              onClick={handleSave}
+              color={`secondary`}
+              disabled={isSaving}
+              outlined={true}
+              // className={cn(`absolute bottom-0 right-20 flex items-center gap-2`)}
+            >
+              <Save className={cn(`size-5`, isSaving && `animate-spin`)} />
+              {isSaving ? `Wait` : `Save`}
+            </Button>
+            <PdfGenerator
+              outline={outlineId ? outline : newOutline}
+              className={cn(`btn btn-outline btn-warning`)}
+            >
+              <Save className={cn(`size-5`)} />
+              <span>PDF</span>
+            </PdfGenerator>
+          </div>
         </div>
       </div>
     </Carousel>
