@@ -137,7 +137,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
             <Review outlineId={outlineId} />
           </CarouselItem>
         </CarouselContent>
-        <div className={cn(`relative h-16`)}>
+        <div className={cn(`relative h-16 border-t-2 border-[#302a2a]`)}>
           <CarouselPrevious />
           <CarouselNext />
           <div className={cn(`absolute bottom-0 right-20 flex items-center gap-4`)}>

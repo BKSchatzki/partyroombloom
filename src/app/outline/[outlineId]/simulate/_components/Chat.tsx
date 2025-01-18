@@ -223,7 +223,7 @@ const Chat = ({
                         {isSaving ? (
                           <span className={cn(`flex items-center gap-2`)}>
                             <Sparkles className={cn(`size-5 animate-spin`)} />
-                            Thinking...
+                            Thinking
                           </span>
                         ) : index !== conversation.length - 1 ? (
                           <span className={cn(`flex items-center gap-2`)}>
@@ -243,7 +243,7 @@ const Chat = ({
             ) : null
           )}
         </CarouselContent>
-        <div className={cn(`relative h-16`)}>
+        <div className={cn(`relative h-16 border-t-2 border-[#302a2a]`)}>
           <CarouselPrevious
             color={`default`}
             className={cn(
@@ -266,7 +266,7 @@ const Chat = ({
             )}
           >
             <Save className={cn(`size-5`)} />
-            {isSaving ? `Saving...` : `Save Conversation`}
+            {isSaving ? `Wait` : `Save`}
           </Button>
         </div>
       </div>
