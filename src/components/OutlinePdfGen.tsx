@@ -52,12 +52,12 @@ const Output = ({ content }: { content: Outline }) => {
             )}
           </View>
         </View>
-        <View style={tw(`flex flex-col gap-1`)}>
+        <View style={tw(`flex flex-col gap-1 pb-2`)}>
           {content.elements
             .filter((element) => element.type === 'landmark')
             .map((landmark) => (
               <React.Fragment key={landmark.id}>
-                <Text style={tw(`py-2 border-t border-neutral-300`)}>
+                <Text style={tw(`pt-2 border-t border-neutral-300`)}>
                   <Text style={tw(`text-lg font-bold text-lime-800 font-bold leading-4 underline`)}>
                     {landmark.name}
                   </Text>
@@ -124,7 +124,7 @@ const Output = ({ content }: { content: Outline }) => {
   );
 };
 
-const PdfGenerator = ({
+const OutlinePdfGen = ({
   outline,
   className,
   children,
@@ -143,4 +143,4 @@ const PdfGenerator = ({
   );
 };
 
-export default PdfGenerator;
+export default OutlinePdfGen;

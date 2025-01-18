@@ -6,7 +6,7 @@ import { useAtom } from 'jotai';
 import { Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import PdfGenerator from '@/components/PdfGenerator';
+import OutlinePdfGen from '@/components/OutlinePdfGen';
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
@@ -149,13 +149,13 @@ const Builder = ({
               <Save className={cn(`size-5`, isSaving && `animate-spin`)} />
               {isSaving ? `Wait` : `Save`}
             </Button>
-            <PdfGenerator
+            <OutlinePdfGen
               outline={outlineId ? outline : newOutline}
               className={cn(`btn btn-outline btn-warning`)}
             >
               <Save className={cn(`size-5`)} />
               <span>PDF</span>
-            </PdfGenerator>
+            </OutlinePdfGen>
           </div>
         </div>
       </div>

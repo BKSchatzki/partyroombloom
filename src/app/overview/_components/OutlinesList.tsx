@@ -2,18 +2,16 @@
 
 import { useState } from 'react';
 
-import dayjs from 'dayjs';
 import { useAtom } from 'jotai';
 import {
-  ArrowRight,
-  ChevronDown,
+  FileText,
   Leaf,
   Pencil,
-  Sparkle,
 } from 'lucide-react';
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';
+import OutlinePdfGen from '@/components/OutlinePdfGen';
 import {
   Accordion,
   AccordionContent,
@@ -22,13 +20,6 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { outlinesListAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -36,6 +27,7 @@ import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
 import Preview from './Preview';
+import SimulateDropdown from './SimulateDropdown';
 
 const OutlinesList = () => {
   const [outlinesList, setOutlinesList] = useAtom<Outline[]>(outlinesListAtom);
@@ -145,7 +137,8 @@ const OutlinesList = () => {
                     </span>
                   </div>
                   <div className={cn(`grid grid-cols-12 gap-4 border-t-2 border-base-300/30 p-4`)}>
-                    <div className={cn(`col-span-12 sm:col-span-4`)}>
+                    {/* DELETE BUTTON */}
+                    <div className={cn(`col-span-12 sm:col-span-3`)}>
                       <DeleteButton
                         block={true}
                         handleDelete={() => handleDelete(outline.id as number)}
@@ -153,9 +146,10 @@ const OutlinesList = () => {
                         message={`Delete Outline`}
                       />
                     </div>
+                    {/* EDIT BUTTON */}
                     <Link
                       href={`/outline/${outline.id}`}
-                      className={cn(`col-span-12 sm:col-span-4`)}
+                      className={cn(`col-span-12 sm:col-span-3`)}
                     >
                       <Button
                         color={`secondary`}
@@ -166,68 +160,16 @@ const OutlinesList = () => {
                         Edit Outline
                       </Button>
                     </Link>
-                    {outline.conversations.length === 0 ? (
-                      <Link
-                        href={`/outline/${outline.id}/simulate`}
-                        className={cn(`col-span-12 sm:col-span-4`)}
-                      >
-                        <Button
-                          color={`ghost`}
-                          size={`block`}
-                          className={cn(
-                            `max-w-full border border-indigo-700 bg-indigo-600 font-semibold text-base-content outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30`
-                          )}
-                        >
-                          <Sparkle className={cn(`size-5`)} />
-                          Simulate Scene
-                        </Button>
-                      </Link>
-                    ) : (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger
-                          className={cn(
-                            `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-indigo-700 bg-indigo-600 font-semibold text-base-content outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 sm:col-span-4`
-                          )}
-                        >
-                          <ChevronDown className={cn(`size-5`)} />
-                          Select Simulation
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}
-                        >
-                          <DropdownMenuItem
-                            className={cn(
-                              `rounded-xl bg-indigo-600/30 px-4 py-2 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
-                            )}
-                          >
-                            <Link
-                              href={`/outline/${outline.id}/simulate`}
-                              className={cn(`flex w-full items-center gap-2 text-lg`)}
-                            >
-                              <Sparkle className={cn(`size-5`)} />
-                              New Simulation
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator className={cn(`-my-0.5`)} />
-                          {outline.conversations.map((conversation) => (
-                            <DropdownMenuItem
-                              key={conversation.createdAt}
-                              className={cn(
-                                `rounded-xl bg-indigo-600/10 px-4 py-2 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
-                              )}
-                            >
-                              <Link
-                                href={`/outline/${outline.id}/simulate/${conversation.id}`}
-                                className={cn(`flex w-full items-center gap-2`)}
-                              >
-                                <ArrowRight className={cn(`size-4`)} />
-                                {dayjs(conversation.createdAt).format('ddd MMM D, YYYY - h:mm A')}
-                              </Link>
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
+                    {/* PDF BUTTON */}
+                    <OutlinePdfGen
+                      outline={outline}
+                      className={cn(`btn btn-warning col-span-12 sm:col-span-2`)}
+                    >
+                      <FileText className={cn(`size-5`)} />
+                      PDF
+                    </OutlinePdfGen>
+                    {/* SIMULATE DROPDOWN */}
+                    <SimulateDropdown outline={outline} />
                   </div>
                   <Preview outline={outline} />
                 </AccordionContent>
