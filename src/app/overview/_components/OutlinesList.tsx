@@ -102,10 +102,7 @@ const OutlinesListComponent = () => {
                 `relative mb-6 w-full bg-neutral/50 p-0 shadow-xl shadow-base-300 transition-all duration-100 ease-in-out max-sm:rounded-none`
               )}
             >
-              <AccordionItem
-                key={outline.id}
-                value={`${outline.id}`}
-              >
+              <AccordionItem value={`${outline.id}`}>
                 <AccordionTrigger
                   iconSize={7}
                   className={cn(
@@ -137,7 +134,6 @@ const OutlinesListComponent = () => {
                     </span>
                   </div>
                   <div className={cn(`grid grid-cols-12 gap-4 border-t-2 border-base-300/30 p-4`)}>
-                    {/* DELETE BUTTON */}
                     <div className={cn(`col-span-12 sm:col-span-3`)}>
                       <DeleteButton
                         block={true}
@@ -146,7 +142,6 @@ const OutlinesListComponent = () => {
                         message={`Delete Outline`}
                       />
                     </div>
-                    {/* EDIT BUTTON */}
                     <Link
                       href={`/outline/${outline.id}`}
                       className={cn(`col-span-12 sm:col-span-3`)}
@@ -160,9 +155,7 @@ const OutlinesListComponent = () => {
                         Edit Outline
                       </Button>
                     </Link>
-                    {/* SIMULATE DROPDOWN */}
                     <SimulateDropdown outline={outline} />
-                    {/* BACKUPS DROPDOWN */}
                     <BackupsDropdown outline={outline}>
                       <ChevronDown className={cn(`size-5`)} />
                       Backup

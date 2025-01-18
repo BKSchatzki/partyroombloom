@@ -22,8 +22,8 @@ import {
 } from './ui/dialog';
 
 interface DeleteButtonProps {
-  block: boolean;
-  first: boolean;
+  block?: boolean;
+  first?: boolean;
   handleDelete: any;
   item: string;
   message: string;

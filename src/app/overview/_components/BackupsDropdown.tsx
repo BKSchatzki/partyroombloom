@@ -1,13 +1,14 @@
+'use client';
+
 import React from 'react';
 
 import {
   Braces,
-  ChevronDown,
   FileText,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
 import OutlineJsonSave from '@/components/OutlineJsonSave';
-import OutlinePdfGen from '@/components/OutlinePdfGen';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +18,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
+
+const OutlinePdfGen = dynamic(() => import('@/components/OutlinePdfGen'), {
+  ssr: false,
+  loading: () => (
+    <div className={cn(`flex h-full w-full items-center gap-2`)}>
+      <FileText className={cn(`size-5`)} />
+      Generating PDF
+    </div>
+  ),
+});
 
 interface BackupsDropdownProps {
   outline: Outline;
