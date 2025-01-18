@@ -137,7 +137,7 @@ const OutlinePdfGen = ({
   return (
     <PDFDownloadLink
       document={<Output content={outline} />}
-      fileName={`${outline.title} - ${dayjs().format('ddd MMM D, YYYY - h:mm A')}`}
+      fileName={`${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}`}
       className={cn(``, className)}
     >
       {children}

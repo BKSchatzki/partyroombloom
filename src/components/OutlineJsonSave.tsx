@@ -24,7 +24,7 @@ const OutlineJsonSave = ({
   return (
     <Button
       onClick={() =>
-        saveAs(fileToSave, `${outline.title} - ${dayjs().format('ddd MMM D, YYYY - h:mm A')}.json`)
+        saveAs(fileToSave, `${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}.json`)
       }
       className={cn(``, className)}
     >
