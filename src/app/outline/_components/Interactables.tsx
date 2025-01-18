@@ -26,13 +26,12 @@ import { cn } from '@/lib/utils';
 
 import DeleteButton from '../../../components/DeleteButton';
 
-const Interactables = ({
-  elementId,
-  outlineId,
-}: {
+interface InteractablesProps {
   elementId: string;
   outlineId: number | null;
-}) => {
+}
+
+const InteractablesComponent: React.FC<InteractablesProps> = ({ elementId, outlineId }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
@@ -70,27 +69,30 @@ const Interactables = ({
     [outlineId, setNewOutline, setOutline]
   );
 
-  const handleDelete = (id: string) => {
-    if (!id) return;
-    if (!outlineId) {
-      setNewOutline((outline) => ({
-        ...outline,
-        elements: outline.elements.filter(
-          (element) => element.id !== id && element.parentId !== id
-        ),
-      }));
-    }
-    if (outlineId) {
-      setOutline((outline) => ({
-        ...outline,
-        elements: outline.elements.filter(
-          (element) => element.id !== id && element.parentId !== id
-        ),
-      }));
-    }
-  };
+  const handleDelete = useCallback(
+    (id: string) => {
+      if (!id) return;
+      if (!outlineId) {
+        setNewOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.filter(
+            (element) => element.id !== id && element.parentId !== id
+          ),
+        }));
+      }
+      if (outlineId) {
+        setOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.filter(
+            (element) => element.id !== id && element.parentId !== id
+          ),
+        }));
+      }
+    },
+    [outlineId, setNewOutline, setOutline]
+  );
 
-  const handleAddInteractable = () => {
+  const handleAddInteractable = useCallback(() => {
     if (!thisElement) return;
     if (!outlineId) {
       setNewOutline((outline) => ({
@@ -128,7 +130,7 @@ const Interactables = ({
         ],
       }));
     }
-  };
+  }, [outlineId, setNewOutline, setOutline, thisElement]);
 
   return (
     <Card
@@ -267,5 +269,9 @@ const Interactables = ({
     </Card>
   );
 };
+
+const Interactables = React.memo(InteractablesComponent);
+
+InteractablesComponent.displayName = 'InteractablesComponent';
 
 export default Interactables;

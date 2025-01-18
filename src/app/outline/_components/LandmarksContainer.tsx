@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useAtom } from 'jotai';
 import {
@@ -20,11 +20,15 @@ import { cn } from '@/lib/utils';
 
 import Landmarks from './Landmarks';
 
-const LandmarksContainer = ({ outlineId }: { outlineId: number | null }) => {
+interface LandmarksProps {
+  outlineId: number | null;
+}
+
+const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
-  const handleAddLandmark = () => {
+  const handleAddLandmark = useCallback(() => {
     if (!outlineId) {
       setNewOutline((outline) => ({
         ...outline,
@@ -61,7 +65,7 @@ const LandmarksContainer = ({ outlineId }: { outlineId: number | null }) => {
         ],
       }));
     }
-  };
+  }, [outlineId, setNewOutline, setOutline]);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
@@ -119,5 +123,9 @@ const LandmarksContainer = ({ outlineId }: { outlineId: number | null }) => {
     </ScrollArea>
   );
 };
+
+const LandmarksContainer = React.memo(LandmarksContainerComponent);
+
+LandmarksContainer.displayName = 'LandmarksContainer';
 
 export default LandmarksContainer;

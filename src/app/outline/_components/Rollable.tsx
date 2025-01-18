@@ -16,7 +16,12 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-const Rollable = ({ elementId, outlineId }: { elementId: string; outlineId: number | null }) => {
+interface RollableProps {
+  elementId: string;
+  outlineId: number | null;
+}
+
+const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
@@ -90,5 +95,9 @@ const Rollable = ({ elementId, outlineId }: { elementId: string; outlineId: numb
     </Card>
   );
 };
+
+const Rollable = React.memo(RollableComponent);
+
+Rollable.displayName = 'Rollable';
 
 export default Rollable;

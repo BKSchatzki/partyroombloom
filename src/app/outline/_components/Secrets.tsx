@@ -27,7 +27,12 @@ import { cn } from '@/lib/utils';
 import DeleteButton from '../../../components/DeleteButton';
 import Rollable from './Rollable';
 
-const Secrets = ({ elementId, outlineId }: { elementId: string; outlineId: number | null }) => {
+interface SecretsProps {
+  elementId: string;
+  outlineId: number | null;
+}
+
+const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
@@ -65,23 +70,26 @@ const Secrets = ({ elementId, outlineId }: { elementId: string; outlineId: numbe
     [outlineId, setNewOutline, setOutline]
   );
 
-  const handleDelete = (id: string) => {
-    if (!id) return;
-    if (!outlineId) {
-      setNewOutline((outline) => ({
-        ...outline,
-        elements: outline.elements.filter((element) => element.id !== id),
-      }));
-    }
-    if (outlineId) {
-      setOutline((outline) => ({
-        ...outline,
-        elements: outline.elements.filter((element) => element.id !== id),
-      }));
-    }
-  };
+  const handleDelete = useCallback(
+    (id: string) => {
+      if (!id) return;
+      if (!outlineId) {
+        setNewOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.filter((element) => element.id !== id),
+        }));
+      }
+      if (outlineId) {
+        setOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.filter((element) => element.id !== id),
+        }));
+      }
+    },
+    [outlineId, setNewOutline, setOutline]
+  );
 
-  const handleAddSecret = () => {
+  const handleAddSecret = useCallback(() => {
     if (!thisElement) return;
     if (!outlineId) {
       setNewOutline((outline) => ({
@@ -119,7 +127,7 @@ const Secrets = ({ elementId, outlineId }: { elementId: string; outlineId: numbe
         ],
       }));
     }
-  };
+  }, [outlineId, setNewOutline, setOutline, thisElement]);
 
   return (
     <Card
@@ -263,5 +271,9 @@ const Secrets = ({ elementId, outlineId }: { elementId: string; outlineId: numbe
     </Card>
   );
 };
+
+const Secrets = React.memo(SecretsComponent);
+
+Secrets.displayName = 'Secrets';
 
 export default Secrets;

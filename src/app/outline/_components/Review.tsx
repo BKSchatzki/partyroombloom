@@ -22,7 +22,19 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const SecretsReview = ({ outline, id }: { outline: Outline; id: string }) => {
+interface OutlineProps {
+  outline: Outline;
+}
+
+interface OutlineAndIdProps extends OutlineProps {
+  id: string;
+}
+
+interface OutlineIdProps {
+  outlineId: number | null;
+}
+
+const SecretsReviewComponent: React.FC<OutlineAndIdProps> = ({ outline, id }) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-8 has-[div]:mb-0`)}>
       {outline.elements
@@ -84,7 +96,17 @@ const SecretsReview = ({ outline, id }: { outline: Outline; id: string }) => {
   );
 };
 
-const InteractablesReview = ({ outline, id }: { outline: Outline; id: string }) => {
+const SecretsReview = React.memo(SecretsReviewComponent);
+
+SecretsReview.displayName = 'SecretsReview';
+
+const InteractablesReviewComponent: React.FC<OutlineAndIdProps> = ({
+  outline,
+  id,
+}: {
+  outline: Outline;
+  id: string;
+}) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-10 has-[div]:mb-0`)}>
       {outline.elements
@@ -120,7 +142,11 @@ const InteractablesReview = ({ outline, id }: { outline: Outline; id: string }) 
   );
 };
 
-const LandmarksReview = ({ outline }: { outline: Outline }) => {
+const InteractablesReview = React.memo(InteractablesReviewComponent);
+
+InteractablesReview.displayName = 'InteractablesReview';
+
+const LandmarksReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Outline }) => {
   return (
     <div className={cn(`flex flex-col gap-6`)}>
       {outline.elements
@@ -156,7 +182,11 @@ const LandmarksReview = ({ outline }: { outline: Outline }) => {
   );
 };
 
-const InfoReview = ({ outline }: { outline: Outline }) => {
+const LandmarksReview = React.memo(LandmarksReviewComponent);
+
+LandmarksReview.displayName = 'LandmarksReview';
+
+const InfoReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Outline }) => {
   return (
     <Card
       className={cn(
@@ -189,7 +219,11 @@ const InfoReview = ({ outline }: { outline: Outline }) => {
   );
 };
 
-const Review = ({ outlineId }: { outlineId: number | null }) => {
+const InfoReview = React.memo(InfoReviewComponent);
+
+InfoReview.displayName = 'InfoReview';
+
+const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId }) => {
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
@@ -200,5 +234,9 @@ const Review = ({ outlineId }: { outlineId: number | null }) => {
     </ScrollArea>
   );
 };
+
+const Review = React.memo(ReviewComponent);
+
+Review.displayName = 'Review';
 
 export default Review;

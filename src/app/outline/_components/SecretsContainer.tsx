@@ -19,7 +19,11 @@ import { cn } from '@/lib/utils';
 
 import Secrets from './Secrets';
 
-const InteractablesContainer = ({ outlineId }: { outlineId: number | null }) => {
+interface SecretsContainerProps {
+  outlineId: number | null;
+}
+
+const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({ outlineId }) => {
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
@@ -83,4 +87,8 @@ const InteractablesContainer = ({ outlineId }: { outlineId: number | null }) => 
   );
 };
 
-export default InteractablesContainer;
+const SecretsContainer = React.memo(SecretsContainerComponent);
+
+SecretsContainer.displayName = 'SecretsContainer';
+
+export default SecretsContainer;

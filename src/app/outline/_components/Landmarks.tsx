@@ -20,7 +20,12 @@ import { cn } from '@/lib/utils';
 
 import DeleteButton from '../../../components/DeleteButton';
 
-const Landmarks = ({ elementId, outlineId }: { elementId: string; outlineId: number | null }) => {
+interface LandmarksProps {
+  elementId: string;
+  outlineId: number | null;
+}
+
+const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
@@ -51,7 +56,7 @@ const Landmarks = ({ elementId, outlineId }: { elementId: string; outlineId: num
     [outlineId, setNewOutline, setOutline, thisElement]
   );
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (!thisElement) return;
     if (!outlineId) {
       setNewOutline((outline) => {
@@ -91,7 +96,7 @@ const Landmarks = ({ elementId, outlineId }: { elementId: string; outlineId: num
         };
       });
     }
-  };
+  }, [outlineId, setNewOutline, setOutline, thisElement]);
 
   return (
     <Card className={cn(`mb-8 w-full bg-primary/10 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
@@ -134,5 +139,9 @@ const Landmarks = ({ elementId, outlineId }: { elementId: string; outlineId: num
     </Card>
   );
 };
+
+const Landmarks = React.memo(LandmarksComponent);
+
+Landmarks.displayName = 'Landmarks';
 
 export default Landmarks;

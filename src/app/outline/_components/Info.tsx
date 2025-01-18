@@ -20,7 +20,11 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-const Info = ({ outlineId }: { outlineId: number | null }) => {
+interface InfoProps {
+  outlineId: number | null;
+}
+
+const InfoComponent: React.FC<InfoProps> = ({ outlineId }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
@@ -125,5 +129,9 @@ const Info = ({ outlineId }: { outlineId: number | null }) => {
     </div>
   );
 };
+
+const Info = React.memo(InfoComponent);
+
+Info.displayName = 'Info';
 
 export default Info;

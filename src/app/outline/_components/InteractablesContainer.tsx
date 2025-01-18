@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import { useAtom } from 'jotai';
 import { MousePointerClick } from 'lucide-react';
 
@@ -17,7 +19,11 @@ import { cn } from '@/lib/utils';
 
 import Interactables from './Interactables';
 
-const InteractablesContainer = ({ outlineId }: { outlineId: number | null }) => {
+interface InteractablesContainerProps {
+  outlineId: number | null;
+}
+
+const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = ({ outlineId }) => {
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
@@ -68,5 +74,9 @@ const InteractablesContainer = ({ outlineId }: { outlineId: number | null }) => 
     </ScrollArea>
   );
 };
+
+const InteractablesContainer = React.memo(InteractablesContainerComponent);
+
+InteractablesContainer.displayName = 'InteractablesContainer';
 
 export default InteractablesContainer;
