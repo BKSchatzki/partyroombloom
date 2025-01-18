@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import {
@@ -39,7 +39,7 @@ interface BuilderProps {
   tutorialMode: boolean;
 }
 
-const Builder: React.FC<BuilderProps> = ({ outlineId, tutorialMode = false }) => {
+const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = false }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
@@ -163,5 +163,9 @@ const Builder: React.FC<BuilderProps> = ({ outlineId, tutorialMode = false }) =>
     </Carousel>
   );
 };
+
+const Builder = React.memo(BuilderComponent);
+
+Builder.displayName = 'Builder';
 
 export default Builder;
