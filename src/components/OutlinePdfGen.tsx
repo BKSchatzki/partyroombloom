@@ -1,5 +1,6 @@
 import React from 'react';
 
+import dayjs from 'dayjs';
 import { createTw } from 'react-pdf-tailwind';
 
 import { Outline } from '@/lib/types';
@@ -136,6 +137,7 @@ const OutlinePdfGen = ({
   return (
     <PDFDownloadLink
       document={<Output content={outline} />}
+      fileName={`${outline.title} - ${dayjs().format('ddd MMM D, YYYY - h:mm A')}`}
       className={cn(``, className)}
     >
       {children}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import {
+  Braces,
   FileText,
   Leaf,
   Pencil,
@@ -11,6 +12,7 @@ import {
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';
+import OutlineJsonSave from '@/components/OutlineJsonSave';
 import OutlinePdfGen from '@/components/OutlinePdfGen';
 import {
   Accordion,
@@ -160,6 +162,8 @@ const OutlinesList = () => {
                         Edit Outline
                       </Button>
                     </Link>
+                    {/* SIMULATE DROPDOWN */}
+                    <SimulateDropdown outline={outline} />
                     {/* PDF BUTTON */}
                     <OutlinePdfGen
                       outline={outline}
@@ -168,8 +172,15 @@ const OutlinesList = () => {
                       <FileText className={cn(`size-5`)} />
                       PDF
                     </OutlinePdfGen>
-                    {/* SIMULATE DROPDOWN */}
-                    <SimulateDropdown outline={outline} />
+                    {/* JSON BUTTON */}
+
+                    <OutlineJsonSave
+                      outline={outline}
+                      className={cn(`btn btn-info col-span-12 sm:col-span-2`)}
+                    >
+                      <Braces className={cn(`size-5`)} />
+                      JSON
+                    </OutlineJsonSave>
                   </div>
                   <Preview outline={outline} />
                 </AccordionContent>

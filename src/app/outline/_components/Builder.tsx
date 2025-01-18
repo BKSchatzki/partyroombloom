@@ -3,9 +3,13 @@
 import { useState } from 'react';
 
 import { useAtom } from 'jotai';
-import { Save } from 'lucide-react';
+import {
+  Braces,
+  Save,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import OutlineJsonSave from '@/components/OutlineJsonSave';
 import OutlinePdfGen from '@/components/OutlinePdfGen';
 import { Button } from '@/components/ui/button';
 import {
@@ -139,16 +143,13 @@ const Builder = ({
           <CarouselPrevious />
           <CarouselNext />
           <div className={cn(`absolute bottom-0 right-20 flex items-center gap-4`)}>
-            <Button
-              onClick={handleSave}
-              color={`secondary`}
-              disabled={isSaving}
-              outlined={true}
-              // className={cn(`absolute bottom-0 right-20 flex items-center gap-2`)}
+            <OutlineJsonSave
+              outline={outlineId ? outline : newOutline}
+              className={cn(`btn-outline btn-info`)}
             >
-              <Save className={cn(`size-5`, isSaving && `animate-spin`)} />
-              {isSaving ? `Wait` : `Save`}
-            </Button>
+              <Braces className={cn(`size-5`)} />
+              JSON
+            </OutlineJsonSave>
             <OutlinePdfGen
               outline={outlineId ? outline : newOutline}
               className={cn(`btn btn-outline btn-warning`)}
@@ -156,6 +157,15 @@ const Builder = ({
               <Save className={cn(`size-5`)} />
               <span>PDF</span>
             </OutlinePdfGen>
+            <Button
+              onClick={handleSave}
+              color={`secondary`}
+              disabled={isSaving}
+              outlined={true}
+            >
+              <Save className={cn(`size-5`, isSaving && `animate-spin`)} />
+              {isSaving ? `Wait` : `Save`}
+            </Button>
           </div>
         </div>
       </div>
