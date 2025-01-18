@@ -2,13 +2,12 @@ import React from 'react';
 
 import { cn } from '@/lib/utils';
 
-const Container = ({
-  children,
-  className = '',
-}: {
-  children: React.ReactNode;
+interface ContainerProps {
   className?: string;
-}) => {
+  children: React.ReactNode;
+}
+
+const Container: React.FC<ContainerProps> = ({ children, className }) => {
   return (
     <div
       className={cn(

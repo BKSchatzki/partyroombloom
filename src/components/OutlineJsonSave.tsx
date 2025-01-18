@@ -6,15 +6,13 @@ import { saveAs } from 'file-saver';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const OutlineJsonSave = ({
-  outline,
-  className,
-  children,
-}: {
+interface OutlineJsonSaveProps {
   outline: Outline;
   className?: string;
   children: React.ReactNode;
-}) => {
+}
+
+const OutlineJsonSave: React.FC<OutlineJsonSaveProps> = ({ outline, className, children }) => {
   const fileToSave = new Blob([JSON.stringify(outline)], {
     type: 'application/json',
   });

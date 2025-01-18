@@ -18,15 +18,13 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const BackupsDropdown = ({
-  outline,
-  className,
-  children,
-}: {
+interface BackupsDropdownProps {
   outline: Outline;
   className?: string;
   children: React.ReactNode;
-}) => {
+}
+
+const BackupsDropdown: React.FC<BackupsDropdownProps> = ({ outline, className, children }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -71,10 +69,3 @@ const BackupsDropdown = ({
 };
 
 export default BackupsDropdown;
-
-{
-  /* PDF BUTTON */
-}
-{
-  /* JSON BUTTON */
-}

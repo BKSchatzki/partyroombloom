@@ -15,7 +15,16 @@ import {
 
 const tw = createTw({});
 
-const Output = ({ content }: { content: Outline }) => {
+interface OutputProps {
+  outline: Outline;
+}
+
+interface OutlinePdfGenProps extends OutputProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+const Output: React.FC<OutputProps> = ({ outline }) => {
   return (
     <Document>
       <Page
@@ -23,38 +32,38 @@ const Output = ({ content }: { content: Outline }) => {
         style={tw(`p-12 text-sm`)}
       >
         <View>
-          {content.title && (
+          {outline.title && (
             <Text
               style={tw(
                 `text-xl font-bold text-emerald-800 leading-4 pb-2 border-b border-emerald-800`
               )}
             >
-              {content.title}
+              {outline.title}
             </Text>
           )}
           <View style={tw(`py-2`)}>
-            {content.description && (
+            {outline.description && (
               <Text>
                 <Text style={tw(`font-bold text-emerald-800`)}>Description: </Text>
-                {content.description}
+                {outline.description}
               </Text>
             )}
-            {content.goal && (
+            {outline.goal && (
               <Text>
                 <Text style={tw(`font-bold text-emerald-800`)}>Goal: </Text>
-                {content.goal}
+                {outline.goal}
               </Text>
             )}
-            {content.comments && (
+            {outline.comments && (
               <Text>
                 <Text style={tw(`font-bold text-emerald-800`)}>Comments: </Text>
-                {content.comments}
+                {outline.comments}
               </Text>
             )}
           </View>
         </View>
         <View style={tw(`flex flex-col gap-1 pb-2`)}>
-          {content.elements
+          {outline.elements
             .filter((element) => element.type === 'landmark')
             .map((landmark) => (
               <React.Fragment key={landmark.id}>
@@ -66,7 +75,7 @@ const Output = ({ content }: { content: Outline }) => {
                   {landmark.description}
                 </Text>
                 <View style={tw(`pl-4`)}>
-                  {content.elements
+                  {outline.elements
                     .filter(
                       (element) =>
                         element.parentId === landmark.id && element.type === 'interactable'
@@ -81,7 +90,7 @@ const Output = ({ content }: { content: Outline }) => {
                           {interactable.description}
                         </Text>
                         <View style={tw(`pl-4`)}>
-                          {content.elements
+                          {outline.elements
                             .filter(
                               (element) =>
                                 element.parentId === interactable.id && element.type === 'secret'
@@ -125,18 +134,10 @@ const Output = ({ content }: { content: Outline }) => {
   );
 };
 
-const OutlinePdfGen = ({
-  outline,
-  className,
-  children,
-}: {
-  outline: Outline;
-  className?: string;
-  children: React.ReactNode;
-}) => {
+const OutlinePdfGen: React.FC<OutlinePdfGenProps> = ({ outline, className, children }) => {
   return (
     <PDFDownloadLink
-      document={<Output content={outline} />}
+      document={<Output outline={outline} />}
       fileName={`${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}`}
       className={cn(``, className)}
     >

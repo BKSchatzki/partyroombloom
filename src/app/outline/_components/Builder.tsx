@@ -34,13 +34,12 @@ import LandmarksContainer from './LandmarksContainer';
 import Review from './Review';
 import SecretsContainer from './SecretsContainer';
 
-const Builder = ({
-  outlineId,
-  tutorialMode = false,
-}: {
+interface BuilderProps {
   outlineId: number | null;
-  tutorialMode?: boolean;
-}) => {
+  tutorialMode: boolean;
+}
+
+const Builder: React.FC<BuilderProps> = ({ outlineId, tutorialMode = false }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);

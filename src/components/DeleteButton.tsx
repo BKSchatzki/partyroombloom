@@ -21,18 +21,20 @@ import {
   DialogTrigger,
 } from './ui/dialog';
 
-const DeleteButton = ({
+interface DeleteButtonProps {
+  block: boolean;
+  first: boolean;
+  handleDelete: any;
+  item: string;
+  message: string;
+}
+
+const DeleteButton: React.FC<DeleteButtonProps> = ({
   block = false,
   first = true,
   handleDelete,
   item,
   message,
-}: {
-  block?: boolean;
-  first?: boolean;
-  handleDelete: any;
-  item: string;
-  message: string;
 }) => {
   if (block) {
     return (

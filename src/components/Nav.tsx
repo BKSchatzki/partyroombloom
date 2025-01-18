@@ -28,7 +28,11 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
-const Nav = ({ user }: { user: User | null }) => {
+interface NavProps {
+  user: User | null;
+}
+
+const Nav: React.FC<NavProps> = ({ user }) => {
   return (
     <nav
       className={cn(
