@@ -62,7 +62,7 @@ const Nav = ({ user }: { user: User | null }) => {
                 </Button>
               </Link>
             </li>
-            {/* <li>
+            <li>
               <Link href={`/outline`}>
                 <Button
                   color={`secondary`}
@@ -70,11 +70,11 @@ const Nav = ({ user }: { user: User | null }) => {
                   className={cn(`flex items-center gap-2 border-0 text-lg`)}
                 >
                   <Leaf className={cn(`size-5`)} />
-                  Outline
+                  New Outline
                 </Button>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href={`/simulate`}>
                 <Button
                   color={`primary`}
@@ -113,7 +113,7 @@ const Nav = ({ user }: { user: User | null }) => {
                   </Link>
                 </li>
                 <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} />
-                {/* <li>
+                <li>
                   <Link href={`/outline`}>
                     <DrawerClose
                       className={cn(
@@ -121,12 +121,12 @@ const Nav = ({ user }: { user: User | null }) => {
                       )}
                     >
                       <Leaf className={cn(`size-5`)} />
-                      Outline
+                      New Outline
                     </DrawerClose>
                   </Link>
                 </li>
                 <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} />
-                <li>
+                {/* <li>
                   <Link href={`/simulate`}>
                     <DrawerClose
                       className={cn(
