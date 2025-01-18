@@ -1,6 +1,7 @@
 import React from 'react';
 
 import dayjs from 'dayjs';
+import { saveAs } from 'file-saver';
 import { createTw } from 'react-pdf-tailwind';
 
 import { Outline } from '@/lib/types';
@@ -8,7 +9,7 @@ import { cn } from '@/lib/utils';
 import {
   Document,
   Page,
-  PDFDownloadLink,
+  pdf,
   Text,
   View,
 } from '@react-pdf/renderer';
@@ -141,14 +142,22 @@ const Output: React.FC<OutputProps> = ({ outline }) => {
 };
 
 const OutlinePdfGen: React.FC<OutlinePdfGenProps> = ({ outline, className, children }) => {
+  const handleDownload = async () => {
+    try {
+      const blob = await pdf(<Output outline={outline} />).toBlob();
+      saveAs(blob, `${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}.pdf`);
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+    } finally {
+    }
+  };
   return (
-    <PDFDownloadLink
-      document={<Output outline={outline} />}
-      fileName={`${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}`}
+    <button
+      onClick={handleDownload}
       className={cn(``, className)}
     >
       {children}
-    </PDFDownloadLink>
+    </button>
   );
 };
 
