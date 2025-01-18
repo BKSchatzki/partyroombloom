@@ -117,7 +117,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
 
   return (
     <Carousel className={cn(`h-full max-w-full`)}>
-      <div className={cn(`flex max-h-full flex-col pb-4`)}>
+      <div className={cn(`flex max-h-full select-none flex-col pb-4`)}>
         <CarouselContent>
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>

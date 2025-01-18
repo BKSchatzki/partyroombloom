@@ -189,7 +189,7 @@ const Chat = ({
       setApi={setEmbla}
       className={cn(`h-full max-w-full`)}
     >
-      <div className={cn(`flex max-h-full flex-col pb-4`)}>
+      <div className={cn(`flex max-h-full select-none flex-col pb-4`)}>
         <CarouselContent>
           {conversation.map((message, index) =>
             message.role === 'assistant' ? (
