@@ -18,7 +18,15 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const BackupsDropdown = ({ outline, className }: { outline: Outline; className?: string }) => {
+const BackupsDropdown = ({
+  outline,
+  className,
+  children,
+}: {
+  outline: Outline;
+  className?: string;
+  children: React.ReactNode;
+}) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -27,8 +35,7 @@ const BackupsDropdown = ({ outline, className }: { outline: Outline; className?:
           className
         )}
       >
-        <ChevronDown className={cn(`size-5`)} />
-        Backup
+        {children}
       </DropdownMenuTrigger>
       <DropdownMenuContent className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}>
         <DropdownMenuItem

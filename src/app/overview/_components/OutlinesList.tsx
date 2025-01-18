@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import {
+  ChevronDown,
   Leaf,
   Pencil,
 } from 'lucide-react';
@@ -162,7 +163,10 @@ const OutlinesList = () => {
                     {/* SIMULATE DROPDOWN */}
                     <SimulateDropdown outline={outline} />
                     {/* BACKUPS DROPDOWN */}
-                    <BackupsDropdown outline={outline} />
+                    <BackupsDropdown outline={outline}>
+                      <ChevronDown className={cn(`size-5`)} />
+                      Backup
+                    </BackupsDropdown>
                   </div>
                   <Preview outline={outline} />
                 </AccordionContent>

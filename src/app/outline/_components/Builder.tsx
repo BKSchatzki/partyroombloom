@@ -3,7 +3,10 @@
 import { useState } from 'react';
 
 import { useAtom } from 'jotai';
-import { Save } from 'lucide-react';
+import {
+  ChevronUp,
+  Save,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import BackupsDropdown from '@/app/overview/_components/BackupsDropdown';
@@ -142,7 +145,10 @@ const Builder = ({
             <BackupsDropdown
               outline={outline}
               className={cn(`px-4 py-2 text-sm`)}
-            />
+            >
+              <ChevronUp className={cn(`size-5`)} />
+              <span className={cn(`max-sm:hidden`)}>Backup</span>
+            </BackupsDropdown>
             <Button
               onClick={handleSave}
               color={`secondary`}
