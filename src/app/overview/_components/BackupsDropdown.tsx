@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils';
 const OutlinePdfGen = dynamic(() => import('@/components/OutlinePdfGen'), {
   ssr: false,
   loading: () => (
-    <div className={cn(`flex h-full w-full items-center gap-2 px-4 py-2`)}>
+    <div className={cn(`flex h-full w-full items-center gap-2 p-4`)}>
       <FileText className={cn(`size-5 animate-spin`)} />
       Generating PDF
     </div>
@@ -86,7 +86,7 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
           >
             <OutlinePdfGen
               outline={outline}
-              className={cn(`flex h-full w-full items-center gap-2 px-4 py-2`)}
+              className={cn(`flex h-full w-full items-center gap-2 p-4`)}
             >
               <FileText className={cn(`size-5`)} />
               Download as PDF
@@ -99,7 +99,7 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
           >
             <OutlineJsonSave
               outline={outline}
-              className={cn(`flex h-full w-full items-center gap-2 px-4 py-2`)}
+              className={cn(`flex h-full w-full items-center gap-2 p-4`)}
             >
               <Braces className={cn(`size-5`)} />
               Download as JSON
@@ -113,7 +113,7 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
             >
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className={cn(`flex h-full w-full items-center gap-2 px-4 py-2`)}
+                className={cn(`flex h-full w-full items-center gap-2 p-4`)}
               >
                 <Upload className={cn(`size-5`)} />
                 Restore from JSON

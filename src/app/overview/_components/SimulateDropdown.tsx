@@ -49,12 +49,12 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
       <DropdownMenuContent className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}>
         <DropdownMenuItem
           className={cn(
-            `rounded-xl bg-indigo-600/30 px-4 py-2 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
+            `rounded-xl bg-indigo-600/30 p-0 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
           )}
         >
           <Link
             href={`/outline/${outline.id}/simulate`}
-            className={cn(`flex w-full items-center gap-2 text-lg`)}
+            className={cn(`flex w-full items-center gap-2 p-4 text-lg`)}
           >
             <Sparkle className={cn(`size-5`)} />
             New Simulation
@@ -65,12 +65,12 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
           <DropdownMenuItem
             key={conversation.createdAt}
             className={cn(
-              `rounded-xl bg-indigo-600/10 px-4 py-2 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
+              `rounded-xl bg-indigo-600/10 p-0 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
             )}
           >
             <Link
               href={`/outline/${outline.id}/simulate/${conversation.id}`}
-              className={cn(`flex w-full items-center gap-2`)}
+              className={cn(`flex w-full items-center gap-2 p-4`)}
             >
               <ArrowRight className={cn(`size-4`)} />
               {dayjs(conversation.createdAt).format('ddd MMM D, YYYY - h:mm A')}
