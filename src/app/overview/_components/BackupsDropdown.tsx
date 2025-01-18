@@ -73,7 +73,6 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({ outline, className, c
             Download as JSON
           </OutlineJsonSave>
         </DropdownMenuItem>
-        <DropdownMenuSeparator className={cn(`-my-0.5`)} />
       </DropdownMenuContent>
     </DropdownMenu>
   );
