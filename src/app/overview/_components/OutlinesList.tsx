@@ -66,10 +66,10 @@ const OutlinesListComponent = () => {
   }
 
   return (
-    <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 pt-4 sm:px-4`)}>
+    <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 sm:px-4`)}>
       <Link
         href={`/outline`}
-        className={cn(`group mb-4 block h-full w-full px-4 pt-1 outline-none`)}
+        className={cn(`group mb-4 mt-4 block h-full w-full px-4 outline-none`)}
         tabIndex={0}
       >
         <Card

@@ -18,7 +18,7 @@ export default async function Home() {
     <Container
       className={cn(`max-w-[72rem] gap-16 bg-gradient-to-b from-transparent from-80% to-base-100`)}
     >
-      <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 pb-4`)}>
+      <ScrollArea className={cn(`flex h-full w-full flex-col gap-4`)}>
         <Hero user={user} />
       </ScrollArea>
     </Container>

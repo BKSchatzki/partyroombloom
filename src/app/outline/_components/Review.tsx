@@ -228,7 +228,7 @@ const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId }) => {
   const [outline] = useAtom(outlineAtom);
 
   return (
-    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
+    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       <InfoReview outline={outlineId ? outline : newOutline}></InfoReview>
       <LandmarksReview outline={outlineId ? outline : newOutline}></LandmarksReview>
     </ScrollArea>

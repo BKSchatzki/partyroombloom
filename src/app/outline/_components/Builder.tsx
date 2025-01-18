@@ -119,21 +119,21 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
     <Carousel className={cn(`h-full max-w-full`)}>
       <div className={cn(`flex max-h-full flex-col pb-4`)}>
         <CarouselContent>
-          <CarouselItem className={cn(`basis-full py-4`)}>
-            <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
+          <CarouselItem className={cn(`basis-full pb-4`)}>
+            <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
               <Info outlineId={outlineId} />
             </ScrollArea>
           </CarouselItem>
-          <CarouselItem className={cn(`basis-full py-4`)}>
+          <CarouselItem className={cn(`basis-full pb-4`)}>
             <LandmarksContainer outlineId={outlineId} />
           </CarouselItem>
-          <CarouselItem className={cn(`basis-full py-4`)}>
+          <CarouselItem className={cn(`basis-full pb-4`)}>
             <InteractablesContainer outlineId={outlineId} />
           </CarouselItem>
-          <CarouselItem className={cn(`basis-full py-4`)}>
+          <CarouselItem className={cn(`basis-full pb-4`)}>
             <SecretsContainer outlineId={outlineId} />
           </CarouselItem>
-          <CarouselItem className={cn(`basis-full py-4`)}>
+          <CarouselItem className={cn(`basis-full pb-4`)}>
             <Review outlineId={outlineId} />
           </CarouselItem>
         </CarouselContent>

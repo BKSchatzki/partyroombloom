@@ -195,9 +195,9 @@ const Chat = ({
             message.role === 'assistant' ? (
               <CarouselItem
                 key={index}
-                className={cn(`basis-full py-4`)}
+                className={cn(`basis-full pb-4`)}
               >
-                <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4 pb-4`)}>
+                <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4`)}>
                   {message.role === 'assistant' ? (
                     <div className={cn(`mx-auto flex flex-col gap-6 p-4 max-sm:px-0`)}>
                       <h3 className={cn(`text-2xl font-bold`)}>{message.content.headline}</h3>
