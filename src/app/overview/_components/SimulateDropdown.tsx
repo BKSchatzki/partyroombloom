@@ -48,8 +48,9 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}>
         <DropdownMenuItem
+          asChild
           className={cn(
-            `rounded-xl bg-indigo-600/30 p-0 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
+            `cursor-pointer rounded-xl bg-indigo-600/30 p-0 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
           )}
         >
           <Link
@@ -63,9 +64,10 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
         <DropdownMenuSeparator className={cn(`-my-0.5`)} />
         {outline.conversations.map((conversation) => (
           <DropdownMenuItem
+            asChild
             key={conversation.createdAt}
             className={cn(
-              `rounded-xl bg-indigo-600/10 p-0 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
+              `cursor-pointer rounded-xl bg-indigo-600/10 p-0 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
             )}
           >
             <Link

@@ -2,6 +2,8 @@
 
 import React, { useRef } from 'react';
 
+import dayjs from 'dayjs';
+import saveAs from 'file-saver';
 import {
   Braces,
   FileText,
@@ -9,7 +11,7 @@ import {
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
-import OutlineJsonSave from '@/components/OutlineJsonSave';
+import OutlinePdfOutput from '@/components/OutlinePdfOutput';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,8 +21,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { pdf } from '@react-pdf/renderer';
 
-const OutlinePdfGen = dynamic(() => import('@/components/OutlinePdfGen'), {
+const OutlinePdfGen = dynamic(() => import('@/components/OutlinePdfOutput'), {
   ssr: false,
   loading: () => (
     <div className={cn(`flex h-full w-full items-center gap-2 p-4`)}>
@@ -43,8 +46,20 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
   className,
   children,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleDownload = async () => {
+    try {
+      const blob = await pdf(<OutlinePdfOutput outline={outline} />).toBlob();
+      saveAs(blob, `${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}.pdf`);
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+    }
+  };
 
+  const fileToSave = new Blob([JSON.stringify(outline)], {
+    type: 'application/json',
+  });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log('Upload started');
     const files = event.target.files;
@@ -80,35 +95,40 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}>
           <DropdownMenuItem
+            asChild
             className={cn(
-              `rounded-xl bg-warning/10 p-0 font-semibold hover:bg-warning hover:text-base-300 focus:bg-warning focus:text-base-300`
+              `cursor-pointer rounded-xl bg-warning/10 p-0 font-semibold hover:bg-warning hover:text-base-300 focus:bg-warning focus:text-base-300`
             )}
           >
-            <OutlinePdfGen
-              outline={outline}
+            <button
+              onClick={handleDownload}
               className={cn(`flex h-full w-full items-center gap-2 p-4`)}
             >
               <FileText className={cn(`size-5`)} />
               Download as PDF
-            </OutlinePdfGen>
+            </button>
           </DropdownMenuItem>
           <DropdownMenuItem
+            asChild
             className={cn(
-              `rounded-xl bg-fuchsia-500/10 p-0 font-semibold hover:bg-fuchsia-500 hover:text-base-300 focus:bg-fuchsia-500 focus:text-base-300`
+              `cursor-pointer rounded-xl bg-fuchsia-500/10 p-0 font-semibold hover:bg-fuchsia-500 hover:text-base-300 focus:bg-fuchsia-500 focus:text-base-300`
             )}
           >
-            <OutlineJsonSave
-              outline={outline}
+            <button
+              onClick={() =>
+                saveAs(fileToSave, `${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}.json`)
+              }
               className={cn(`flex h-full w-full items-center gap-2 p-4`)}
             >
               <Braces className={cn(`size-5`)} />
               Download as JSON
-            </OutlineJsonSave>
+            </button>
           </DropdownMenuItem>
           {setOutline !== null && (
             <DropdownMenuItem
+              asChild
               className={cn(
-                `rounded-xl bg-info/10 p-0 font-semibold hover:bg-info hover:text-base-300 focus:bg-info focus:text-base-300`
+                `cursor-pointer rounded-xl bg-info/10 p-0 font-semibold hover:bg-info hover:text-base-300 focus:bg-info focus:text-base-300`
               )}
             >
               <button
