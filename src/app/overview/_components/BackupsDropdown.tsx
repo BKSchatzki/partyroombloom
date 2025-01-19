@@ -9,9 +9,7 @@ import {
   FileText,
   Upload,
 } from 'lucide-react';
-import dynamic from 'next/dynamic';
 
-import OutlinePdfOutput from '@/components/OutlinePdfOutput';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,17 +19,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { pdf } from '@react-pdf/renderer';
-
-const OutlinePdfGen = dynamic(() => import('@/components/OutlinePdfOutput'), {
-  ssr: false,
-  loading: () => (
-    <div className={cn(`flex h-full w-full items-center gap-2 p-4`)}>
-      <FileText className={cn(`size-5 animate-spin`)} />
-      Generating PDF
-    </div>
-  ),
-});
 
 interface BackupsDropdownProps {
   outline: Outline;
@@ -48,8 +35,12 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
 }) => {
   const handleDownload = async () => {
     try {
-      const blob = await pdf(<OutlinePdfOutput outline={outline} />).toBlob();
-      saveAs(blob, `${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}.pdf`);
+      if (typeof window !== 'undefined') {
+        const { pdf } = await import('@react-pdf/renderer');
+        const OutlinePdfOutput = (await import('@/components/OutlinePdfOutput')).default;
+        const blob = await pdf(<OutlinePdfOutput outline={outline} />).toBlob();
+        saveAs(blob, `${outline.title} ${dayjs().format('MM-DD-YYYY HH_MM_ss')}.pdf`);
+      }
     } catch (error) {
       console.error('PDF generation failed:', error);
     }
