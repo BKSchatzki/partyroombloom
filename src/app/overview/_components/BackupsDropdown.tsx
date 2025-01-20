@@ -67,26 +67,6 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e?.target?.result as string);
-
-        // linear time this
-        /* let newId: string;
-          data.elements.forEach((element: Element) => {
-          newId = v7();
-          data.elements.forEach((child: Element) => {
-            if (child.parentId === element.id) {
-              child.parentId = newId;
-            }
-          });
-          element.id = newId;
-        });
-        data.id = null;
-        data.conversations = [];
-        data.elements.sort((a: Element, b: Element) =>
-          a.userCreatedAt.toString().localeCompare(b.userCreatedAt.toString())
-        ); */
-        // this is lame
-
-        // yay i did it
         const idMap = new Map<string, string>();
         data.elements.forEach((element: Element) => {
           idMap.set(element.id, v7());
@@ -101,8 +81,6 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
         data.elements.sort((a: Element, b: Element) =>
           a.userCreatedAt.toString().localeCompare(b.userCreatedAt.toString())
         );
-        // hooray for maps
-
         setOutline(data);
       } catch (error) {
         console.error('Error parsing JSON:', error);
