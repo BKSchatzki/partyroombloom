@@ -55,7 +55,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
         setNewOutline(tutorialInit);
         return tutorialInit;
       }
-      if (outlineId) {
+      if (!outlineId) {
         return newOutline;
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
