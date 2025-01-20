@@ -74,7 +74,6 @@ export const userMessageInit: UserMessage = {
   },
 };
 
-export const tutorialOutlineAtom = atomWithStorage<Outline>('tutorialOutline', tutorialInit);
 export const newOutlineAtom = atomWithStorage<Outline>('newOutline', outlineInit);
 export const outlineAtom = atomWithStorage<Outline>('outline', outlineInit);
 export const outlinesListAtom = atomWithStorage<Outline[]>('outlinesList', outlinesListInit);

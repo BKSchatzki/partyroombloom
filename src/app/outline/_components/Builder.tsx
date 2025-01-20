@@ -24,6 +24,7 @@ import {
   outlineAtom,
   outlineInit,
   outlinesListAtom,
+  tutorialInit,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -50,7 +51,11 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
   const { isLoading, error } = useQuery({
     queryKey: ['outline'],
     queryFn: async () => {
-      if (outlineId === null) {
+      if (tutorialMode) {
+        setNewOutline(tutorialInit);
+        return tutorialInit;
+      }
+      if (outlineId) {
         return newOutline;
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
