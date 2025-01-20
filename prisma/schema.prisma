@@ -56,7 +56,7 @@ model Outline {
 }
 
 model Element {
-  id              String    @id
+  id              String    @id @default(uuid())
   outlineId       Int
   outline         Outline   @relation(fields: [outlineId], references: [id], onDelete: Cascade)
   userId          Int

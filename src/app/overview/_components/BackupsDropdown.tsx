@@ -9,6 +9,7 @@ import {
   FileText,
   Upload,
 } from 'lucide-react';
+import { v7 } from 'uuid';
 
 import {
   DropdownMenu,
@@ -17,7 +18,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Outline } from '@/lib/types';
+import {
+  Element,
+  Outline,
+} from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface BackupsDropdownProps {
@@ -52,7 +56,6 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('Upload started');
     const files = event.target.files;
     if (!files?.length) {
       return;
@@ -64,6 +67,42 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e?.target?.result as string);
+
+        // linear time this
+        /* let newId: string;
+          data.elements.forEach((element: Element) => {
+          newId = v7();
+          data.elements.forEach((child: Element) => {
+            if (child.parentId === element.id) {
+              child.parentId = newId;
+            }
+          });
+          element.id = newId;
+        });
+        data.id = null;
+        data.conversations = [];
+        data.elements.sort((a: Element, b: Element) =>
+          a.userCreatedAt.toString().localeCompare(b.userCreatedAt.toString())
+        ); */
+        // this is lame
+
+        // yay i did it
+        const idMap = new Map<string, string>();
+        data.elements.forEach((element: Element) => {
+          idMap.set(element.id, v7());
+        });
+        data.elements = data.elements.map((element: Element) => ({
+          ...element,
+          id: idMap.get(element.id),
+          parentId: element.parentId ? (idMap.get(element.parentId) ?? null) : null,
+        }));
+        data.id = null;
+        data.conversations = [];
+        data.elements.sort((a: Element, b: Element) =>
+          a.userCreatedAt.toString().localeCompare(b.userCreatedAt.toString())
+        );
+        // hooray for maps
+
         setOutline(data);
       } catch (error) {
         console.error('Error parsing JSON:', error);
