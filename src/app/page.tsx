@@ -49,6 +49,7 @@ const Hero = ({ user }: { user: User | null }) => {
       <div className={cn(`flex gap-4 max-sm:flex-col`)}>
         <Link
           href={`/tutorial`}
+          tabIndex={0}
           className={cn(`btn btn-primary`)}
         >
           How it works
@@ -57,6 +58,7 @@ const Hero = ({ user }: { user: User | null }) => {
         {user ? (
           <Link
             href={`/overview`}
+            tabIndex={0}
             className={cn(`btn btn-neutral`)}
           >
             Go to overview
