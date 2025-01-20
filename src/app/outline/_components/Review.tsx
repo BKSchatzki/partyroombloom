@@ -190,7 +190,7 @@ const InfoReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Out
   return (
     <Card
       className={cn(
-        `mb-6 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
+        `mb-6 mt-4 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
       )}
     >
       <span

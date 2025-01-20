@@ -71,7 +71,7 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId }) =>
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       <section
         className={cn(
-          `mb-8 mt-4 flex items-center justify-center gap-4 text-primary max-sm:flex-col sm:gap-2`
+          `my-8 flex items-center justify-center gap-4 text-primary max-sm:flex-col sm:gap-2`
         )}
       >
         <h2

@@ -50,7 +50,7 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId }) => {
     <div className={cn(`pb-4`)}>
       <section
         className={cn(
-          `mb-8 mt-4 flex items-center justify-center gap-4 text-[#64d8b4] max-sm:flex-col sm:gap-2`
+          `my-8 flex items-center justify-center gap-4 text-[#64d8b4] max-sm:flex-col sm:gap-2`
         )}
       >
         <h2

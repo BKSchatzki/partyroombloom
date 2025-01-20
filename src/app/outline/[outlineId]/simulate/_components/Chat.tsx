@@ -199,7 +199,7 @@ const Chat = ({
               >
                 <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 px-4`)}>
                   {message.role === 'assistant' ? (
-                    <div className={cn(`mx-auto flex flex-col gap-6 p-4 max-sm:px-0`)}>
+                    <div className={cn(`mx-auto flex flex-col gap-6 px-4 py-8 max-sm:px-0`)}>
                       <h3 className={cn(`text-2xl font-bold`)}>{message.content.headline}</h3>
                       <div className={cn(`flex flex-col gap-4`)}>
                         {message.content.narration?.map((narration) => (
