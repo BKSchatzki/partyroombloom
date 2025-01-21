@@ -3,10 +3,7 @@
 import React, { useState } from 'react';
 
 import { useAtom } from 'jotai';
-import {
-  ChevronUp,
-  Save,
-} from 'lucide-react';
+import { ChevronUp, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import BackupsDropdown from '@/app/overview/_components/BackupsDropdown';
@@ -24,7 +21,8 @@ import {
   outlineAtom,
   outlineInit,
   outlinesListAtom,
-  tutorialInit,
+  tutorialOutlineAtom,
+  tutorialOutlineInit,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -41,6 +39,7 @@ interface BuilderProps {
 }
 
 const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = false }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
@@ -52,8 +51,8 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
     queryKey: ['outline'],
     queryFn: async () => {
       if (tutorialMode) {
-        setNewOutline(tutorialInit);
-        return tutorialInit;
+        setTutorialOutline(tutorialOutlineInit);
+        return tutorialOutline;
       }
       if (!outlineId) {
         return newOutline;
@@ -126,7 +125,10 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
         <CarouselContent>
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
-              <Info outlineId={outlineId} />
+              <Info
+                outlineId={outlineId}
+                tutorialMode={tutorialMode}
+              />
             </ScrollArea>
           </CarouselItem>
           <CarouselItem className={cn(`basis-full pb-4`)}>

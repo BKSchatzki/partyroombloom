@@ -5,32 +5,31 @@ import React, { useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Theater } from 'lucide-react';
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  newOutlineAtom,
-  outlineAtom,
-} from '@/lib/atoms';
+import { newOutlineAtom, outlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 interface InfoProps {
   outlineId: number | null;
+  tutorialMode: boolean;
 }
 
-const InfoComponent: React.FC<InfoProps> = ({ outlineId }) => {
+const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
-      if (!outlineId) {
+      if (tutorialMode) {
+        setTutorialOutline((outline) => ({
+          ...outline,
+          [property]: event.target.value,
+        }));
+      } else if (!outlineId) {
         setNewOutline((outline) => ({
           ...outline,
           [property]: event.target.value,
@@ -43,7 +42,7 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId }) => {
         }));
       }
     },
-    [outlineId, setNewOutline, setOutline]
+    [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
   );
 
   return (
@@ -82,7 +81,13 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId }) => {
             id={`title`}
             onChange={(event) => handleChange(event, 'title')}
             placeholder={`Title`}
-            value={outlineId ? outline.title : newOutline.title}
+            value={
+              tutorialMode //
+                ? tutorialOutline.title
+                : outlineId
+                  ? outline.title
+                  : newOutline.title
+            }
           />
           <Label
             className={cn(`sr-only`)}
@@ -95,7 +100,13 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId }) => {
             id={`description`}
             onChange={(event) => handleChange(event, 'description')}
             placeholder={`Description`}
-            value={outlineId ? outline.description : newOutline.description}
+            value={
+              tutorialMode //
+                ? tutorialOutline.description
+                : outlineId
+                  ? outline.description
+                  : newOutline.description
+            }
           />
           <Label
             className={cn(`sr-only`)}
@@ -108,7 +119,13 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId }) => {
             id={`goal`}
             onChange={(event) => handleChange(event, 'goal')}
             placeholder={`Goal`}
-            value={outlineId ? outline.goal : newOutline.goal}
+            value={
+              tutorialMode //
+                ? tutorialOutline.goal
+                : outlineId
+                  ? outline.goal
+                  : newOutline.goal
+            }
           />
           <Label
             className={cn(`sr-only`)}
@@ -121,7 +138,13 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId }) => {
             id={`comments`}
             onChange={(event) => handleChange(event, 'comments')}
             placeholder={`Comments`}
-            value={outlineId ? outline.comments : newOutline.comments}
+            value={
+              tutorialMode //
+                ? tutorialOutline.comments
+                : outlineId
+                  ? outline.comments
+                  : newOutline.comments
+            }
           />
         </CardContent>
         <CardFooter className={cn(`flex flex-col items-start gap-4`)}></CardFooter>

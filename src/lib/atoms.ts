@@ -1,10 +1,6 @@
 import { atomWithStorage } from 'jotai/utils';
 
-import type {
-  Conversation,
-  Outline,
-  UserMessage,
-} from './types';
+import type { Conversation, Outline, UserMessage } from './types';
 
 const outlinesListInit: Outline[] = [];
 
@@ -18,7 +14,7 @@ export const outlineInit: Outline = {
   conversations: [],
 };
 
-export const tutorialInit: Outline = {
+export const tutorialOutlineInit: Outline = {
   id: null,
   title: 'Secret Treasure Room',
   description:
@@ -74,6 +70,7 @@ export const userMessageInit: UserMessage = {
   },
 };
 
+export const tutorialOutlineAtom = atomWithStorage<Outline>('tutorialOutline', tutorialOutlineInit);
 export const newOutlineAtom = atomWithStorage<Outline>('newOutline', outlineInit);
 export const outlineAtom = atomWithStorage<Outline>('outline', outlineInit);
 export const outlinesListAtom = atomWithStorage<Outline[]>('outlinesList', outlinesListInit);
