@@ -23,16 +23,22 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
   return outline.conversations.length === 0 ? (
     <Link
       href={`/outline/${outline.id}/simulate`}
+      role={`none`}
+      tabIndex={-1}
       className={cn(`col-span-12 sm:col-span-4`)}
     >
       <Button
         color={`ghost`}
+        role={`link`}
         size={`block`}
         className={cn(
           `max-w-full border border-indigo-700 bg-indigo-600 font-semibold text-base-content outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30`
         )}
       >
-        <Sparkle className={cn(`size-5`)} />
+        <Sparkle
+          aria-hidden={true}
+          className={cn(`size-5`)}
+        />
         Simulate Scene
       </Button>
     </Link>
@@ -43,7 +49,10 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
           `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-indigo-700 bg-indigo-600 font-semibold text-base-content outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 sm:col-span-4`
         )}
       >
-        <ChevronDown className={cn(`size-5`)} />
+        <ChevronDown
+          aria-hidden={true}
+          className={cn(`size-5`)}
+        />
         Select Simulation
       </DropdownMenuTrigger>
       <DropdownMenuContent className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}>
@@ -57,7 +66,10 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
             href={`/outline/${outline.id}/simulate`}
             className={cn(`flex w-full items-center gap-2 p-4 text-lg`)}
           >
-            <Sparkle className={cn(`size-5`)} />
+            <Sparkle
+              aria-hidden={true}
+              className={cn(`size-5`)}
+            />
             New Simulation
           </Link>
         </DropdownMenuItem>

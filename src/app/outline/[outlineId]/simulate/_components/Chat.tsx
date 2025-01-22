@@ -230,16 +230,26 @@ const Chat = ({
                       >
                         {isSaving ? (
                           <span className={cn(`flex items-center gap-2`)}>
-                            <Sparkles className={cn(`size-5 animate-spin`)} />
+                            <Sparkles
+                              aria-hidden={true}
+                              className={cn(`size-5 animate-spin`)}
+                            />
                             Thinking
                           </span>
                         ) : index !== conversation.length - 1 ? (
                           <span className={cn(`flex items-center gap-2`)}>
-                            <Check className={cn(`size-5`)} /> Done
+                            <Check
+                              aria-hidden={true}
+                              className={cn(`size-5`)}
+                            />{' '}
+                            Done
                           </span>
                         ) : (
                           <span className={cn(`flex items-center gap-2`)}>
-                            <Sparkles className={cn(`size-5`)} />
+                            <Sparkles
+                              aria-hidden={true}
+                              className={cn(`size-5`)}
+                            />
                             Send
                           </span>
                         )}
@@ -273,7 +283,10 @@ const Chat = ({
               `absolute bottom-0 right-20 flex items-center gap-2 border-indigo-500 text-indigo-500 outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:border-indigo-500 hover:bg-indigo-500 hover:brightness-90 focus:ring-2 disabled:border-indigo-500/30 disabled:bg-indigo-500/10 disabled:text-indigo-500/30`
             )}
           >
-            <Save className={cn(`size-5`)} />
+            <Save
+              aria-hidden={true}
+              className={cn(`size-5`)}
+            />
             {isSaving ? `Wait` : `Save`}
           </Button>
         </div>

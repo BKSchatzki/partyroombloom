@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import {
   Grid2X2,
   Home,
-  RefreshCw,
 } from 'lucide-react';
 import Link from 'next/link';
 

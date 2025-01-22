@@ -55,7 +55,10 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
             `flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center`
           )}
         >
-          <Lock className={cn(`size-9`)} />
+          <Lock
+            aria-hidden={true}
+            className={cn(`size-9`)}
+          />
           Secrets
         </h2>
         <p className={cn(`px-2 text-sm text-base-content/75`)}>

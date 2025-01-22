@@ -188,7 +188,11 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({
             onClick={handleAddInteractable}
             size={`block`}
           >
-            <Plus className={cn(`size-5`)} /> Interactable
+            <Plus
+              aria-hidden={true}
+              className={cn(`size-5`)}
+            />{' '}
+            Interactable
           </Button>
         </Card>
       </CardFooter>

@@ -188,7 +188,11 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
             onClick={handleAddSecret}
             size={`block`}
           >
-            <Plus className={cn(`size-5`)} /> Secret
+            <Plus
+              aria-hidden={true}
+              className={cn(`size-5`)}
+            />{' '}
+            Secret
           </Button>
         </Card>
       </CardFooter>

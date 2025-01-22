@@ -64,7 +64,10 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
           )}
         >
           {' '}
-          <Theater className={cn(`size-9`)} />
+          <Theater
+            aria-hidden={true}
+            className={cn(`size-9`)}
+          />
           Outline
         </h2>
         <p className={cn(`px-2 text-sm text-base-content/75`)}>

@@ -185,7 +185,10 @@ const BuilderComponent: React.FC<BuilderProps> = ({
               setOutline={setThisOutline}
               className={cn(`px-4 py-2 text-sm`)}
             >
-              <ChevronUp className={cn(`size-5`)} />
+              <ChevronUp
+                aria-hidden={true}
+                className={cn(`size-5`)}
+              />
               <span className={cn(`max-sm:hidden`)}>Backup</span>
             </BackupsDropdown>
             {user && (
@@ -195,7 +198,10 @@ const BuilderComponent: React.FC<BuilderProps> = ({
                 disabled={isSaving}
                 outlined={true}
               >
-                <Save className={cn(`size-5`, isSaving && `animate-spin`)} />
+                <Save
+                  aria-hidden={true}
+                  className={cn(`size-5`, isSaving && `animate-spin`)}
+                />
                 {isSaving ? `Wait` : `Save`}
               </Button>
             )}

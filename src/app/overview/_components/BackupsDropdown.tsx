@@ -112,7 +112,10 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
               onClick={handleDownload}
               className={cn(`flex h-full w-full items-center gap-2 p-4`)}
             >
-              <FileText className={cn(`size-5`)} />
+              <FileText
+                aria-hidden={true}
+                className={cn(`size-5`)}
+              />
               Download as PDF
             </button>
           </DropdownMenuItem>
@@ -128,7 +131,10 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
               }
               className={cn(`flex h-full w-full items-center gap-2 p-4`)}
             >
-              <Braces className={cn(`size-5`)} />
+              <Braces
+                aria-hidden={true}
+                className={cn(`size-5`)}
+              />
               Download as JSON
             </button>
           </DropdownMenuItem>
@@ -143,7 +149,10 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(`flex h-full w-full items-center gap-2 p-4`)}
               >
-                <Upload className={cn(`size-5`)} />
+                <Upload
+                  aria-hidden={true}
+                  className={cn(`size-5`)}
+                />
                 Restore from JSON
               </button>
             </DropdownMenuItem>

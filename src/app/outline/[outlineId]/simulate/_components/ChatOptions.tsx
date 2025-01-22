@@ -155,7 +155,10 @@ function RollSelect({
         `flex items-center justify-end gap-2 rounded-full bg-warning/50 p-0.5 ps-2 ring-warning/75 ring-offset-2 ring-offset-base-300 has-[:focus]:ring-2`
       )}
     >
-      <Dices className={cn(`size-5`)} />
+      <Dices
+        aria-hidden={true}
+        className={cn(`size-5`)}
+      />
       <Select
         disabled={disabled}
         value={

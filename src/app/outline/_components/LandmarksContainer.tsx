@@ -71,7 +71,10 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tuto
           )}
         >
           {' '}
-          <Pyramid className={cn(`size-9`)} />
+          <Pyramid
+            aria-hidden={true}
+            className={cn(`size-9`)}
+          />
           Landmarks
         </h2>
         <p className={cn(`px-2 text-sm text-base-content/75`)}>
@@ -99,7 +102,11 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tuto
           onClick={handleAddLandmark}
           size={`block`}
         >
-          <Plus className={cn(`size-5`)} /> Landmark
+          <Plus
+            aria-hidden={true}
+            className={cn(`size-5`)}
+          />{' '}
+          Landmark
         </Button>
       </Card>
     </ScrollArea>
