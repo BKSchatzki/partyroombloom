@@ -113,7 +113,7 @@ export const POST = async (req: NextRequest) => {
     await createElements(interactables);
     await createElements(secrets);
 
-    return Response.json({ id: createdOutline.id }, { status: 200 });
+    return Response.json({ id: createdOutline.id }, { status: 201 });
   } catch (error) {
     console.error('Error saving outline:', error);
     return Response.json({ message: 'Error saving outline' }, { status: 500 });

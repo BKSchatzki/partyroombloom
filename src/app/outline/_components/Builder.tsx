@@ -54,6 +54,8 @@ const BuilderComponent: React.FC<BuilderProps> = ({
   const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);
 
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const setThisOutline = tutorialMode ? setTutorialOutline : outlineId ? setOutline : setNewOutline;
   const router = useRouter();
 
   const { error } = useQuery({
@@ -83,7 +85,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
 
   const handleSave = async () => {
     setIsSaving(true);
-    const payload = outlineId ? outline : newOutline;
+    const payload = thisOutline;
     if (outlineId) {
       try {
         const response = await fetch(`/api/outline/${outlineId}`, {
@@ -115,11 +117,11 @@ const BuilderComponent: React.FC<BuilderProps> = ({
           throw new Error(`Error: ${response.status}`);
         }
         router.push(`/overview`);
+        setNewOutline(outlineInit);
       } catch (error) {
         console.error('Error saving outline:', error);
       } finally {
         setIsSaving(false);
-        setNewOutline(outlineInit);
       }
     }
   };
@@ -170,8 +172,8 @@ const BuilderComponent: React.FC<BuilderProps> = ({
           <CarouselNext />
           <div className={cn(`absolute bottom-0 right-20 flex items-center gap-4`)}>
             <BackupsDropdown
-              outline={outlineId ? outline : newOutline}
-              setOutline={outlineId ? null : setNewOutline}
+              outline={thisOutline}
+              setOutline={setThisOutline}
               className={cn(`px-4 py-2 text-sm`)}
             >
               <ChevronUp className={cn(`size-5`)} />

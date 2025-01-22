@@ -51,6 +51,7 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
         rollableFailure: element.rollableFailure ?? '',
         userCreatedAt: element.userCreatedAt.toISOString(),
       })),
+      conversations: [],
     };
 
     return Response.json(formattedOutline, { status: 200 });
@@ -75,7 +76,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
     }
 
     const body = await req.json();
-    const outline: Outline = body.outline;
+    const outline: Outline = body.payload;
     const updatedOutline = await prisma.outline.update({
       where: {
         id: outlineId,

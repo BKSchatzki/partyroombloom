@@ -152,7 +152,7 @@ const Nav: React.FC<NavProps> = ({ user }) => {
                 <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} />
                 <li>
                   <Link
-                    href={`/outline`}
+                    href={`/outline/new`}
                     role={`none`}
                     tabIndex={-1}
                   >
