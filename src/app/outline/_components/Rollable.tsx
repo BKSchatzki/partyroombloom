@@ -15,6 +15,7 @@ import {
   outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface RollableProps {
@@ -28,53 +29,23 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
-  const thisElement = tutorialMode
-    ? tutorialOutline.elements.find((element) => element.id === elementId)
-    : outlineId
-      ? outline.elements.find((element) => element.id === elementId)
-      : newOutline.elements.find((element) => element.id === elementId);
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const thisElement = thisOutline.elements.find((element) => element.id === elementId);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>, property: string) => {
       if (!thisElement) return;
-      if (tutorialMode) {
-        setTutorialOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === thisElement.id
-              ? {
-                  ...element,
-                  [property]: event.target.value,
-                }
-              : element
-          ),
-        }));
-      } else if (!outlineId) {
-        setNewOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === thisElement.id
-              ? {
-                  ...element,
-                  [property]: event.target.value,
-                }
-              : element
-          ),
-        }));
-      }
-      if (outlineId) {
-        setOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === thisElement.id
-              ? {
-                  ...element,
-                  [property]: event.target.value,
-                }
-              : element
-          ),
-        }));
-      }
+      const updateRollable = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === thisElement.id
+            ? {
+                ...element,
+                [property]: event.target.value,
+              }
+            : element
+        ),
+      });
     },
     [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]
   );

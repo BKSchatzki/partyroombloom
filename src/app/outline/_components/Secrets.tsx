@@ -23,6 +23,7 @@ import {
   outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 import DeleteButton from '../../../components/DeleteButton';
@@ -39,16 +40,35 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
-  const thisElement = tutorialMode
-    ? tutorialOutline.elements.find((element) => element.id === elementId)
-    : outlineId
-      ? outline.elements.find((element) => element.id === elementId)
-      : newOutline.elements.find((element) => element.id === elementId);
-  const hasElements = tutorialMode
-    ? tutorialOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0
-    : outlineId
-      ? outline.elements.filter((element) => element.parentId === thisElement?.id).length > 0
-      : newOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const thisElement = thisOutline.elements.find((element) => element.id === elementId);
+  const hasElements =
+    thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
+
+  const handleAddSecret = useCallback(() => {
+    if (!thisElement) return;
+    const addNewSecret = (outline: Outline): Outline => ({
+      ...outline,
+      elements: [
+        ...outline.elements,
+        {
+          id: v7(),
+          parentId: thisElement.id,
+          type: 'secret' as const,
+          name: '',
+          description: '',
+          rollableSuccess: '',
+          rollableFailure: '',
+          userCreatedAt: new Date().toISOString(),
+        },
+      ],
+    });
+    tutorialMode
+      ? setTutorialOutline(addNewSecret)
+      : outlineId
+        ? setOutline(addNewSecret)
+        : setNewOutline(addNewSecret);
+  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   const handleChange = useCallback(
     (
@@ -57,29 +77,17 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
       property: string
     ) => {
       if (!id) return;
-      if (tutorialMode) {
-        setTutorialOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === id ? { ...element, [property]: event.target.value } : element
-          ),
-        }));
-      } else if (!outlineId) {
-        setNewOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === id ? { ...element, [property]: event.target.value } : element
-          ),
-        }));
-      }
-      if (outlineId) {
-        setOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === id ? { ...element, [property]: event.target.value } : element
-          ),
-        }));
-      }
+      const updateSecret = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === id ? { ...element, [property]: event.target.value } : element
+        ),
+      });
+      tutorialMode
+        ? setTutorialOutline(updateSecret)
+        : outlineId
+          ? setOutline(updateSecret)
+          : setNewOutline(updateSecret);
     },
     [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
   );
@@ -87,83 +95,18 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
   const handleDelete = useCallback(
     (id: string) => {
       if (!id) return;
-      if (tutorialMode) {
-        setTutorialOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.filter((element) => element.id !== id),
-        }));
-      } else if (!outlineId) {
-        setNewOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.filter((element) => element.id !== id),
-        }));
-      }
-      if (outlineId) {
-        setOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.filter((element) => element.id !== id),
-        }));
-      }
+      const deleteSecret = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.filter((element) => element.id !== id),
+      });
+      tutorialMode
+        ? setTutorialOutline(deleteSecret)
+        : outlineId
+          ? setOutline(deleteSecret)
+          : setNewOutline(deleteSecret);
     },
     [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
   );
-
-  const handleAddSecret = useCallback(() => {
-    if (!thisElement) return;
-    if (tutorialMode) {
-      setTutorialOutline((outline) => ({
-        ...outline,
-        elements: [
-          ...outline.elements,
-          {
-            id: v7(),
-            parentId: thisElement.id,
-            type: 'secret',
-            name: '',
-            description: '',
-            rollableSuccess: '',
-            rollableFailure: '',
-            userCreatedAt: new Date().toISOString(),
-          },
-        ],
-      }));
-    } else if (!outlineId) {
-      setNewOutline((outline) => ({
-        ...outline,
-        elements: [
-          ...outline.elements,
-          {
-            id: v7(),
-            parentId: thisElement.id,
-            type: 'secret',
-            name: '',
-            description: '',
-            rollableSuccess: '',
-            rollableFailure: '',
-            userCreatedAt: new Date().toISOString(),
-          },
-        ],
-      }));
-    }
-    if (outlineId) {
-      setOutline((outline) => ({
-        ...outline,
-        elements: [
-          ...outline.elements,
-          {
-            id: v7(),
-            parentId: thisElement.id,
-            type: 'secret',
-            name: '',
-            description: '',
-            rollableSuccess: '',
-            rollableFailure: '',
-            userCreatedAt: new Date().toISOString(),
-          },
-        ],
-      }));
-    }
-  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   return (
     <Card
@@ -174,189 +117,65 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
       <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Interactable'}
       </CardTitle>
-      {tutorialMode
-        ? tutorialOutline.elements
-            .filter((element) => element.parentId === thisElement?.id && element.type === 'secret')
-            .map((element, index) => (
-              <div key={element.id}>
-                <CardHeader className={cn(`relative pt-7`)}>
-                  <DeleteButton
-                    first={index === 0}
-                    handleDelete={() => handleDelete(element.id)}
-                    item={element.name || 'this Secret'}
-                    message="Delete Secret"
-                  />
-                  <CardTitle className={cn(`relative`)}>
-                    <div
-                      className={cn(
-                        `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
-                      )}
-                    >
-                      <span className={cn(`sr-only`)}>Secret</span>
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-                  <Label
-                    className={cn(`sr-only`)}
-                    htmlFor={`name-${element.id}`}
-                  >
-                    Secret Name
-                  </Label>
-                  <Input
-                    className={cn(`w-full`)}
-                    id={`name-${element.id}`}
-                    onChange={(event) => handleChange(element.id, event, 'name')}
-                    placeholder={`Name`}
-                    value={element.name}
-                  />
-                  <Label
-                    className={cn(`sr-only`)}
-                    htmlFor={`description-${element.id}`}
-                  >
-                    Secret Description
-                  </Label>
-                  <Textarea
-                    className={cn(`no-scrollbar`)}
-                    id={`description-${element.id}`}
-                    onChange={(event) => handleChange(element.id, event, 'description')}
-                    placeholder={`Description`}
-                    value={element.description}
-                  />
-                  <div className={cn(`max-sm:mx-[-0.5rem]`)}>
-                    <Rollable
-                      elementId={element.id}
-                      outlineId={outline.id}
-                      tutorialMode={tutorialMode}
-                    />
-                  </div>
-                </CardContent>
-                <Separator className={cn(`my-2 mb-0`)} />
+      {thisOutline.elements
+        .filter((element) => element.parentId === thisElement?.id && element.type === 'secret')
+        .map((element, index) => (
+          <div key={element.id}>
+            <CardHeader className={cn(`relative pt-7`)}>
+              <DeleteButton
+                first={index === 0}
+                handleDelete={() => handleDelete(element.id)}
+                item={element.name || 'this Secret'}
+                message="Delete Secret"
+              />
+              <CardTitle className={cn(`relative`)}>
+                <div
+                  className={cn(
+                    `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
+                  )}
+                >
+                  <span className={cn(`sr-only`)}>Secret</span>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
+              <Label
+                className={cn(`sr-only`)}
+                htmlFor={`name-${element.id}`}
+              >
+                Secret Name
+              </Label>
+              <Input
+                className={cn(`w-full`)}
+                id={`name-${element.id}`}
+                onChange={(event) => handleChange(element.id, event, 'name')}
+                placeholder={`Name`}
+                value={element.name}
+              />
+              <Label
+                className={cn(`sr-only`)}
+                htmlFor={`description-${element.id}`}
+              >
+                Secret Description
+              </Label>
+              <Textarea
+                className={cn(`no-scrollbar`)}
+                id={`description-${element.id}`}
+                onChange={(event) => handleChange(element.id, event, 'description')}
+                placeholder={`Description`}
+                value={element.description}
+              />
+              <div className={cn(`max-sm:mx-[-0.5rem]`)}>
+                <Rollable
+                  elementId={element.id}
+                  outlineId={outline.id}
+                  tutorialMode={tutorialMode}
+                />
               </div>
-            ))
-        : outlineId
-          ? outline.elements
-              .filter(
-                (element) => element.parentId === thisElement?.id && element.type === 'secret'
-              )
-              .map((element, index) => (
-                <div key={element.id}>
-                  <CardHeader className={cn(`relative pt-7`)}>
-                    <DeleteButton
-                      first={index === 0}
-                      handleDelete={() => handleDelete(element.id)}
-                      item={element.name || 'this Secret'}
-                      message="Delete Secret"
-                    />
-                    <CardTitle className={cn(`relative`)}>
-                      <div
-                        className={cn(
-                          `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
-                        )}
-                      >
-                        <span className={cn(`sr-only`)}>Secret</span>
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-                    <Label
-                      className={cn(`sr-only`)}
-                      htmlFor={`name-${element.id}`}
-                    >
-                      Secret Name
-                    </Label>
-                    <Input
-                      className={cn(`w-full`)}
-                      id={`name-${element.id}`}
-                      onChange={(event) => handleChange(element.id, event, 'name')}
-                      placeholder={`Name`}
-                      value={element.name}
-                    />
-                    <Label
-                      className={cn(`sr-only`)}
-                      htmlFor={`description-${element.id}`}
-                    >
-                      Secret Description
-                    </Label>
-                    <Textarea
-                      className={cn(`no-scrollbar`)}
-                      id={`description-${element.id}`}
-                      onChange={(event) => handleChange(element.id, event, 'description')}
-                      placeholder={`Description`}
-                      value={element.description}
-                    />
-                    <div className={cn(`max-sm:mx-[-0.5rem]`)}>
-                      <Rollable
-                        elementId={element.id}
-                        outlineId={outline.id}
-                        tutorialMode={tutorialMode}
-                      />
-                    </div>
-                  </CardContent>
-                  <Separator className={cn(`my-2 mb-0`)} />
-                </div>
-              ))
-          : newOutline.elements
-              .filter(
-                (element) => element.parentId === thisElement?.id && element.type === 'secret'
-              )
-              .map((element, index) => (
-                <div key={element.id}>
-                  <CardHeader className={cn(`relative pt-7`)}>
-                    <DeleteButton
-                      first={index === 0}
-                      handleDelete={() => handleDelete(element.id)}
-                      item={element.name || 'this Secret'}
-                      message="Delete Secret"
-                    />
-                    <CardTitle className={cn(`relative`)}>
-                      <div
-                        className={cn(
-                          `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
-                        )}
-                      >
-                        <span className={cn(`sr-only`)}>Secret</span>
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-                    <Label
-                      className={cn(`sr-only`)}
-                      htmlFor={`name-${element.id}`}
-                    >
-                      Secret Name
-                    </Label>
-                    <Input
-                      className={cn(`w-full`)}
-                      id={`name-${element.id}`}
-                      onChange={(event) => handleChange(element.id, event, 'name')}
-                      placeholder={`Name`}
-                      value={element.name}
-                    />
-                    <Label
-                      className={cn(`sr-only`)}
-                      htmlFor={`description-${element.id}`}
-                    >
-                      Secret Description
-                    </Label>
-                    <Textarea
-                      className={cn(`no-scrollbar`)}
-                      id={`description-${element.id}`}
-                      onChange={(event) => handleChange(element.id, event, 'description')}
-                      placeholder={`Description`}
-                      value={element.description}
-                    />
-                    <div className={cn(`max-sm:mx-[-0.5rem]`)}>
-                      <Rollable
-                        elementId={element.id}
-                        outlineId={outlineId}
-                        tutorialMode={tutorialMode}
-                      />
-                    </div>
-                  </CardContent>
-                  <Separator className={cn(`my-2 mb-0`)} />
-                </div>
-              ))}
+            </CardContent>
+            <Separator className={cn(`my-2 mb-0`)} />
+          </div>
+        ))}
       <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
         <Card
           className={cn(

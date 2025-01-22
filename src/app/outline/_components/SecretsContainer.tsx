@@ -33,29 +33,15 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
-  const interactablesSorted = tutorialMode
-    ? tutorialOutline.elements
-        .filter((element) => element.type === 'interactable')
-        .sort(
-          (a, b) =>
-            outline.elements.findIndex((element) => element.id === a.parentId) -
-            outline.elements.findIndex((element) => element.id === b.parentId)
-        )
-    : outlineId
-      ? outline.elements
-          .filter((element) => element.type === 'interactable')
-          .sort(
-            (a, b) =>
-              outline.elements.findIndex((element) => element.id === a.parentId) -
-              outline.elements.findIndex((element) => element.id === b.parentId)
-          )
-      : newOutline.elements
-          .filter((element) => element.type === 'interactable')
-          .sort(
-            (a, b) =>
-              outline.elements.findIndex((element) => element.id === a.parentId) -
-              outline.elements.findIndex((element) => element.id === b.parentId)
-          );
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+
+  const sortedInteractables = thisOutline.elements
+    .filter((element) => element.type === 'interactable')
+    .sort(
+      (a, b) =>
+        thisOutline.elements.findIndex((element) => element.id === a.parentId) -
+        thisOutline.elements.findIndex((element) => element.id === b.parentId)
+    );
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -77,7 +63,7 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
           through player character deduction or rolls. They can be loot, information, traps, etc.
         </p>
       </section>
-      {interactablesSorted.length === 0 ? (
+      {sortedInteractables.length === 0 ? (
         <Card
           className={cn(
             `mb-8 flex h-[7.5rem] w-full flex-col items-center justify-center bg-error/5 shadow-lg shadow-base-300`
@@ -89,7 +75,7 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
           </CardDescription>
         </Card>
       ) : (
-        interactablesSorted.map((element) => (
+        sortedInteractables.map((element) => (
           <Secrets
             key={element.id}
             elementId={element.id}

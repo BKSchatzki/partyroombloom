@@ -17,6 +17,7 @@ import {
   outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 import Landmarks from './Landmarks';
@@ -31,60 +32,30 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tuto
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+
   const handleAddLandmark = useCallback(() => {
-    if (tutorialMode) {
-      setTutorialOutline((outline) => ({
-        ...outline,
-        elements: [
-          ...outline.elements,
-          {
-            id: v7(),
-            parentId: null,
-            type: 'landmark',
-            name: '',
-            description: '',
-            rollableSuccess: '',
-            rollableFailure: '',
-            userCreatedAt: new Date().toISOString(),
-          },
-        ],
-      }));
-    } else if (!outlineId) {
-      setNewOutline((outline) => ({
-        ...outline,
-        elements: [
-          ...outline.elements,
-          {
-            id: v7(),
-            parentId: null,
-            type: 'landmark',
-            name: '',
-            description: '',
-            rollableSuccess: '',
-            rollableFailure: '',
-            userCreatedAt: new Date().toISOString(),
-          },
-        ],
-      }));
-    }
-    if (outlineId) {
-      setOutline((outline) => ({
-        ...outline,
-        elements: [
-          ...outline.elements,
-          {
-            id: v7(),
-            parentId: null,
-            type: 'landmark',
-            name: '',
-            description: '',
-            rollableSuccess: '',
-            rollableFailure: '',
-            userCreatedAt: new Date().toISOString(),
-          },
-        ],
-      }));
-    }
+    const addNewLandmark = (outline: Outline): Outline => ({
+      ...outline,
+      elements: [
+        ...outline.elements,
+        {
+          id: v7(),
+          parentId: null,
+          type: 'landmark' as const,
+          name: '',
+          description: '',
+          rollableSuccess: '',
+          rollableFailure: '',
+          userCreatedAt: new Date().toISOString(),
+        },
+      ],
+    });
+    tutorialMode
+      ? setTutorialOutline(addNewLandmark)
+      : outlineId
+        ? setOutline(addNewLandmark)
+        : setNewOutline(addNewLandmark);
   }, [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]);
 
   return (
@@ -108,38 +79,16 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tuto
           and are immediately available to the player characters upon entering the scene.
         </p>
       </section>
-      {tutorialMode
-        ? tutorialOutline.elements
-            .filter((element) => element.type === 'landmark')
-            .map((element) => (
-              <Landmarks
-                key={element.id}
-                elementId={element.id}
-                outlineId={outlineId}
-                tutorialMode={tutorialMode}
-              />
-            ))
-        : outlineId
-          ? outline.elements
-              .filter((element) => element.type === 'landmark')
-              .map((element) => (
-                <Landmarks
-                  key={element.id}
-                  elementId={element.id}
-                  outlineId={outlineId}
-                  tutorialMode={tutorialMode}
-                />
-              ))
-          : newOutline.elements
-              .filter((element) => element.type === 'landmark')
-              .map((element) => (
-                <Landmarks
-                  key={element.id}
-                  elementId={element.id}
-                  outlineId={outlineId}
-                  tutorialMode={tutorialMode}
-                />
-              ))}
+      {thisOutline.elements
+        .filter((element) => element.type === 'landmark')
+        .map((element) => (
+          <Landmarks
+            key={element.id}
+            elementId={element.id}
+            outlineId={outlineId}
+            tutorialMode={tutorialMode}
+          />
+        ))}
       <Card
         className={cn(
           `mx-auto mb-4 w-[99%] rounded-full bg-primary/10 shadow-xl shadow-base-300 max-sm:w-11/12`

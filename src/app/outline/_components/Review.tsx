@@ -226,7 +226,7 @@ const InfoReview = React.memo(InfoReviewComponent);
 InfoReview.displayName = 'InfoReview';
 
 const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode }) => {
-  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
+  const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 

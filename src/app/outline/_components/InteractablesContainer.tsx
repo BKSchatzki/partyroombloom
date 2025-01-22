@@ -33,11 +33,8 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
-  const landmarks = tutorialMode
-    ? tutorialOutline.elements.filter((element) => element.type === 'landmark')
-    : outlineId
-      ? outline.elements.filter((element) => element.type === 'landmark')
-      : newOutline.elements.filter((element) => element.type === 'landmark');
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const landmarks = thisOutline.elements.filter((element) => element.type === 'landmark');
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>

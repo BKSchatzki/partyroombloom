@@ -5,11 +5,21 @@ import React, { useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Theater } from 'lucide-react';
 
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { newOutlineAtom, outlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
+import {
+  newOutlineAtom,
+  outlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface InfoProps {
@@ -22,28 +32,24 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
-      if (tutorialMode) {
-        setTutorialOutline((outline) => ({
-          ...outline,
-          [property]: event.target.value,
-        }));
-      } else if (!outlineId) {
-        setNewOutline((outline) => ({
-          ...outline,
-          [property]: event.target.value,
-        }));
-      }
-      if (outlineId) {
-        setOutline((outline) => ({
-          ...outline,
-          [property]: event.target.value,
-        }));
-      }
+      const updateInfo = (outline: Outline) => ({
+        ...outline,
+        [property]: event.target.value,
+      });
+      tutorialMode
+        ? setTutorialOutline(updateInfo)
+        : outlineId
+          ? setOutline(updateInfo)
+          : setNewOutline(updateInfo);
     },
     [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
   );
+
+  const infoTextareas = ['description', 'goal', 'comments'] as const;
 
   return (
     <div className={cn(`pb-4`)}>
@@ -81,71 +87,25 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
             id={`title`}
             onChange={(event) => handleChange(event, 'title')}
             placeholder={`Title`}
-            value={
-              tutorialMode //
-                ? tutorialOutline.title
-                : outlineId
-                  ? outline.title
-                  : newOutline.title
-            }
+            value={thisOutline.title}
           />
-          <Label
-            className={cn(`sr-only`)}
-            htmlFor={`description`}
-          >
-            Description
-          </Label>
-          <Textarea
-            className={cn(`no-scrollbar`)}
-            id={`description`}
-            onChange={(event) => handleChange(event, 'description')}
-            placeholder={`Description`}
-            value={
-              tutorialMode //
-                ? tutorialOutline.description
-                : outlineId
-                  ? outline.description
-                  : newOutline.description
-            }
-          />
-          <Label
-            className={cn(`sr-only`)}
-            htmlFor={`goal`}
-          >
-            Goal
-          </Label>
-          <Textarea
-            className={cn(`no-scrollbar`)}
-            id={`goal`}
-            onChange={(event) => handleChange(event, 'goal')}
-            placeholder={`Goal`}
-            value={
-              tutorialMode //
-                ? tutorialOutline.goal
-                : outlineId
-                  ? outline.goal
-                  : newOutline.goal
-            }
-          />
-          <Label
-            className={cn(`sr-only`)}
-            htmlFor={`comments`}
-          >
-            Comments
-          </Label>
-          <Textarea
-            className={cn(`no-scrollbar`)}
-            id={`comments`}
-            onChange={(event) => handleChange(event, 'comments')}
-            placeholder={`Comments`}
-            value={
-              tutorialMode //
-                ? tutorialOutline.comments
-                : outlineId
-                  ? outline.comments
-                  : newOutline.comments
-            }
-          />
+          {infoTextareas.map((item) => (
+            <React.Fragment key={item}>
+              <Label
+                className={cn(`sr-only`)}
+                htmlFor={item}
+              >
+                {item}
+              </Label>
+              <Textarea
+                className={cn(`no-scrollbar`)}
+                id={item}
+                onChange={(event) => handleChange(event, item)}
+                placeholder={item.charAt(0).toUpperCase() + item.slice(1)}
+                value={thisOutline[item]}
+              />
+            </React.Fragment>
+          ))}
         </CardContent>
         <CardFooter className={cn(`flex flex-col items-start gap-4`)}></CardFooter>
       </Card>

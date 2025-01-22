@@ -56,7 +56,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
 
   const router = useRouter();
 
-  const { isLoading, error } = useQuery({
+  const { error } = useQuery({
     queryKey: ['outline'],
     queryFn: async () => {
       if (tutorialMode) {

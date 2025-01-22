@@ -17,6 +17,7 @@ import {
   outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 import DeleteButton from '../../../components/DeleteButton';
@@ -41,91 +42,45 @@ const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tu
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
       if (!thisElement) return;
-      if (tutorialMode) {
-        setTutorialOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
-          ),
-        }));
-      } else if (!outlineId) {
-        setNewOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
-          ),
-        }));
-      }
-      if (outlineId) {
-        setOutline((outline) => ({
-          ...outline,
-          elements: outline.elements.map((element) =>
-            element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
-          ),
-        }));
-      }
+      const updateLandmark = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
+        ),
+      });
+      tutorialMode
+        ? setTutorialOutline(updateLandmark)
+        : outlineId
+          ? setOutline(updateLandmark)
+          : setNewOutline(updateLandmark);
     },
     [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]
   );
 
   const handleDelete = useCallback(() => {
     if (!thisElement) return;
-    if (tutorialMode) {
-      setTutorialOutline((outline) => {
-        const deleteCascade = (parentId: string): string[] => {
-          const children = outline.elements
-            .filter((element) => element.parentId === parentId)
-            .map((element) => element.id);
-          const descendants = children.flatMap((childId) => deleteCascade(childId));
-          return [...children, ...descendants];
-        };
-        const elementsToDelete = deleteCascade(thisElement.id);
-        const updatedElements = outline.elements.filter(
-          (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
-        );
-        return {
-          ...outline,
-          elements: updatedElements,
-        };
-      });
-    } else if (!outlineId) {
-      setNewOutline((outline) => {
-        const deleteCascade = (parentId: string): string[] => {
-          const children = outline.elements
-            .filter((element) => element.parentId === parentId)
-            .map((element) => element.id);
-          const descendants = children.flatMap((childId) => deleteCascade(childId));
-          return [...children, ...descendants];
-        };
-        const elementsToDelete = deleteCascade(thisElement.id);
-        const updatedElements = outline.elements.filter(
-          (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
-        );
-        return {
-          ...outline,
-          elements: updatedElements,
-        };
-      });
-    }
-    if (outlineId) {
-      setOutline((outline) => {
-        const deleteCascade = (parentId: string): string[] => {
-          const children = outline.elements
-            .filter((element) => element.parentId === parentId)
-            .map((element) => element.id);
-          const descendants = children.flatMap((childId) => deleteCascade(childId));
-          return [...children, ...descendants];
-        };
-        const elementsToDelete = deleteCascade(thisElement.id);
-        const updatedElements = outline.elements.filter(
-          (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
-        );
-        return {
-          ...outline,
-          elements: updatedElements,
-        };
-      });
-    }
+    const deleteLandmark = (outline: Outline) => {
+      const deleteCascade = (parentId: string): string[] => {
+        const children = outline.elements
+          .filter((element) => element.parentId === parentId)
+          .map((element) => element.id);
+        const descendants = children.flatMap((childId) => deleteCascade(childId));
+        return [...children, ...descendants];
+      };
+      const elementsToDelete = deleteCascade(thisElement.id);
+      const updatedElements = outline.elements.filter(
+        (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
+      );
+      return {
+        ...outline,
+        elements: updatedElements,
+      };
+    };
+    tutorialMode
+      ? setTutorialOutline(deleteLandmark)
+      : outlineId
+        ? setOutline(deleteLandmark)
+        : setNewOutline(deleteLandmark);
   }, [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   return (
