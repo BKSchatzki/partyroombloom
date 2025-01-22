@@ -62,7 +62,14 @@ const OutlinesListComponent = () => {
   };
 
   if (error) {
-    return <div>Error: {JSON.stringify(error)}</div>;
+    return (
+      <GenericError
+        error={error}
+        reset={() => {
+          return;
+        }}
+      />
+    );
   }
 
   return (

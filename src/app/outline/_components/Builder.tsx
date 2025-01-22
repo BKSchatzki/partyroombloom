@@ -11,6 +11,7 @@ import {
 import { useRouter } from 'next/navigation';
 
 import BackupsDropdown from '@/app/overview/_components/BackupsDropdown';
+import GenericError from '@/components/GenericError';
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
@@ -56,9 +57,10 @@ const BuilderComponent: React.FC<BuilderProps> = ({
 
   const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
   const setThisOutline = tutorialMode ? setTutorialOutline : outlineId ? setOutline : setNewOutline;
+
   const router = useRouter();
 
-  const { error } = useQuery({
+  const { isLoading, error } = useQuery({
     queryKey: ['outline'],
     queryFn: async () => {
       if (tutorialMode) {
@@ -69,7 +71,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
         return newOutline;
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
-      if (preloadedOutline) {
+      if (isLoading && preloadedOutline) {
         setOutline(preloadedOutline);
         return preloadedOutline;
       }
@@ -127,7 +129,14 @@ const BuilderComponent: React.FC<BuilderProps> = ({
   };
 
   if (error) {
-    return <div>Error: {JSON.stringify(error)}</div>;
+    return (
+      <GenericError
+        error={error}
+        reset={() => {
+          return;
+        }}
+      />
+    );
   }
 
   return (

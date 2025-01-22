@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import GenericError from '@/components/GenericError';
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
@@ -181,7 +182,14 @@ const Chat = ({
   }
 
   if (error) {
-    return <div>Error: {JSON.stringify(error)}</div>;
+    return (
+      <GenericError
+        error={error}
+        reset={() => {
+          return;
+        }}
+      />
+    );
   }
 
   return (

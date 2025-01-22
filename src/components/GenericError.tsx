@@ -11,7 +11,13 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) => {
+const GenericError = ({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) => {
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -55,4 +61,4 @@ const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: ()
   );
 };
 
-export default Error;
+export default GenericError;
