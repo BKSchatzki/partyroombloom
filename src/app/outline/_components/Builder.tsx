@@ -3,7 +3,10 @@
 import React, { useState } from 'react';
 
 import { useAtom } from 'jotai';
-import { ChevronUp, Save } from 'lucide-react';
+import {
+  ChevronUp,
+  Save,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import BackupsDropdown from '@/app/overview/_components/BackupsDropdown';
@@ -132,16 +135,28 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
             </ScrollArea>
           </CarouselItem>
           <CarouselItem className={cn(`basis-full pb-4`)}>
-            <LandmarksContainer outlineId={outlineId} />
+            <LandmarksContainer
+              outlineId={outlineId}
+              tutorialMode={tutorialMode}
+            />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full pb-4`)}>
-            <InteractablesContainer outlineId={outlineId} />
+            <InteractablesContainer
+              outlineId={outlineId}
+              tutorialMode={tutorialMode}
+            />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full pb-4`)}>
-            <SecretsContainer outlineId={outlineId} />
+            <SecretsContainer
+              outlineId={outlineId}
+              tutorialMode={tutorialMode}
+            />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full pb-4`)}>
-            <Review outlineId={outlineId} />
+            <Review
+              outlineId={outlineId}
+              tutorialMode={tutorialMode}
+            />
           </CarouselItem>
         </CarouselContent>
         <div className={cn(`relative h-16 border-t-2 border-[#302a2a]`)}>

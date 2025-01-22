@@ -21,6 +21,7 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   newOutlineAtom,
   outlineAtom,
+  tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
@@ -29,18 +30,28 @@ import DeleteButton from '../../../components/DeleteButton';
 interface InteractablesProps {
   elementId: string;
   outlineId: number | null;
+  tutorialMode: boolean;
 }
 
-const InteractablesComponent: React.FC<InteractablesProps> = ({ elementId, outlineId }) => {
+const InteractablesComponent: React.FC<InteractablesProps> = ({
+  elementId,
+  outlineId,
+  tutorialMode,
+}) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
-  const thisElement = outlineId
-    ? outline.elements.find((element) => element.id === elementId)
-    : newOutline.elements.find((element) => element.id === elementId);
-  const hasElements = outlineId
-    ? outline.elements.filter((element) => element.parentId === thisElement?.id).length > 0
-    : newOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
+  const thisElement = tutorialMode
+    ? tutorialOutline.elements.find((element) => element.id === elementId)
+    : outlineId
+      ? outline.elements.find((element) => element.id === elementId)
+      : newOutline.elements.find((element) => element.id === elementId);
+  const hasElements = tutorialMode
+    ? tutorialOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0
+    : outlineId
+      ? outline.elements.filter((element) => element.parentId === thisElement?.id).length > 0
+      : newOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
 
   const handleChange = useCallback(
     (
@@ -49,7 +60,14 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({ elementId, outli
       property: string
     ) => {
       if (!id) return;
-      if (!outlineId) {
+      if (tutorialMode) {
+        setTutorialOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === id ? { ...element, [property]: event.target.value } : element
+          ),
+        }));
+      } else if (!outlineId) {
         setNewOutline((outline) => ({
           ...outline,
           elements: outline.elements.map((element) =>
@@ -66,13 +84,20 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({ elementId, outli
         }));
       }
     },
-    [outlineId, setNewOutline, setOutline]
+    [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
   );
 
   const handleDelete = useCallback(
     (id: string) => {
       if (!id) return;
-      if (!outlineId) {
+      if (tutorialMode) {
+        setTutorialOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.filter(
+            (element) => element.id !== id && element.parentId !== id
+          ),
+        }));
+      } else if (!outlineId) {
         setNewOutline((outline) => ({
           ...outline,
           elements: outline.elements.filter(
@@ -89,12 +114,29 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({ elementId, outli
         }));
       }
     },
-    [outlineId, setNewOutline, setOutline]
+    [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
   );
 
   const handleAddInteractable = useCallback(() => {
     if (!thisElement) return;
-    if (!outlineId) {
+    if (tutorialMode) {
+      setTutorialOutline((outline) => ({
+        ...outline,
+        elements: [
+          ...outline.elements,
+          {
+            id: v7(),
+            parentId: thisElement.id,
+            type: 'interactable',
+            name: '',
+            description: '',
+            rollableSuccess: '',
+            rollableFailure: '',
+            userCreatedAt: new Date().toISOString(),
+          },
+        ],
+      }));
+    } else if (!outlineId) {
       setNewOutline((outline) => ({
         ...outline,
         elements: [
@@ -130,7 +172,7 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({ elementId, outli
         ],
       }));
     }
-  }, [outlineId, setNewOutline, setOutline, thisElement]);
+  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   return (
     <Card
@@ -141,8 +183,8 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({ elementId, outli
       <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Landmark'}
       </CardTitle>
-      {outlineId
-        ? outline.elements
+      {tutorialMode
+        ? tutorialOutline.elements
             .filter(
               (element) => element.parentId === thisElement?.id && element.type === 'interactable'
             )
@@ -196,60 +238,115 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({ elementId, outli
                 <Separator className={cn(`my-2 mb-0`)} />
               </div>
             ))
-        : newOutline.elements
-            .filter(
-              (element) => element.parentId === thisElement?.id && element.type === 'interactable'
-            )
-            .map((element, index) => (
-              <div key={element.id}>
-                <CardHeader className={cn(`relative pt-7`)}>
-                  <DeleteButton
-                    first={index === 0}
-                    handleDelete={() => handleDelete(element.id)}
-                    item={element.name || 'this Interactable'}
-                    message="Delete Interactable"
-                  />
-                  <CardTitle className={cn(`relative`)}>
-                    <div
-                      className={cn(
-                        `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
-                      )}
+        : outlineId
+          ? outline.elements
+              .filter(
+                (element) => element.parentId === thisElement?.id && element.type === 'interactable'
+              )
+              .map((element, index) => (
+                <div key={element.id}>
+                  <CardHeader className={cn(`relative pt-7`)}>
+                    <DeleteButton
+                      first={index === 0}
+                      handleDelete={() => handleDelete(element.id)}
+                      item={element.name || 'this Interactable'}
+                      message="Delete Interactable"
+                    />
+                    <CardTitle className={cn(`relative`)}>
+                      <div
+                        className={cn(
+                          `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
+                        )}
+                      >
+                        <span className={cn(`sr-only`)}>Interactable</span>
+                      </div>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
+                    <Label
+                      className={cn(`sr-only`)}
+                      htmlFor={`name-${element.id}`}
                     >
-                      <span className={cn(`sr-only`)}>Interactable</span>
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-                  <Label
-                    className={cn(`sr-only`)}
-                    htmlFor={`name-${element.id}`}
-                  >
-                    Interactable Name
-                  </Label>
-                  <Input
-                    className={cn(`w-full`)}
-                    id={`name-${element.id}`}
-                    onChange={(event) => handleChange(element.id, event, 'name')}
-                    placeholder={`Name`}
-                    value={element.name}
-                  />
-                  <Label
-                    className={cn(`sr-only`)}
-                    htmlFor={`description-${element.id}`}
-                  >
-                    Interactable Description
-                  </Label>
-                  <Textarea
-                    className={cn(`no-scrollbar`)}
-                    id={`description-${element.id}`}
-                    onChange={(event) => handleChange(element.id, event, 'description')}
-                    placeholder={`Description`}
-                    value={element.description}
-                  />
-                </CardContent>
-                <Separator className={cn(`my-2 mb-0`)} />
-              </div>
-            ))}
+                      Interactable Name
+                    </Label>
+                    <Input
+                      className={cn(`w-full`)}
+                      id={`name-${element.id}`}
+                      onChange={(event) => handleChange(element.id, event, 'name')}
+                      placeholder={`Name`}
+                      value={element.name}
+                    />
+                    <Label
+                      className={cn(`sr-only`)}
+                      htmlFor={`description-${element.id}`}
+                    >
+                      Interactable Description
+                    </Label>
+                    <Textarea
+                      className={cn(`no-scrollbar`)}
+                      id={`description-${element.id}`}
+                      onChange={(event) => handleChange(element.id, event, 'description')}
+                      placeholder={`Description`}
+                      value={element.description}
+                    />
+                  </CardContent>
+                  <Separator className={cn(`my-2 mb-0`)} />
+                </div>
+              ))
+          : newOutline.elements
+              .filter(
+                (element) => element.parentId === thisElement?.id && element.type === 'interactable'
+              )
+              .map((element, index) => (
+                <div key={element.id}>
+                  <CardHeader className={cn(`relative pt-7`)}>
+                    <DeleteButton
+                      first={index === 0}
+                      handleDelete={() => handleDelete(element.id)}
+                      item={element.name || 'this Interactable'}
+                      message="Delete Interactable"
+                    />
+                    <CardTitle className={cn(`relative`)}>
+                      <div
+                        className={cn(
+                          `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
+                        )}
+                      >
+                        <span className={cn(`sr-only`)}>Interactable</span>
+                      </div>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
+                    <Label
+                      className={cn(`sr-only`)}
+                      htmlFor={`name-${element.id}`}
+                    >
+                      Interactable Name
+                    </Label>
+                    <Input
+                      className={cn(`w-full`)}
+                      id={`name-${element.id}`}
+                      onChange={(event) => handleChange(element.id, event, 'name')}
+                      placeholder={`Name`}
+                      value={element.name}
+                    />
+                    <Label
+                      className={cn(`sr-only`)}
+                      htmlFor={`description-${element.id}`}
+                    >
+                      Interactable Description
+                    </Label>
+                    <Textarea
+                      className={cn(`no-scrollbar`)}
+                      id={`description-${element.id}`}
+                      onChange={(event) => handleChange(element.id, event, 'description')}
+                      placeholder={`Description`}
+                      value={element.description}
+                    />
+                  </CardContent>
+                  <Separator className={cn(`my-2 mb-0`)} />
+                </div>
+              ))}
       <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
         <Card
           className={cn(

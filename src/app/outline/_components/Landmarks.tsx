@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   newOutlineAtom,
   outlineAtom,
+  tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
@@ -23,20 +24,31 @@ import DeleteButton from '../../../components/DeleteButton';
 interface LandmarksProps {
   elementId: string;
   outlineId: number | null;
+  tutorialMode: boolean;
 }
 
-const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId }) => {
+const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tutorialMode }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
-  const thisElement = outlineId
-    ? outline.elements.find((element) => element.id === elementId)
-    : newOutline.elements.find((element) => element.id === elementId);
+  const thisElement = tutorialMode
+    ? tutorialOutline.elements.find((element) => element.id === elementId)
+    : outlineId
+      ? outline.elements.find((element) => element.id === elementId)
+      : newOutline.elements.find((element) => element.id === elementId);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
       if (!thisElement) return;
-      if (!outlineId) {
+      if (tutorialMode) {
+        setTutorialOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
+          ),
+        }));
+      } else if (!outlineId) {
         setNewOutline((outline) => ({
           ...outline,
           elements: outline.elements.map((element) =>
@@ -53,12 +65,30 @@ const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId }) 
         }));
       }
     },
-    [outlineId, setNewOutline, setOutline, thisElement]
+    [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]
   );
 
   const handleDelete = useCallback(() => {
     if (!thisElement) return;
-    if (!outlineId) {
+    if (tutorialMode) {
+      setTutorialOutline((outline) => {
+        const deleteCascade = (parentId: string): string[] => {
+          const children = outline.elements
+            .filter((element) => element.parentId === parentId)
+            .map((element) => element.id);
+          const descendants = children.flatMap((childId) => deleteCascade(childId));
+          return [...children, ...descendants];
+        };
+        const elementsToDelete = deleteCascade(thisElement.id);
+        const updatedElements = outline.elements.filter(
+          (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
+        );
+        return {
+          ...outline,
+          elements: updatedElements,
+        };
+      });
+    } else if (!outlineId) {
       setNewOutline((outline) => {
         const deleteCascade = (parentId: string): string[] => {
           const children = outline.elements
@@ -96,7 +126,7 @@ const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId }) 
         };
       });
     }
-  }, [outlineId, setNewOutline, setOutline, thisElement]);
+  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   return (
     <Card className={cn(`mb-8 w-full bg-primary/10 shadow-xl shadow-base-300 max-sm:rounded-none`)}>

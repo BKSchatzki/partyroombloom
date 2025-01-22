@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   newOutlineAtom,
   outlineAtom,
+  tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
@@ -21,15 +22,22 @@ import Interactables from './Interactables';
 
 interface InteractablesContainerProps {
   outlineId: number | null;
+  tutorialMode: boolean;
 }
 
-const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = ({ outlineId }) => {
+const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = ({
+  outlineId,
+  tutorialMode,
+}) => {
+  const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
-  const landmarks = outlineId
-    ? outline.elements.filter((element) => element.type === 'landmark')
-    : newOutline.elements.filter((element) => element.type === 'landmark');
+  const landmarks = tutorialMode
+    ? tutorialOutline.elements.filter((element) => element.type === 'landmark')
+    : outlineId
+      ? outline.elements.filter((element) => element.type === 'landmark')
+      : newOutline.elements.filter((element) => element.type === 'landmark');
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -68,6 +76,7 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
             key={element.id}
             elementId={element.id}
             outlineId={outlineId}
+            tutorialMode={tutorialMode}
           />
         ))
       )}

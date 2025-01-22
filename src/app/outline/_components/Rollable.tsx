@@ -13,26 +13,43 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   newOutlineAtom,
   outlineAtom,
+  tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 interface RollableProps {
   elementId: string;
   outlineId: number | null;
+  tutorialMode: boolean;
 }
 
-const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId }) => {
+const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tutorialMode }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
-  const thisElement = outlineId
-    ? outline.elements.find((element) => element.id === elementId)
-    : newOutline.elements.find((element) => element.id === elementId);
+  const thisElement = tutorialMode
+    ? tutorialOutline.elements.find((element) => element.id === elementId)
+    : outlineId
+      ? outline.elements.find((element) => element.id === elementId)
+      : newOutline.elements.find((element) => element.id === elementId);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>, property: string) => {
       if (!thisElement) return;
-      if (!outlineId) {
+      if (tutorialMode) {
+        setTutorialOutline((outline) => ({
+          ...outline,
+          elements: outline.elements.map((element) =>
+            element.id === thisElement.id
+              ? {
+                  ...element,
+                  [property]: event.target.value,
+                }
+              : element
+          ),
+        }));
+      } else if (!outlineId) {
         setNewOutline((outline) => ({
           ...outline,
           elements: outline.elements.map((element) =>
@@ -59,7 +76,7 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId }) =>
         }));
       }
     },
-    [outlineId, setNewOutline, setOutline, thisElement]
+    [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]
   );
 
   return (

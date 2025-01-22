@@ -15,6 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   newOutlineAtom,
   outlineAtom,
+  tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
@@ -22,14 +23,33 @@ import Landmarks from './Landmarks';
 
 interface LandmarksProps {
   outlineId: number | null;
+  tutorialMode: boolean;
 }
 
-const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId }) => {
+const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tutorialMode }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
 
   const handleAddLandmark = useCallback(() => {
-    if (!outlineId) {
+    if (tutorialMode) {
+      setTutorialOutline((outline) => ({
+        ...outline,
+        elements: [
+          ...outline.elements,
+          {
+            id: v7(),
+            parentId: null,
+            type: 'landmark',
+            name: '',
+            description: '',
+            rollableSuccess: '',
+            rollableFailure: '',
+            userCreatedAt: new Date().toISOString(),
+          },
+        ],
+      }));
+    } else if (!outlineId) {
       setNewOutline((outline) => ({
         ...outline,
         elements: [
@@ -65,7 +85,7 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId }) =>
         ],
       }));
     }
-  }, [outlineId, setNewOutline, setOutline]);
+  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -88,25 +108,38 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId }) =>
           and are immediately available to the player characters upon entering the scene.
         </p>
       </section>
-      {outlineId
-        ? outline.elements
+      {tutorialMode
+        ? tutorialOutline.elements
             .filter((element) => element.type === 'landmark')
             .map((element) => (
               <Landmarks
                 key={element.id}
                 elementId={element.id}
                 outlineId={outlineId}
+                tutorialMode={tutorialMode}
               />
             ))
-        : newOutline.elements
-            .filter((element) => element.type === 'landmark')
-            .map((element) => (
-              <Landmarks
-                key={element.id}
-                elementId={element.id}
-                outlineId={outlineId}
-              />
-            ))}
+        : outlineId
+          ? outline.elements
+              .filter((element) => element.type === 'landmark')
+              .map((element) => (
+                <Landmarks
+                  key={element.id}
+                  elementId={element.id}
+                  outlineId={outlineId}
+                  tutorialMode={tutorialMode}
+                />
+              ))
+          : newOutline.elements
+              .filter((element) => element.type === 'landmark')
+              .map((element) => (
+                <Landmarks
+                  key={element.id}
+                  elementId={element.id}
+                  outlineId={outlineId}
+                  tutorialMode={tutorialMode}
+                />
+              ))}
       <Card
         className={cn(
           `mx-auto mb-4 w-[99%] rounded-full bg-primary/10 shadow-xl shadow-base-300 max-sm:w-11/12`

@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   newOutlineAtom,
   outlineAtom,
+  tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
@@ -21,27 +22,40 @@ import Secrets from './Secrets';
 
 interface SecretsContainerProps {
   outlineId: number | null;
+  tutorialMode: boolean;
 }
 
-const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({ outlineId }) => {
+const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
+  outlineId,
+  tutorialMode,
+}) => {
+  const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
-  const interactablesSorted = outlineId
-    ? outline.elements
+  const interactablesSorted = tutorialMode
+    ? tutorialOutline.elements
         .filter((element) => element.type === 'interactable')
         .sort(
           (a, b) =>
             outline.elements.findIndex((element) => element.id === a.parentId) -
             outline.elements.findIndex((element) => element.id === b.parentId)
         )
-    : newOutline.elements
-        .filter((element) => element.type === 'interactable')
-        .sort(
-          (a, b) =>
-            outline.elements.findIndex((element) => element.id === a.parentId) -
-            outline.elements.findIndex((element) => element.id === b.parentId)
-        );
+    : outlineId
+      ? outline.elements
+          .filter((element) => element.type === 'interactable')
+          .sort(
+            (a, b) =>
+              outline.elements.findIndex((element) => element.id === a.parentId) -
+              outline.elements.findIndex((element) => element.id === b.parentId)
+          )
+      : newOutline.elements
+          .filter((element) => element.type === 'interactable')
+          .sort(
+            (a, b) =>
+              outline.elements.findIndex((element) => element.id === a.parentId) -
+              outline.elements.findIndex((element) => element.id === b.parentId)
+          );
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -80,6 +94,7 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({ outlineId 
             key={element.id}
             elementId={element.id}
             outlineId={outlineId}
+            tutorialMode={tutorialMode}
           />
         ))
       )}
