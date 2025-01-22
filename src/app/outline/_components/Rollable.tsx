@@ -46,6 +46,11 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
             : element
         ),
       });
+      tutorialMode
+        ? setTutorialOutline(updateRollable)
+        : outlineId
+          ? setOutline(updateRollable)
+          : setNewOutline(updateRollable);
     },
     [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]
   );

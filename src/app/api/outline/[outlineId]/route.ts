@@ -27,7 +27,11 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
         userId: user.id,
       },
       include: {
-        elements: true,
+        elements: {
+          orderBy: {
+            userCreatedAt: 'asc',
+          },
+        },
       },
     });
 

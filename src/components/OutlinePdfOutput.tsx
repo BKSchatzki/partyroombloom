@@ -33,7 +33,7 @@ const OutlinePdfOutput: React.FC<OutputProps> = ({ outline }) => {
               {outline.title}
             </Text>
           )}
-          <View style={tw(`border-b border-neutral-300 py-2`)}>
+          <View style={tw(`border-b border-neutral-300 py-2 flex flex-col gap-2`)}>
             {outline.description && (
               <Text>
                 <Text style={tw(`font-bold text-emerald-800`)}>Description: </Text>
@@ -64,7 +64,7 @@ const OutlinePdfOutput: React.FC<OutputProps> = ({ outline }) => {
                 style={tw(`border-b border-neutral-300 pb-2`)}
               >
                 <Text style={tw(`py-2`)}>
-                  <Text style={tw(`text-lg font-bold leading-4 text-lime-800 underline`)}>
+                  <Text style={tw(`text-lg font-bold leading-4 text-lime-800`)}>
                     {landmark.name}
                   </Text>
                   {landmark.name && landmark.description && ': '}
@@ -78,8 +78,8 @@ const OutlinePdfOutput: React.FC<OutputProps> = ({ outline }) => {
                     )
                     .map((interactable) => (
                       <React.Fragment key={interactable.id}>
-                        <Text style={tw(`pb-1 text-neutral-900`)}>
-                          <Text style={tw(`text-base font-bold leading-4 text-cyan-800 underline`)}>
+                        <Text style={tw(`py-1 text-neutral-900`)}>
+                          <Text style={tw(`text-base font-bold leading-4 text-cyan-800`)}>
                             {interactable.name}
                           </Text>
                           {interactable.name && interactable.description && ': '}
@@ -93,10 +93,8 @@ const OutlinePdfOutput: React.FC<OutputProps> = ({ outline }) => {
                             )
                             .map((secret) => (
                               <React.Fragment key={secret.id}>
-                                <Text style={tw(`pb-1 text-neutral-800`)}>
-                                  <Text
-                                    style={tw(`text-sm font-bold leading-4 text-red-800 underline`)}
-                                  >
+                                <Text style={tw(`py-1 text-neutral-800`)}>
+                                  <Text style={tw(`text-sm font-bold leading-4 text-red-800`)}>
                                     {secret.name}
                                   </Text>
                                   {secret.name && secret.description && ': '}
