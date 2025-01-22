@@ -18,6 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import {
   newOutlineAtom,
   outlineAtom,
+  tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -32,6 +33,7 @@ interface OutlineAndIdProps extends OutlineProps {
 
 interface OutlineIdProps {
   outlineId: number | null;
+  tutorialMode: boolean;
 }
 
 const SecretsReviewComponent: React.FC<OutlineAndIdProps> = ({ outline, id }) => {
@@ -223,14 +225,19 @@ const InfoReview = React.memo(InfoReviewComponent);
 
 InfoReview.displayName = 'InfoReview';
 
-const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId }) => {
+const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(outlineAtom);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
-      <InfoReview outline={outlineId ? outline : newOutline}></InfoReview>
-      <LandmarksReview outline={outlineId ? outline : newOutline}></LandmarksReview>
+      <InfoReview
+        outline={tutorialMode ? tutorialOutline : outlineId ? outline : newOutline}
+      ></InfoReview>
+      <LandmarksReview
+        outline={tutorialMode ? tutorialOutline : outlineId ? outline : newOutline}
+      ></LandmarksReview>
     </ScrollArea>
   );
 };
