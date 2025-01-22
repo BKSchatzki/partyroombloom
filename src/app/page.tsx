@@ -48,7 +48,7 @@ const Hero = ({ user }: { user: User | null }) => {
       </div>
       <div className={cn(`flex gap-4 max-sm:flex-col`)}>
         <Link
-          href={`/tutorial`}
+          href={`/outline/tutorial`}
           tabIndex={0}
           className={cn(`btn btn-primary`)}
         >

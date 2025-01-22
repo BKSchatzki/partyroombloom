@@ -67,7 +67,7 @@ const Nav: React.FC<NavProps> = ({ user }) => {
               </Link>
             </li>
             <li>
-              <Link href={`/outline`}>
+              <Link href={`/outline/new`}>
                 <Button
                   color={`secondary`}
                   outlined={true}
