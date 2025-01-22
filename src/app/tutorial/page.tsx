@@ -1,15 +1,18 @@
 import React from 'react';
 
 import Container from '@/components/Container';
+import { validateRequest } from '@/lib/auth';
 
 import Builder from '../outline/_components/Builder';
 
-const Tutorial = () => {
+const Tutorial = async () => {
+  const { user } = await validateRequest();
+
   return (
     <Container>
       <Builder
-        outlineId={null}
         tutorialMode={true}
+        user={user}
       />
     </Container>
   );

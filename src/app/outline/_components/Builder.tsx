@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 
 import { useAtom } from 'jotai';
+import { User } from 'lucia';
 import {
   ChevronUp,
   Save,
@@ -37,11 +38,16 @@ import Review from './Review';
 import SecretsContainer from './SecretsContainer';
 
 interface BuilderProps {
-  outlineId: number | null;
-  tutorialMode: boolean;
+  outlineId?: number | null;
+  tutorialMode?: boolean;
+  user?: User | null;
 }
 
-const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = false }) => {
+const BuilderComponent: React.FC<BuilderProps> = ({
+  outlineId = null,
+  tutorialMode = false,
+  user = null,
+}) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [outline, setOutline] = useAtom(outlineAtom);
@@ -171,15 +177,17 @@ const BuilderComponent: React.FC<BuilderProps> = ({ outlineId, tutorialMode = fa
               <ChevronUp className={cn(`size-5`)} />
               <span className={cn(`max-sm:hidden`)}>Backup</span>
             </BackupsDropdown>
-            <Button
-              onClick={handleSave}
-              color={`secondary`}
-              disabled={isSaving}
-              outlined={true}
-            >
-              <Save className={cn(`size-5`, isSaving && `animate-spin`)} />
-              {isSaving ? `Wait` : `Save`}
-            </Button>
+            {user && (
+              <Button
+                onClick={handleSave}
+                color={`secondary`}
+                disabled={isSaving}
+                outlined={true}
+              >
+                <Save className={cn(`size-5`, isSaving && `animate-spin`)} />
+                {isSaving ? `Wait` : `Save`}
+              </Button>
+            )}
           </div>
         </div>
       </div>
