@@ -32,7 +32,7 @@
     "file-saver": "^2.0.5",
     "jotai": "^2.9.3",
     "lucia": "^3.2.0",
-    "lucide-react": "^0.428.0",
+    "lucide-react": "^0.473.0",
     "next": "^14.2.16",
     "openai": "^4.56.0",
     "react": "^18",
@@ -43,8 +43,8 @@
     "server-only": "^0.0.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^10.0.0",
-    "vaul": "^0.9.1",
+    "uuid": "^11.0.5",
+    "vaul": "^1.1.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -55,7 +55,7 @@
     "@types/react-dom": "^18",
     "@types/uuid": "^10.0.0",
     "daisyui": "^4.12.10",
-    "eslint": "^8",
+    "eslint": "^8.57.1",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
     "prettier": "^3.3.3",
