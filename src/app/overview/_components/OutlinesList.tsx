@@ -69,17 +69,20 @@ const OutlinesListComponent = () => {
     <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 sm:px-4`)}>
       <Link
         href={`/outline/new`}
-        className={cn(`group mb-4 mt-4 block h-full w-full px-4 outline-none`)}
-        tabIndex={0}
+        className={cn(`mb-4 mt-4 block h-full w-full px-4 outline-none`)}
+        tabIndex={-1}
       >
-        <Card
+        <button
           className={cn(
-            `flex h-[136px] w-full flex-row items-center justify-center gap-2 text-balance border-2 border-dashed border-[#64d8b4] bg-secondary/10 text-2xl text-[#64d8b4] ring-secondary ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out group-focus:ring-2 hover:bg-secondary/20 hover:brightness-125`
+            `flex h-[136px] w-full flex-row items-center justify-center gap-2 text-balance rounded-2xl border-2 border-dashed border-[#64d8b4] bg-secondary/10 text-2xl text-[#64d8b4] outline-none ring-secondary ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-secondary/20 hover:brightness-125 focus:ring-2`
           )}
         >
-          <Leaf className={cn(`size-7`)} />
+          <Leaf
+            aria-hidden={true}
+            className={cn(`size-7`)}
+          />
           New Outline
-        </Card>
+        </button>
       </Link>
       {isLoading || isLocalLoading ? (
         <div
@@ -144,14 +147,20 @@ const OutlinesListComponent = () => {
                     </div>
                     <Link
                       href={`/outline/${outline.id}`}
+                      tabIndex={-1}
+                      role={`none`}
                       className={cn(`col-span-12 sm:col-span-3`)}
                     >
                       <Button
                         color={`secondary`}
+                        role={`link`}
                         size={`block`}
                         className={cn(`max-w-full`)}
                       >
-                        <Pencil className={cn(`size-5`)} />
+                        <Pencil
+                          aria-hidden={true}
+                          className={cn(`size-5`)}
+                        />
                         Edit Outline
                       </Button>
                     </Link>
@@ -160,7 +169,10 @@ const OutlinesListComponent = () => {
                       outline={outline}
                       setOutline={null}
                     >
-                      <ChevronDown className={cn(`size-5`)} />
+                      <ChevronDown
+                        aria-hidden={true}
+                        className={cn(`size-5`)}
+                      />
                       Backup
                     </BackupsDropdown>
                   </div>

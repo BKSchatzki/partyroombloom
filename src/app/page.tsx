@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import Container from '@/components/Container';
 import { SignIn } from '@/components/SignIn';
+import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -49,20 +50,38 @@ const Hero = ({ user }: { user: User | null }) => {
       <div className={cn(`flex gap-4 max-sm:flex-col`)}>
         <Link
           href={`/outline/tutorial`}
-          tabIndex={0}
-          className={cn(`btn btn-primary`)}
+          role={`none`}
+          tabIndex={-1}
         >
-          How it works
-          <GraduationCap className={cn(`size-5`)} />
+          <Button
+            color={`primary`}
+            role={`link`}
+            size={`wide`}
+          >
+            How it works
+            <GraduationCap
+              aria-hidden={true}
+              className={cn(`size-5`)}
+            />
+          </Button>
         </Link>
         {user ? (
           <Link
             href={`/overview`}
-            tabIndex={0}
-            className={cn(`btn btn-neutral`)}
+            role={`none`}
+            tabIndex={-1}
           >
-            Go to overview
-            <ArrowRight className={cn(`size-5`)} />
+            <Button
+              color={`neutral`}
+              role={`link`}
+              size={`wide`}
+            >
+              Go to overview
+              <ArrowRight
+                aria-hidden={true}
+                className={cn(`size-5`)}
+              />
+            </Button>
           </Link>
         ) : (
           <SignIn />

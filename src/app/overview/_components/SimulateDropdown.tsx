@@ -74,7 +74,10 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
               href={`/outline/${outline.id}/simulate/${conversation.id}`}
               className={cn(`flex w-full items-center gap-2 p-4`)}
             >
-              <ArrowRight className={cn(`size-4`)} />
+              <ArrowRight
+                aria-hidden={true}
+                className={cn(`size-4`)}
+              />
               {dayjs(conversation.createdAt).format('ddd MMM D, YYYY - h:mm A')}
             </Link>
           </DropdownMenuItem>
