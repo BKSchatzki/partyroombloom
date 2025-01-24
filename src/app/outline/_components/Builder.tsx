@@ -10,8 +10,8 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import BackupsDropdown from '@/app/overview/_components/BackupsDropdown';
 import GenericError from '@/components/GenericError';
+import BackupsDropdown from '@/components/ManageDropdown';
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
@@ -189,7 +189,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
                 aria-hidden={true}
                 className={cn(`size-5`)}
               />
-              <span className={cn(`max-sm:hidden`)}>Backup</span>
+              <span className={cn(`max-sm:hidden`)}>Manage</span>
             </BackupsDropdown>
             {user && (
               <Button

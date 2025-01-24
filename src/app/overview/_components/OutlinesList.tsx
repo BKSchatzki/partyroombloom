@@ -27,7 +27,7 @@ import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
-import BackupsDropdown from './BackupsDropdown';
+import BackupsDropdown from '../../../components/ManageDropdown';
 import Preview from './Preview';
 import SimulateDropdown from './SimulateDropdown';
 
@@ -189,7 +189,7 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                         aria-hidden={true}
                         className={cn(`size-5`)}
                       />
-                      Backup
+                      Manage
                     </BackupsDropdown>
                   </div>
                   <Preview outline={outline} />

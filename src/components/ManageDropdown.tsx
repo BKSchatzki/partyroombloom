@@ -24,14 +24,14 @@ import {
 } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-interface BackupsDropdownProps {
+interface ManageDropdownProps {
   outline: Outline;
   setOutline: ((value: Outline | ((prev: Outline) => Outline)) => void) | null;
   className?: string;
   children: React.ReactNode;
 }
 
-const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
+const ManageDropdown: React.FC<ManageDropdownProps> = ({
   outline,
   setOutline,
   className,
@@ -171,4 +171,4 @@ const BackupsDropdown: React.FC<BackupsDropdownProps> = ({
   );
 };
 
-export default BackupsDropdown;
+export default ManageDropdown;
