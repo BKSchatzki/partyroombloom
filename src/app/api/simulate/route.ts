@@ -10,18 +10,22 @@ import type {
   Outline,
 } from '@/lib/types';
 
+// Create type for only id field in Outline
 type ExistingOutline = Omit<Outline, 'id'> & {
   id: number;
 };
 
+/* Service for:
+  - Creating new conversation entries
+*/
 export const POST = async (req: NextRequest) => {
+  // Get user and abort if no user found
   const { user } = await validateRequest();
-
   if (!user) {
-    return Response.json({ message: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
-
   try {
+    // Insert conversation from body into table and associate with outline and user
     const body = await req.json();
     const conversation: Conversation = body.conversation;
     const outline: ExistingOutline = body.outline;
@@ -32,10 +36,10 @@ export const POST = async (req: NextRequest) => {
         thread: conversation ?? '',
       },
     });
-
-    return Response.json({ id: createdConversation.id }, { status: 200 });
+    // Return id of created conversation
+    return NextResponse.json({ id: createdConversation.id }, { status: 200 });
   } catch (error) {
     console.error('Error saving conversation:', error);
-    return Response.json({ message: 'Error saving conversation' }, { status: 500 });
+    return NextResponse.json({ message: 'Error saving conversation' }, { status: 500 });
   }
 };
