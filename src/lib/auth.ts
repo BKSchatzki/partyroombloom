@@ -32,6 +32,7 @@ export const lucia = new Lucia(adapter, {
       email: attributes.email,
       name: attributes.name,
       picture: attributes.picture,
+      chatTokens: attributes.chatTokens,
     };
   },
 });
@@ -50,6 +51,7 @@ interface DatabaseUserAttributes {
   email: string;
   name?: string;
   picture?: string;
+  chatTokens: number;
 }
 
 const retryOperation = async <T>(

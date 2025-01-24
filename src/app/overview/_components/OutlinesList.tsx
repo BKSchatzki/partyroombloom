@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';
+import GenericError from '@/components/GenericError';
 import {
   Accordion,
   AccordionContent,

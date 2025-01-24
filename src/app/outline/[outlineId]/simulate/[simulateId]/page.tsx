@@ -34,6 +34,7 @@ const ViewSimulation = async ({ params }: { params: { simulateId: string } }) =>
       <Chat
         simulateId={conversation.id}
         outlineId={null}
+        user={user}
       />
     </Container>
   );

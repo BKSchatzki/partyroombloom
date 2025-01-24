@@ -52,6 +52,7 @@ export async function GET(request: Request): Promise<Response> {
         email: googleUser.email,
         name: googleUser.name,
         picture: googleUser.picture,
+        chatTokens: 50,
       },
     });
 

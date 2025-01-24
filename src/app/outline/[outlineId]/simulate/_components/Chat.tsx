@@ -6,6 +6,7 @@ import {
 } from 'react';
 
 import { useAtom } from 'jotai';
+import { User } from 'lucia';
 import {
   Check,
   Save,
@@ -37,13 +38,14 @@ import { useQuery } from '@tanstack/react-query';
 
 import ChatOptions from './ChatOptions';
 
-const Chat = ({
-  outlineId,
-  simulateId,
-}: {
+interface ChatProps {
   outlineId: string | null;
   simulateId: number | null;
-}) => {
+  user: User | null;
+}
+
+const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
+  const [tokenCount, setTokenCount] = useState(user ? user.chatTokens : null);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [conversation, setConversation] = useAtom(conversationAtom);
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
@@ -82,7 +84,9 @@ const Chat = ({
 
       const data = await response.json();
 
-      setConversation(data);
+      console.log(data);
+      setConversation(data.conversation);
+      setTokenCount(data.user.chatTokens);
       setIsLocalLoading(false);
       return data;
     },
@@ -108,7 +112,8 @@ const Chat = ({
 
       const data = await response.json();
 
-      setConversation(data);
+      setConversation(data.conversation);
+      setTokenCount(data.user.chatTokens);
       setUserMessage(userMessageInit);
       setIsSaving(false);
       return data;
@@ -209,6 +214,7 @@ const Chat = ({
                   {message.role === 'assistant' ? (
                     <div className={cn(`mx-auto flex flex-col gap-6 px-4 py-8 max-sm:px-0`)}>
                       <h3 className={cn(`text-2xl font-bold`)}>{message.content.headline}</h3>
+
                       <div className={cn(`flex flex-col gap-4`)}>
                         {message.content.narration?.map((narration) => (
                           <p key={narration}>{narration}</p>
@@ -222,7 +228,9 @@ const Chat = ({
                         disabled={index !== conversation.length - 1}
                       />
                       <Button
-                        disabled={isSaving || index !== conversation.length - 1}
+                        disabled={
+                          isSaving || index !== conversation.length - 1 || user?.chatTokens === 0
+                        }
                         onClick={() => handleSubmit(userMessage)}
                         className={cn(
                           `bg-indigo-600 outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 max-sm:mx-1`
@@ -251,6 +259,11 @@ const Chat = ({
                               className={cn(`size-5`)}
                             />
                             Send
+                            <span
+                              className={cn(
+                                `rounded-md bg-base-200/50 px-2 py-1 text-xs font-light text-error`
+                              )}
+                            >{`Remaining: ${tokenCount}`}</span>
                           </span>
                         )}
                       </Button>

@@ -1,4 +1,7 @@
-import { NextRequest } from 'next/server';
+import {
+  NextRequest,
+  NextResponse,
+} from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -11,7 +14,7 @@ export const GET = async (req: NextRequest) => {
   const { user } = await validateRequest();
 
   if (!user) {
-    return Response.json({ message: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -58,9 +61,9 @@ export const GET = async (req: NextRequest) => {
       })),
     }));
 
-    return Response.json(formattedOutlinesList, { status: 200 });
+    return NextResponse.json(formattedOutlinesList, { status: 200 });
   } catch (error) {
-    return Response.json({ message: 'Error fetching outlines' }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching outlines' }, { status: 500 });
   }
 };
 
@@ -68,7 +71,7 @@ export const POST = async (req: NextRequest) => {
   const { user } = await validateRequest();
 
   if (!user) {
-    return Response.json({ message: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -113,9 +116,9 @@ export const POST = async (req: NextRequest) => {
     await createElements(interactables);
     await createElements(secrets);
 
-    return Response.json({ id: createdOutline.id }, { status: 201 });
+    return NextResponse.json({ id: createdOutline.id }, { status: 201 });
   } catch (error) {
     console.error('Error saving outline:', error);
-    return Response.json({ message: 'Error saving outline' }, { status: 500 });
+    return NextResponse.json({ message: 'Error saving outline' }, { status: 500 });
   }
 };
