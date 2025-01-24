@@ -16,8 +16,8 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -228,7 +228,7 @@ InfoReview.displayName = 'InfoReview';
 const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode }) => {
   const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
-  const [outline] = useAtom(outlineAtom);
+  const [outline] = useAtom(existingOutlineAtom);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>

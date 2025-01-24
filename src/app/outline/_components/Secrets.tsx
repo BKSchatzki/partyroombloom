@@ -19,8 +19,8 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -38,9 +38,9 @@ interface SecretsProps {
 const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutorialMode }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [outline, setOutline] = useAtom(outlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
   const thisElement = thisOutline.elements.find((element) => element.id === elementId);
   const hasElements =
     thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
@@ -66,9 +66,9 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
     tutorialMode
       ? setTutorialOutline(addNewSecret)
       : outlineId
-        ? setOutline(addNewSecret)
+        ? setExistingOutline(addNewSecret)
         : setNewOutline(addNewSecret);
-  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]);
+  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   const handleChange = useCallback(
     (
@@ -86,10 +86,10 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
       tutorialMode
         ? setTutorialOutline(updateSecret)
         : outlineId
-          ? setOutline(updateSecret)
+          ? setExistingOutline(updateSecret)
           : setNewOutline(updateSecret);
     },
-    [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
   );
 
   const handleDelete = useCallback(
@@ -102,10 +102,10 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
       tutorialMode
         ? setTutorialOutline(deleteSecret)
         : outlineId
-          ? setOutline(deleteSecret)
+          ? setExistingOutline(deleteSecret)
           : setNewOutline(deleteSecret);
     },
-    [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
   );
 
   return (
@@ -168,7 +168,7 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
               <div className={cn(`max-sm:mx-[-0.5rem]`)}>
                 <Rollable
                   elementId={element.id}
-                  outlineId={outline.id}
+                  outlineId={thisOutline.id}
                   tutorialMode={tutorialMode}
                 />
               </div>

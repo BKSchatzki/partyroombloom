@@ -13,8 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -30,9 +30,9 @@ interface LandmarksProps {
 const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tutorialMode }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [outline, setOutline] = useAtom(outlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
 
   const handleAddLandmark = useCallback(() => {
     const addNewLandmark = (outline: Outline): Outline => ({
@@ -54,9 +54,9 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tuto
     tutorialMode
       ? setTutorialOutline(addNewLandmark)
       : outlineId
-        ? setOutline(addNewLandmark)
+        ? setExistingOutline(addNewLandmark)
         : setNewOutline(addNewLandmark);
-  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]);
+  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>

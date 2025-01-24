@@ -15,8 +15,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -30,9 +30,9 @@ interface InfoProps {
 const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [outline, setOutline] = useAtom(outlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
@@ -43,10 +43,10 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
       tutorialMode
         ? setTutorialOutline(updateInfo)
         : outlineId
-          ? setOutline(updateInfo)
+          ? setExistingOutline(updateInfo)
           : setNewOutline(updateInfo);
     },
-    [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
   );
 
   const infoTextareas = ['description', 'goal', 'comments'] as const;

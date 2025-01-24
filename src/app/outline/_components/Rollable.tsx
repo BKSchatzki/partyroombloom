@@ -11,8 +11,8 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -27,9 +27,9 @@ interface RollableProps {
 const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tutorialMode }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [outline, setOutline] = useAtom(outlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
   const thisElement = thisOutline.elements.find((element) => element.id === elementId);
 
   const handleChange = useCallback(
@@ -49,10 +49,10 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
       tutorialMode
         ? setTutorialOutline(updateRollable)
         : outlineId
-          ? setOutline(updateRollable)
+          ? setExistingOutline(updateRollable)
           : setNewOutline(updateRollable);
     },
-    [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]
   );
 
   return (

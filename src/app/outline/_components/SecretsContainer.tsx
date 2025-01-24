@@ -12,8 +12,8 @@ import {
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
@@ -31,9 +31,9 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
 }) => {
   const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
-  const [outline] = useAtom(outlineAtom);
+  const [existingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
 
   const sortedInteractables = thisOutline.elements
     .filter((element) => element.type === 'interactable')

@@ -13,6 +13,7 @@ import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';
 import GenericError from '@/components/GenericError';
+import ManageDropdown from '@/components/ManageDropdown';
 import {
   Accordion,
   AccordionContent,
@@ -27,7 +28,6 @@ import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
-import BackupsDropdown from '../../../components/ManageDropdown';
 import Preview from './Preview';
 import SimulateDropdown from './SimulateDropdown';
 
@@ -181,7 +181,7 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                       outline={outline}
                       tokenCount={user.chatTokens}
                     />
-                    <BackupsDropdown
+                    <ManageDropdown
                       outline={outline}
                       setOutline={null}
                     >
@@ -190,7 +190,7 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                         className={cn(`size-5`)}
                       />
                       Manage
-                    </BackupsDropdown>
+                    </ManageDropdown>
                   </div>
                   <Preview outline={outline} />
                 </AccordionContent>

@@ -19,8 +19,8 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -41,9 +41,9 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({
 }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [outline, setOutline] = useAtom(outlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
   const thisElement = thisOutline.elements.find((element) => element.id === elementId);
   const hasElements =
     thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
@@ -69,9 +69,9 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({
     tutorialMode
       ? setTutorialOutline(addNewInteractable)
       : outlineId
-        ? setOutline(addNewInteractable)
+        ? setExistingOutline(addNewInteractable)
         : setNewOutline(addNewInteractable);
-  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]);
+  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   const handleChange = useCallback(
     (
@@ -89,10 +89,10 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({
       tutorialMode
         ? setTutorialOutline(updateInteractable)
         : outlineId
-          ? setOutline(updateInteractable)
+          ? setExistingOutline(updateInteractable)
           : setNewOutline(updateInteractable);
     },
-    [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
   );
 
   const handleDelete = useCallback(
@@ -107,10 +107,10 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({
       tutorialMode
         ? setTutorialOutline(deleteInteractable)
         : outlineId
-          ? setOutline(deleteInteractable)
+          ? setExistingOutline(deleteInteractable)
           : setNewOutline(deleteInteractable);
     },
-    [outlineId, setNewOutline, setOutline, setTutorialOutline, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
   );
 
   return (

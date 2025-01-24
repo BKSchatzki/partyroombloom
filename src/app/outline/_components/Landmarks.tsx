@@ -13,8 +13,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
@@ -31,12 +31,12 @@ interface LandmarksProps {
 const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tutorialMode }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [outline, setOutline] = useAtom(outlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
   const thisElement = tutorialMode
     ? tutorialOutline.elements.find((element) => element.id === elementId)
     : outlineId
-      ? outline.elements.find((element) => element.id === elementId)
+      ? existingOutline.elements.find((element) => element.id === elementId)
       : newOutline.elements.find((element) => element.id === elementId);
 
   const handleChange = useCallback(
@@ -51,10 +51,10 @@ const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tu
       tutorialMode
         ? setTutorialOutline(updateLandmark)
         : outlineId
-          ? setOutline(updateLandmark)
+          ? setExistingOutline(updateLandmark)
           : setNewOutline(updateLandmark);
     },
-    [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]
   );
 
   const handleDelete = useCallback(() => {
@@ -79,9 +79,9 @@ const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tu
     tutorialMode
       ? setTutorialOutline(deleteLandmark)
       : outlineId
-        ? setOutline(deleteLandmark)
+        ? setExistingOutline(deleteLandmark)
         : setNewOutline(deleteLandmark);
-  }, [outlineId, setNewOutline, setOutline, setTutorialOutline, thisElement, tutorialMode]);
+  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   return (
     <Card className={cn(`mb-8 w-full bg-primary/10 shadow-xl shadow-base-300 max-sm:rounded-none`)}>

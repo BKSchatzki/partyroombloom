@@ -11,7 +11,7 @@ import {
 import { useRouter } from 'next/navigation';
 
 import GenericError from '@/components/GenericError';
-import BackupsDropdown from '@/components/ManageDropdown';
+import ManageDropdown from '@/components/ManageDropdown';
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
@@ -22,8 +22,8 @@ import {
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
+  existingOutlineAtom,
   newOutlineAtom,
-  outlineAtom,
   outlineInit,
   outlinesListAtom,
   tutorialOutlineAtom,
@@ -51,12 +51,16 @@ const BuilderComponent: React.FC<BuilderProps> = ({
 }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [outline, setOutline] = useAtom(outlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? outline : newOutline;
-  const setThisOutline = tutorialMode ? setTutorialOutline : outlineId ? setOutline : setNewOutline;
+  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
+  const setThisOutline = tutorialMode
+    ? setTutorialOutline
+    : outlineId
+      ? setExistingOutline
+      : setNewOutline;
 
   const router = useRouter();
 
@@ -72,7 +76,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
       if (isLoading && preloadedOutline) {
-        setOutline(preloadedOutline);
+        setExistingOutline(preloadedOutline);
         return preloadedOutline;
       }
       const response = await fetch(`/api/outline/${outlineId}`);
@@ -80,7 +84,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
         throw new Error(`Failed to fetch outline: ${response.status}`);
       }
       const data = await response.json();
-      setOutline(data);
+      setExistingOutline(data);
       return data;
     },
   });
@@ -180,7 +184,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
           <CarouselPrevious />
           <CarouselNext />
           <div className={cn(`absolute bottom-0 right-20 flex items-center gap-4`)}>
-            <BackupsDropdown
+            <ManageDropdown
               outline={thisOutline}
               setOutline={setThisOutline}
               className={cn(`px-4 py-2 text-sm`)}
@@ -190,7 +194,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
                 className={cn(`size-5`)}
               />
               <span className={cn(`max-sm:hidden`)}>Manage</span>
-            </BackupsDropdown>
+            </ManageDropdown>
             {user && (
               <Button
                 onClick={handleSave}
