@@ -10,7 +10,7 @@ import { prisma } from '@/lib/prisma';
 export const POST = async (req: NextRequest) => {
   const { user } = await validateRequest();
 
-  if (!user) {
+  if (!user || user.chatTokens <= 0) {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
 

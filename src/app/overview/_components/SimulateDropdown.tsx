@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import {
   ArrowRight,
   ChevronDown,
+  Coins,
   Sparkle,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -19,7 +20,12 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const SimulateDropdown = ({ outline }: { outline: Outline }) => {
+interface SimulateDropdownProps {
+  outline: Outline;
+  tokenCount: number;
+}
+
+const SimulateDropdown: React.FC<SimulateDropdownProps> = ({ outline, tokenCount }) => {
   return outline.conversations.length === 0 ? (
     <Link
       href={`/outline/${outline.id}/simulate`}
@@ -29,6 +35,7 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
     >
       <Button
         color={`ghost`}
+        disabled={tokenCount <= 0}
         role={`link`}
         size={`block`}
         className={cn(
@@ -40,6 +47,18 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
           className={cn(`size-5`)}
         />
         Simulate Scene
+        <span
+          className={cn(
+            `flex items-center gap-1 rounded-md bg-base-200/50 px-2 py-1 text-xs`,
+            tokenCount > 10 ? 'text-success' : 'text-error'
+          )}
+        >
+          {tokenCount}
+          <Coins
+            aria-hidden={true}
+            className={cn(`size-3`)}
+          />
+        </span>
       </Button>
     </Link>
   ) : (
@@ -58,6 +77,7 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
       <DropdownMenuContent className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}>
         <DropdownMenuItem
           asChild
+          disabled={tokenCount <= 0}
           className={cn(
             `cursor-pointer rounded-xl bg-indigo-600/30 p-0 font-semibold hover:bg-indigo-600 focus:bg-indigo-600`
           )}
@@ -71,6 +91,18 @@ const SimulateDropdown = ({ outline }: { outline: Outline }) => {
               className={cn(`size-5`)}
             />
             New Simulation
+            <span
+              className={cn(
+                `flex items-center gap-1 rounded-md bg-base-200/50 px-2 py-1 text-xs`,
+                tokenCount > 10 ? 'text-success' : 'text-error'
+              )}
+            >
+              {tokenCount}
+              <Coins
+                aria-hidden={true}
+                className={cn(`size-3`)}
+              />
+            </span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className={cn(`-my-0.5`)} />

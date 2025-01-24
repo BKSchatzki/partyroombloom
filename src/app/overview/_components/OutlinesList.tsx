@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 
 import { useAtom } from 'jotai';
+import { User } from 'lucia';
 import {
   ChevronDown,
   Leaf,
@@ -30,7 +31,11 @@ import BackupsDropdown from './BackupsDropdown';
 import Preview from './Preview';
 import SimulateDropdown from './SimulateDropdown';
 
-const OutlinesListComponent = () => {
+interface OutlinesListProps {
+  user: User;
+}
+
+const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
   const [outlinesList, setOutlinesList] = useAtom<Outline[]>(outlinesListAtom);
   const [isLocalLoading, setIsLocalLoading] = useState(true);
 
@@ -172,7 +177,10 @@ const OutlinesListComponent = () => {
                         Edit Outline
                       </Button>
                     </Link>
-                    <SimulateDropdown outline={outline} />
+                    <SimulateDropdown
+                      outline={outline}
+                      tokenCount={user.chatTokens}
+                    />
                     <BackupsDropdown
                       outline={outline}
                       setOutline={null}

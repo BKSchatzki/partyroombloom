@@ -9,6 +9,7 @@ import { useAtom } from 'jotai';
 import { User } from 'lucia';
 import {
   Check,
+  Coins,
   Save,
   Sparkles,
 } from 'lucide-react';
@@ -45,7 +46,7 @@ interface ChatProps {
 }
 
 const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
-  const [tokenCount, setTokenCount] = useState(user ? user.chatTokens : null);
+  const [tokenCount, setTokenCount] = useState(user ? user.chatTokens : 0);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [conversation, setConversation] = useAtom(conversationAtom);
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
@@ -64,6 +65,10 @@ const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
     queryFn: async () => {
       let response;
       if (simulateId === null) {
+        if (!user || tokenCount <= 0) {
+          setTokenCount(0);
+          return tokenCount;
+        }
         response = await fetch('/api/simulate/converse', {
           method: 'POST',
           headers: {
@@ -94,6 +99,11 @@ const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
 
   const handleSubmit = async (userMessage: UserMessage) => {
     setIsSaving(true);
+    if (!user || tokenCount <= 0) {
+      setTokenCount(0);
+      setIsSaving(false);
+      return;
+    }
     try {
       const response = await fetch('/api/simulate/converse', {
         method: 'POST',
@@ -228,9 +238,7 @@ const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
                         disabled={index !== conversation.length - 1}
                       />
                       <Button
-                        disabled={
-                          isSaving || index !== conversation.length - 1 || user?.chatTokens === 0
-                        }
+                        disabled={isSaving || index !== conversation.length - 1 || tokenCount <= 0}
                         onClick={() => handleSubmit(userMessage)}
                         className={cn(
                           `bg-indigo-600 outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 max-sm:mx-1`
@@ -261,9 +269,16 @@ const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
                             Send
                             <span
                               className={cn(
-                                `rounded-md bg-base-200/50 px-2 py-1 text-xs font-light text-error`
+                                `flex items-center gap-1 rounded-md bg-base-200/50 px-2 py-1 text-xs`,
+                                tokenCount > 10 ? 'text-success' : 'text-error'
                               )}
-                            >{`Remaining: ${tokenCount}`}</span>
+                            >
+                              {tokenCount}
+                              <Coins
+                                aria-hidden={true}
+                                className={cn(`size-3`)}
+                              />
+                            </span>
                           </span>
                         )}
                       </Button>
