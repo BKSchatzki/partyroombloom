@@ -12,7 +12,7 @@ import {
 } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
-export const SignIn = async () => {
+export const SignIn = async ({ className }: { className?: string }) => {
   return (
     <Link
       href={`/login/google`}
@@ -21,7 +21,10 @@ export const SignIn = async () => {
     >
       <button
         role={`link`}
-        className="gsi-material-button btn block hover:bg-base-content focus:bg-base-content"
+        className={cn(
+          'gsi-material-button btn block hover:bg-base-content focus:bg-base-content',
+          className
+        )}
       >
         <div className="gsi-material-button-state"></div>
         <div className="gsi-material-button-content-wrapper">

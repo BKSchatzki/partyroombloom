@@ -84,7 +84,7 @@ const Hero = ({ user }: { user: User | null }) => {
             </Button>
           </Link>
         ) : (
-          <SignIn />
+          <SignIn className={cn(`btn-wide`)} />
         )}
       </div>
     </div>

@@ -46,7 +46,7 @@ const SimulateDropdown: React.FC<SimulateDropdownProps> = ({ outline, tokenCount
           aria-hidden={true}
           className={cn(`size-5`)}
         />
-        Simulate Scene
+        Simulate
         <span
           className={cn(
             `flex items-center gap-1 rounded-md bg-base-200/50 px-2 py-1 text-xs`,
