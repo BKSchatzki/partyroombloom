@@ -32,7 +32,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
-import Tutorial from '../tutorial/_components/Tutorial';
+import TutorialCard from '../tutorial/_components/TutorialCard';
 import Info from './Info';
 import InteractablesContainer from './InteractablesContainer';
 import LandmarksContainer from './LandmarksContainer';
@@ -154,7 +154,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
               {tutorialMode && (
-                <Tutorial
+                <TutorialCard
                   builderPage={'info'}
                   embla={embla}
                 />
@@ -201,6 +201,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
             <ManageDropdown
               outline={thisOutline}
               setOutline={setThisOutline}
+              tutorialMode={tutorialMode}
               className={cn(`px-4 py-2 text-sm`)}
             >
               <ChevronUp

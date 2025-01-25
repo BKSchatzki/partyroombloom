@@ -23,7 +23,7 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import Tutorial from '../tutorial/_components/Tutorial';
+import TutorialCard from '../tutorial/_components/TutorialCard';
 
 interface OutlineProps {
   outline: Outline;
@@ -153,7 +153,7 @@ InteractablesReview.displayName = 'InteractablesReview';
 
 const LandmarksReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Outline }) => {
   return (
-    <div className={cn(`flex flex-col gap-6`)}>
+    <div className={cn(`mb-8 flex flex-col gap-6`)}>
       {outline.elements
         .filter((element) => element.type === 'landmark')
         .map((landmark) => (
@@ -195,7 +195,7 @@ const InfoReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Out
   return (
     <Card
       className={cn(
-        `mb-6 mt-4 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
+        `mb-4 mt-4 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
       )}
     >
       <span
@@ -228,13 +228,7 @@ const InfoReview = React.memo(InfoReviewComponent);
 
 InfoReview.displayName = 'InfoReview';
 
-const ReviewComponent: React.FC<OutlineIdProps> = ({
-  outlineId,
-  tutorialMode,
-  tutorialStep,
-  setTutorialStep,
-  embla,
-}) => {
+const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode, embla }) => {
   const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(existingOutlineAtom);
@@ -242,7 +236,7 @@ const ReviewComponent: React.FC<OutlineIdProps> = ({
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       {tutorialMode && (
-        <Tutorial
+        <TutorialCard
           builderPage={'review'}
           embla={embla}
         />

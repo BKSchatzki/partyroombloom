@@ -18,7 +18,7 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import Tutorial from '../tutorial/_components/Tutorial';
+import TutorialCard from '../tutorial/_components/TutorialCard';
 import Secrets from './Secrets';
 
 interface SecretsContainerProps {
@@ -49,7 +49,7 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       {tutorialMode && (
-        <Tutorial
+        <TutorialCard
           builderPage={'secrets'}
           embla={embla}
         />

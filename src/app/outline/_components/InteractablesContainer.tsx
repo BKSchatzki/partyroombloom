@@ -18,7 +18,7 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import Tutorial from '../tutorial/_components/Tutorial';
+import TutorialCard from '../tutorial/_components/TutorialCard';
 import Interactables from './Interactables';
 
 interface InteractablesContainerProps {
@@ -42,7 +42,7 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       {tutorialMode && (
-        <Tutorial
+        <TutorialCard
           builderPage={'interactables'}
           embla={embla}
         />

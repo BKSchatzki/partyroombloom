@@ -24,12 +24,30 @@ import {
 import { tutorialOutlineFinal } from '@/lib/tutorial';
 import { cn } from '@/lib/utils';
 
+interface ActionPromptProps {
+  children: React.ReactNode;
+}
+
 interface TutorialProps {
   builderPage: string;
   embla: any;
 }
 
-const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
+const ActionPrompt: React.FC<ActionPromptProps> = ({ children }) => {
+  return (
+    <div className={cn(`pt-2`)}>
+      <div className={cn(`flex gap-2 rounded-md bg-secondary/25 p-2`)}>
+        <ArrowRight
+          aria-hidden={true}
+          className={cn(`size-5 shrink-0`)}
+        />
+        <p>{children}</p>
+      </div>
+    </div>
+  );
+};
+
+const TutorialCard: React.FC<TutorialProps> = ({ builderPage, embla }) => {
   const [step, setStep] = useAtom(tutorialStepAtom);
   const [_, setTutorialOutline] = useAtom(tutorialOutlineAtom);
 
@@ -77,12 +95,17 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
           <p>
             Feel free to look around, and don't worry about messing anything up. Every time you go
             forward or back a step, the tutorial will update the scene with the right info for that
-            step.
+            step. The UI is only enabled here so you can mess around, and won't affect the
+            progression of the tutorial.
           </p>
-          <p>
+          <ActionPrompt>
             When you're ready, come back to this page and click or tap the{' '}
-            <ArrowRight className={cn(`inline size-4`)} /> icon above to continue with the tutorial.
-          </p>
+            <ArrowRight
+              aria-hidden={true}
+              className={cn(`inline size-4`)}
+            />{' '}
+            icon above to continue with the tutorial. We'll start with the "Title."
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -106,6 +129,7 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             In this tutorial, we're going to be building a small loot room in a dungeon, so let's
             just call it "Secret Treasure Room."
           </p>
+          <ActionPrompt>Go to the next step to learn how to write a "Description."</ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -132,6 +156,9 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             the air, the sound of the characters' footsteps, and drawn our players' attention to the
             center of the room with a (lack of) movement.
           </p>
+          <ActionPrompt>
+            Go to the next step to learn the purpose of a "Goal" and how to write one.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -160,6 +187,9 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             <span className={cn(`text-indigo-400`)}>Simulate Assistant</span> remember to make it
             exciting.
           </p>
+          <ActionPrompt>
+            Go to the next step to learn about the "Comments" field and how to best use it.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -191,11 +221,15 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             in the scene.
           </p>
           <p>
-            When you're ready, let's learn about the three-layered elements framework using{' '}
-            <span className={cn(`text-primary`)}>Landmarks</span>,{' '}
+            Now that we're done filling in the general information, it's time to move on to the meat
+            of the <span className={cn(`text-secondary`)}>Outline Builder</span>.
+          </p>
+          <ActionPrompt>
+            When you're ready, go to the next step to learn about the three-layered elements
+            framework using <span className={cn(`text-primary`)}>Landmarks</span>,{' '}
             <span className={cn(`text-info`)}>Interactables</span>, and{' '}
             <span className={cn(`text-error`)}>Secrets</span>.
-          </p>
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -228,9 +262,10 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             initial description of the scene we just finished. You might say "As you enter this
             room, you see ..."
           </p>
-          <p>
-            Let's go learn about <span className={cn(`text-info`)}>Interactables</span>.
-          </p>
+          <ActionPrompt>
+            Go to the next step to learn about{' '}
+            <span className={cn(`text-info`)}>Interactables</span>.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -262,9 +297,9 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             We don't have any <span className={cn(`text-primary`)}>Landmarks</span>, so we cannot
             add anything here yet.
           </p>
-          <p>
-            Let's go learn about <span className={cn(`text-error`)}>Secrets</span>.
-          </p>
+          <ActionPrompt>
+            Go to the next step to learn about <span className={cn(`text-error`)}>Secrets</span>.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -296,9 +331,10 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             Likewise, we don't have any <span className={cn(`text-info`)}>Interactables</span> yet.
             So no <span className={cn(`text-error`)}>Secrets</span> can be added at the moment.
           </p>
-          <p>
-            Let's head back and add our first <span className={cn(`text-primary`)}>Landmark</span>.
-          </p>
+          <ActionPrompt>
+            Let's start adding some elements to fill out the scene. Go to the next step to see how
+            we've added our first <span className={cn(`text-primary`)}>Landmark</span>.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -325,9 +361,11 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             <span className={cn(`text-primary`)}>Landmark</span>.
           </p>
           <p>We've given it a meaningful name and description we can use when narrating it.</p>
-          <p>
-            Let's go add an <span className={cn(`text-info`)}>Interactable</span>.
-          </p>
+          <ActionPrompt>
+            Now that we have a <span className={cn(`text-primary`)}>Landmark</span>, let's go add an{' '}
+            <span className={cn(`text-info`)}>Interactable</span>. Go to the next step to check out
+            the <span className={cn(`text-info`)}>Interactables</span> page.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -352,6 +390,10 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             Ah! Since we've added a <span className={cn(`text-primary`)}>Landmark</span>, we can add
             an <span className={cn(`text-info`)}>Interactable</span> to it, so let's do that!
           </p>
+          <ActionPrompt>
+            Go to the next step to see what it looks like after we've added an{' '}
+            <span className={cn(`text-info`)}>Interactable</span>.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -380,6 +422,10 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             Take a wild guess as to how the <span className={cn(`text-error`)}>Secret</span> for
             this lock is going to work?
           </p>
+          <ActionPrompt>
+            Go to the next step to switch to the <span className={cn(`text-error`)}>Secrets</span>{' '}
+            page and check out the <span className={cn(`text-error`)}>Secret</span> we've added.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -412,10 +458,11 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             able to resolve the <span className={cn(`text-info`)}>Interactable</span>. Whether they
             do it in a way you expect or surprise you is up to them.
           </p>
-          <p>
-            Let's add in the <span className={cn(`text-warning`)}>Rollables</span> to expound on the
-            success and fail triggers and results.
-          </p>
+          <ActionPrompt>
+            Go to the next step to see how filling out the{' '}
+            <span className={cn(`text-warning`)}>Rollables</span> helps us expound on the success
+            and fail triggers and results.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -454,6 +501,11 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             We've also left a bit of a note for the failure condition suggesting that we can make up
             something fun depending on how badly our players mess this up. Flavor is always good!
           </p>
+          <ActionPrompt>
+            Go to the next step to check out how we can add multiple{' '}
+            <span className={cn(`text-error`)}>Secrets</span> and how they can help flesh out a
+            scene.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -488,6 +540,7 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             places, settings in our descriptions of the elements or the{' '}
             <span className={cn(`text-warning`)}>Rollables</span>.
           </p>
+          <p>(If you're on a smaller screen, you might want to scroll down for this one.)</p>
           <p>
             In this example, we are giving observant characters the stunning information that the
             lock itself is of modern design, and rewarding especially inspired gameplay with world
@@ -508,6 +561,11 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             Let's use this to inspire another <span className={cn(`text-info`)}>Interactable</span>{' '}
             on the "Lone Chest" <span className={cn(`text-primary`)}>Landmark</span>.
           </p>
+          <ActionPrompt>
+            Go to the next step to see another added{' '}
+            <span className={cn(`text-info`)}>Interactable</span> on our one{' '}
+            <span className={cn(`text-primary`)}>Landmark</span>.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -551,6 +609,10 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             Let's add a bit of jeopardy around the chest by adding another{' '}
             <span className={cn(`text-primary`)}>Landmark</span>.
           </p>
+          <ActionPrompt>
+            Go to the next step to see a second <span className={cn(`text-primary`)}>Landmark</span>{' '}
+            and how we will use it to spice up the scene.
+          </ActionPrompt>
         </div>
       ),
       setStateToStep: () => {
@@ -569,6 +631,188 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
           ],
         });
         embla.scrollTo(2);
+      },
+    },
+    {
+      id: 15,
+      page: 'landmarks',
+      title: 'A Second Landmark',
+      content: (
+        <div className={cn(`space-y-2`)}>
+          <p>
+            We've added a ring of light around the platform. This is a great{' '}
+            <span className={cn(`text-primary`)}>Landmark</span> and it sure to get our players'
+            attention (or suspicion).
+          </p>
+          <p>
+            We've made it blindingly bright, but not immediately dangerous to our players. Not that
+            that's going to last, seeing as how that treasure chest is in the middle of the
+            platform.
+          </p>
+          <ActionPrompt>
+            Go to the next step to check out how we develop this{' '}
+            <span className={cn(`text-primary`)}>Landmark</span> with an{' '}
+            <span className={cn(`text-info`)}>Interactable</span>.
+          </ActionPrompt>
+        </div>
+      ),
+      setStateToStep: () => {
+        setTutorialOutline({
+          ...outlineInit,
+          title: tutorialOutlineFinal.title,
+          description: tutorialOutlineFinal.description,
+          goal: tutorialOutlineFinal.goal,
+          comments: tutorialOutlineFinal.comments,
+          elements: [
+            tutorialOutlineFinal.elements[0],
+            tutorialOutlineFinal.elements[1],
+            tutorialOutlineFinal.elements[2],
+            tutorialOutlineFinal.elements[3],
+            tutorialOutlineFinal.elements[4],
+            tutorialOutlineFinal.elements[5],
+          ],
+        });
+        embla.scrollTo(1);
+      },
+    },
+    {
+      id: 16,
+      page: 'interactables',
+      title: 'Brighter and Brighter',
+      content: (
+        <div className={cn(`space-y-2`)}>
+          <p>
+            They're not getting this chest for free. Since this is an obvious phenomenon that
+            happens when the platform <span className={cn(`text-primary`)}>Landmark</span> is
+            "triggered," we can describe this in great detail.
+          </p>
+          <p>
+            Very few players at this point will be oblivious to the danger. Of course, we could
+            totally mess with them and make this light show purely ceremonial, but let's play it
+            straight and figure out how players can resolve this on the{' '}
+            <span className={cn(`text-error`)}>Secrets</span> page.
+          </p>
+          <ActionPrompt>
+            Go to the next step to see how we're going to follow up on this dangerous{' '}
+            <span className={cn(`text-info`)}>Interactable</span> on the{' '}
+            <span className={cn(`text-error`)}>Secrets</span> page.
+          </ActionPrompt>
+        </div>
+      ),
+      setStateToStep: () => {
+        setTutorialOutline({
+          ...outlineInit,
+          title: tutorialOutlineFinal.title,
+          description: tutorialOutlineFinal.description,
+          goal: tutorialOutlineFinal.goal,
+          comments: tutorialOutlineFinal.comments,
+          elements: [
+            tutorialOutlineFinal.elements[0],
+            tutorialOutlineFinal.elements[1],
+            tutorialOutlineFinal.elements[2],
+            tutorialOutlineFinal.elements[3],
+            tutorialOutlineFinal.elements[4],
+            tutorialOutlineFinal.elements[5],
+            tutorialOutlineFinal.elements[6],
+          ],
+        });
+        embla.scrollTo(2);
+      },
+    },
+    {
+      id: 17,
+      page: 'secrets',
+      title: 'Holy Sun Laser',
+      content: (
+        <div className={cn(`space-y-2`)}>
+          <p>(You might have to scroll down to see this one.)</p>
+          <p>
+            This <span className={cn(`text-error`)}>Secret</span> is, surprise, a trap. Here, the
+            description details ways that they may avoid the trap, and the{' '}
+            <span className={cn(`text-warning`)}>Rollables</span> describe <em>how</em> they might
+            go about finding this out, either with knowledge rolls or clever play.
+          </p>
+          <p>
+            This is a good set of elements. Let's go to the final page of the{' '}
+            <span className={cn(`text-secondary`)}>Outline Builder</span> and how we can print and
+            back up what we've made,
+          </p>
+          <ActionPrompt>Go to the next step to review and back up our scene.</ActionPrompt>
+        </div>
+      ),
+      setStateToStep: () => {
+        setTutorialOutline({
+          ...outlineInit,
+          title: tutorialOutlineFinal.title,
+          description: tutorialOutlineFinal.description,
+          goal: tutorialOutlineFinal.goal,
+          comments: tutorialOutlineFinal.comments,
+          elements: [
+            tutorialOutlineFinal.elements[0],
+            tutorialOutlineFinal.elements[1],
+            tutorialOutlineFinal.elements[2],
+            tutorialOutlineFinal.elements[3],
+            tutorialOutlineFinal.elements[4],
+            tutorialOutlineFinal.elements[5],
+            tutorialOutlineFinal.elements[6],
+            tutorialOutlineFinal.elements[7],
+          ],
+        });
+        embla.scrollTo(3);
+      },
+    },
+    {
+      id: 18,
+      page: 'review',
+      title: 'Checking Our Work',
+      content: (
+        <div className={cn(`space-y-2`)}>
+          <p>
+            This final page helps us see our work all in one place. This is a good final place to
+            proofread our work before we save and download it.
+          </p>
+          <p>
+            Since this is just a tutorial, saving is disabled. But, we've saved the best part for
+            last. Check out the <span className={cn(`text-orange-500`)}>Manage Menu</span>. We can
+            download a PDF version of this <span className={cn(`text-secondary`)}>Outline</span> to
+            use however we wish. We can also download a JSON backup to reupload to a{' '}
+            <span className={cn(`text-secondary`)}>New Outline</span>.
+          </p>
+          <p>Since this is just a tutorial, saving and restoring from a JSON file are disabled.</p>
+          <p>
+            Nice work following along! Hopefully by now the concept is clear and you can get started
+            building. You ideal next steps are below.
+          </p>
+          <ActionPrompt>
+            Download a PDF to save the <span className={cn(`text-secondary`)}>Outline</span>, and if
+            you want to use this scene yourself, download the JSON, create an account, and when on a{' '}
+            <span className={cn(`text-secondary`)}>New Outline Builder</span>, restore it from JSON,
+            then save it. You will then have your own copy of this scene to do with whatever you
+            wish, including plugging it into our{' '}
+            <span className={cn(`text-indigo-400`)}>Simulate Assistant</span> to take the scene
+            beyond!
+          </ActionPrompt>
+        </div>
+      ),
+      setStateToStep: () => {
+        setTutorialOutline({
+          ...outlineInit,
+          title: tutorialOutlineFinal.title,
+          description: tutorialOutlineFinal.description,
+          goal: tutorialOutlineFinal.goal,
+          comments: tutorialOutlineFinal.comments,
+          elements: [
+            tutorialOutlineFinal.elements[0],
+            tutorialOutlineFinal.elements[1],
+            tutorialOutlineFinal.elements[2],
+            tutorialOutlineFinal.elements[3],
+            tutorialOutlineFinal.elements[4],
+            tutorialOutlineFinal.elements[5],
+            tutorialOutlineFinal.elements[6],
+            tutorialOutlineFinal.elements[7],
+          ],
+        });
+        embla.scrollTo(3);
       },
     },
   ];
@@ -643,4 +887,4 @@ const Tutorial: React.FC<TutorialProps> = ({ builderPage, embla }) => {
   );
 };
 
-export default Tutorial;
+export default TutorialCard;

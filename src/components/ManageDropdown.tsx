@@ -31,7 +31,7 @@ import { cn } from '@/lib/utils';
 interface ManageDropdownProps {
   outline: Outline;
   setOutline: Dispatch<SetStateAction<Outline>>;
-  // setOutline: ((value: Outline | ((prev: Outline) => Outline)) => void) | null;
+  tutorialMode: boolean;
   className?: string;
   children: React.ReactNode;
 }
@@ -39,6 +39,7 @@ interface ManageDropdownProps {
 const ManageDropdown: React.FC<ManageDropdownProps> = ({
   outline,
   setOutline,
+  tutorialMode,
   className,
   children,
 }) => {
@@ -143,7 +144,7 @@ const ManageDropdown: React.FC<ManageDropdownProps> = ({
               Download as JSON
             </button>
           </DropdownMenuItem>
-          {setOutline !== null && (
+          {setOutline !== null && !tutorialMode && (
             <DropdownMenuItem
               asChild
               className={cn(
@@ -164,7 +165,7 @@ const ManageDropdown: React.FC<ManageDropdownProps> = ({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      {setOutline !== null && (
+      {setOutline !== null && !tutorialMode && (
         <Input
           type={`file`}
           ref={fileInputRef}

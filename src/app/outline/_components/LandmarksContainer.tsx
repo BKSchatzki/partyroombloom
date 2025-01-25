@@ -20,7 +20,7 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import Tutorial from '../tutorial/_components/Tutorial';
+import TutorialCard from '../tutorial/_components/TutorialCard';
 import Landmarks from './Landmarks';
 
 interface LandmarksProps {
@@ -67,7 +67,7 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       {tutorialMode && (
-        <Tutorial
+        <TutorialCard
           builderPage={'landmarks'}
           embla={embla}
         />
