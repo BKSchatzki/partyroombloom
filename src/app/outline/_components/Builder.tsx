@@ -4,10 +4,7 @@ import React, { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { User } from 'lucia';
-import {
-  ChevronUp,
-  Save,
-} from 'lucide-react';
+import { ChevronUp, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import GenericError from '@/components/GenericError';
@@ -72,7 +69,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
     queryKey: ['outline'],
     queryFn: async () => {
       if (tutorialMode) {
-        setTutorialOutline(tutorialOutlineInit);
+        setTutorialOutline(outlineInit);
         return tutorialOutline;
       }
       if (!outlineId) {

@@ -1,10 +1,6 @@
 import { atomWithStorage } from 'jotai/utils';
 
-import type {
-  Conversation,
-  Outline,
-  UserMessage,
-} from './types';
+import type { Conversation, Outline, UserMessage } from './types';
 
 const outlinesListInit: Outline[] = [];
 
@@ -23,7 +19,7 @@ export const tutorialOutlineInit: Outline = {
   title: 'Secret Treasure Room',
   description:
     'A round room of stone brick on all sides, about twenty feet in diameter, with a flat ceiling ten feet above you. The air is musty and cold, but your footsteps are strangely muted as you enter. Dust motes hang in the shaft of light emanating from the single opening at the center of the room. Save for a single pedestal in the center of the room, it is nearly featureless.',
-  goal: 'Direct the players to the loot, but allow them to choose between caution and greed. Foolhardy players should be slightly punished, but with good rolls, judgment, and intuition, the characters should be able to both score some good loot.',
+  goal: 'Direct the players to the loot, but allow them to choose between caution and greed. Foolhardy players should be slightly punished, but with good rolls, judgment, and intuition, the characters should be able to score some good loot.',
   comments:
     'This is a simple side treasure room. Perhaps if the players are especially curious you may reward them with further worldbuilding clues. Particularly inspired play should prompt impromptu extra rewards of loot or information.',
   elements: [
@@ -74,7 +70,7 @@ export const userMessageInit: UserMessage = {
   },
 };
 
-export const tutorialOutlineAtom = atomWithStorage<Outline>('tutorialOutline', tutorialOutlineInit);
+export const tutorialOutlineAtom = atomWithStorage<Outline>('tutorialOutline', outlineInit);
 export const newOutlineAtom = atomWithStorage<Outline>('newOutline', outlineInit);
 export const existingOutlineAtom = atomWithStorage<Outline>('existingOutline', outlineInit);
 export const outlinesListAtom = atomWithStorage<Outline[]>('outlinesList', outlinesListInit);

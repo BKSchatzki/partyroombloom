@@ -1,30 +1,13 @@
 'use client';
 
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-} from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
-import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react';
 import { useAtom } from 'jotai';
-import {
-  ArrowLeft,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  ChevronRightCircle,
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { tutorialOutlineAtom } from '@/lib/atoms';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { outlineInit, tutorialOutlineAtom, tutorialOutlineInit } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 interface TutorialProps {
@@ -84,30 +67,119 @@ const Tutorial: React.FC<TutorialProps> = ({
         </p>
       ),
       setStateToStep: () => {
-        setTutorialOutline({
-          ...tutorialOutline,
-          title: 'Step 1',
-        });
+        setTutorialOutline(outlineInit);
         embla.scrollTo(0);
       },
     },
     {
       id: 1,
-      page: 'review',
-      title: 'The Review Page',
-      content: <p>This is the Review section.</p>,
+      page: 'info',
+      title: 'The Info Page',
+      content: (
+        <div className={cn(`space-y-2`)}>
+          <p>
+            This is the page for the scene's general information that you'll use to describe the
+            scene to your players. If you are using the{' '}
+            <span className={cn(`text-indigo-500`)}>Simulate</span> feature, it also provides
+            helpful context for the assistant.
+          </p>
+          <p>
+            In this tutorial, we're going to be building a small loot room in a dungeon, so let's
+            just call it "Secret Treasure Room."
+          </p>
+        </div>
+      ),
       setStateToStep: () => {
         setTutorialOutline({
-          ...tutorialOutline,
-          title: 'Step 2',
+          ...outlineInit,
+          title: tutorialOutlineInit.title,
         });
-        embla.scrollTo(4);
+      },
+    },
+    {
+      id: 2,
+      page: 'info',
+      title: 'Describing the Scene',
+      content: (
+        <div className={cn(`space-y-2`)}>
+          <p>
+            It's important to describe scenes to your players as you enter them. There aren't any
+            wrong ways to do this, but it's recommended to engage the senses and include a little
+            bit of movement to enliven the space.
+          </p>
+          <p>
+            Here, we've described the material and size of the room, the smell and temperature of
+            the air, the sound of the characters' footsteps, and drawn our players' attention to the
+            center of the room with a (lack of) movement.
+          </p>
+        </div>
+      ),
+      setStateToStep: () => {
+        setTutorialOutline({
+          ...outlineInit,
+          title: tutorialOutlineInit.title,
+          description: tutorialOutlineInit.description,
+        });
+      },
+    },
+    {
+      id: 3,
+      page: 'info',
+      title: 'Why Are We Here?',
+      content: (
+        <div className={cn(`space-y-2`)}>
+          <p>
+            For our own records and the <span className={cn(`text-indigo-500`)}>Simulate</span>{' '}
+            assistant, we should provide a direction for the scene.
+          </p>
+          <p>
+            Since this is a simple loot room, we can just note that down, but let's make sure that
+            there's a bit of jeopardy, so we'll include a reminder that this isn't a simple treasure
+            room.
+          </p>
+        </div>
+      ),
+      setStateToStep: () => {
+        setTutorialOutline({
+          ...outlineInit,
+          title: tutorialOutlineInit.title,
+          description: tutorialOutlineInit.description,
+          goal: tutorialOutlineInit.goal,
+        });
+      },
+    },
+    {
+      id: 4,
+      page: 'info',
+      title: 'Adding Comments',
+      content: (
+        <div className={cn(`space-y-2`)}>
+          <p>
+            Last but not least, we are going to provide some comments for extra context setting.
+            This can be for yourself, but the main purpose of this is to give the{' '}
+            <span className={cn(`text-indigo-500`)}>Simulate</span> assistant instructions of how to
+            narrate, interpret, and extend the scene.
+          </p>
+          <p>
+            Here, we're allowing the assistant to world-build or give more loot if the players or
+            their characters do particularly well in the scene.
+          </p>
+        </div>
+      ),
+      setStateToStep: () => {
+        setTutorialOutline({
+          ...outlineInit,
+          title: tutorialOutlineInit.title,
+          description: tutorialOutlineInit.description,
+          goal: tutorialOutlineInit.goal,
+          comments: tutorialOutlineInit.comments,
+        });
       },
     },
   ];
 
   return (
-    <Card className={cn(`bg-base-200 mt-4 shadow-md shadow-base-300 max-sm:rounded-none`)}>
+    <Card className={cn(`bg-base-200 my-4 shadow-md shadow-base-300 max-sm:rounded-none`)}>
       {steps[step].page === builderPage ? (
         <CardHeader>
           <div className={cn(`flex items-center justify-between`)}>

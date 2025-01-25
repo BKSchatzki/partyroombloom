@@ -5,20 +5,11 @@ import React, { useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Theater } from 'lucide-react';
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
+import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -53,29 +44,30 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
 
   return (
     <div className={cn(`pb-4`)}>
-      <section
-        className={cn(
-          `my-8 flex items-center justify-center gap-4 text-[#64d8b4] max-sm:flex-col sm:gap-2`
-        )}
-      >
-        <h2
+      {!tutorialMode && (
+        <section
           className={cn(
-            `flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center`
+            `my-8 flex items-center justify-center gap-4 text-[#64d8b4] max-sm:flex-col sm:gap-2`
           )}
         >
-          {' '}
-          <Theater
-            aria-hidden={true}
-            className={cn(`size-9`)}
-          />
-          Outline
-        </h2>
-        <p className={cn(`px-2 text-sm text-base-content/75`)}>
-          To set the scene, give it a meaningful title and description, engaging the senses and
-          including some flavor and movement. Include a goal and any relevant comments.
-        </p>
-      </section>
-
+          <h2
+            className={cn(
+              `flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center`
+            )}
+          >
+            {' '}
+            <Theater
+              aria-hidden={true}
+              className={cn(`size-9`)}
+            />
+            Outline
+          </h2>
+          <p className={cn(`px-2 text-sm text-base-content/75`)}>
+            To set the scene, give it a meaningful title and description, engaging the senses and
+            including some flavor and movement. Include a goal and any relevant comments.
+          </p>
+        </section>
+      )}
       <Card className={cn(`bg-neutral/50 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
         <CardHeader></CardHeader>
         <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>

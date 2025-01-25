@@ -1,24 +1,13 @@
 'use client';
 
-import React, {
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 import { useAtom } from 'jotai';
 import { MousePointerClick } from 'lucide-react';
 
-import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
+import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import Tutorial from '../tutorial/_components/Tutorial';
@@ -56,24 +45,26 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
           embla={embla}
         />
       )}
-      <section
-        className={cn(
-          `my-8 flex items-center justify-center gap-4 text-info max-sm:flex-col sm:gap-2`
-        )}
-      >
-        <h2
+      {!tutorialMode && (
+        <section
           className={cn(
-            `flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center`
+            `my-8 flex items-center justify-center gap-4 text-info max-sm:flex-col sm:gap-2`
           )}
         >
-          <MousePointerClick className={cn(`size-9`)} />
-          Interactables
-        </h2>
-        <p className={cn(`px-2 text-sm text-base-content/75`)}>
-          Interactables are aspects of landmarks the player characters can interact with. They are
-          revealed only when the player characters interact with their associated landmark.
-        </p>
-      </section>
+          <h2
+            className={cn(
+              `flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center`
+            )}
+          >
+            <MousePointerClick className={cn(`size-9`)} />
+            Interactables
+          </h2>
+          <p className={cn(`px-2 text-sm text-base-content/75`)}>
+            Interactables are aspects of landmarks the player characters can interact with. They are
+            revealed only when the player characters interact with their associated landmark.
+          </p>
+        </section>
+      )}
       {landmarks.length === 0 ? (
         <Card
           className={cn(
