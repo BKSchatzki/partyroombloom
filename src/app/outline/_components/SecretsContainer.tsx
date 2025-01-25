@@ -1,13 +1,21 @@
 'use client';
 
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 import { useAtom } from 'jotai';
 import { Lock } from 'lucide-react';
 
-import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardDescription,
+  CardTitle,
+} from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
+import {
+  existingOutlineAtom,
+  newOutlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import Tutorial from '../tutorial/_components/Tutorial';
@@ -16,16 +24,12 @@ import Secrets from './Secrets';
 interface SecretsContainerProps {
   outlineId: number | null;
   tutorialMode: boolean;
-  tutorialStep: number;
-  setTutorialStep: Dispatch<SetStateAction<number>>;
   embla: any;
 }
 
 const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
   outlineId,
   tutorialMode,
-  tutorialStep,
-  setTutorialStep,
   embla,
 }) => {
   const [tutorialOutline] = useAtom(tutorialOutlineAtom);
@@ -47,8 +51,6 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
       {tutorialMode && (
         <Tutorial
           builderPage={'secrets'}
-          tutorialStep={tutorialStep}
-          setTutorialStep={setTutorialStep}
           embla={embla}
         />
       )}

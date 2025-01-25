@@ -4,7 +4,10 @@ import React, { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { User } from 'lucia';
-import { ChevronUp, Save } from 'lucide-react';
+import {
+  ChevronUp,
+  Save,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import GenericError from '@/components/GenericError';
@@ -25,7 +28,6 @@ import {
   outlineInit,
   outlinesListAtom,
   tutorialOutlineAtom,
-  tutorialOutlineInit,
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -53,7 +55,6 @@ const BuilderComponent: React.FC<BuilderProps> = ({
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);
-  const [tutorialStep, setTutorialStep] = useState(0);
   const [embla, setEmbla] = useState<CarouselApi>();
 
   const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
@@ -69,7 +70,6 @@ const BuilderComponent: React.FC<BuilderProps> = ({
     queryKey: ['outline'],
     queryFn: async () => {
       if (tutorialMode) {
-        setTutorialOutline(outlineInit);
         return tutorialOutline;
       }
       if (!outlineId) {
@@ -156,8 +156,6 @@ const BuilderComponent: React.FC<BuilderProps> = ({
               {tutorialMode && (
                 <Tutorial
                   builderPage={'info'}
-                  tutorialStep={tutorialStep}
-                  setTutorialStep={setTutorialStep}
                   embla={embla}
                 />
               )}
@@ -171,8 +169,6 @@ const BuilderComponent: React.FC<BuilderProps> = ({
             <LandmarksContainer
               outlineId={outlineId}
               tutorialMode={tutorialMode}
-              tutorialStep={tutorialStep}
-              setTutorialStep={setTutorialStep}
               embla={embla}
             />
           </CarouselItem>
@@ -180,8 +176,6 @@ const BuilderComponent: React.FC<BuilderProps> = ({
             <InteractablesContainer
               outlineId={outlineId}
               tutorialMode={tutorialMode}
-              tutorialStep={tutorialStep}
-              setTutorialStep={setTutorialStep}
               embla={embla}
             />
           </CarouselItem>
@@ -189,8 +183,6 @@ const BuilderComponent: React.FC<BuilderProps> = ({
             <SecretsContainer
               outlineId={outlineId}
               tutorialMode={tutorialMode}
-              tutorialStep={tutorialStep}
-              setTutorialStep={setTutorialStep}
               embla={embla}
             />
           </CarouselItem>
@@ -198,8 +190,6 @@ const BuilderComponent: React.FC<BuilderProps> = ({
             <Review
               outlineId={outlineId}
               tutorialMode={tutorialMode}
-              tutorialStep={tutorialStep}
-              setTutorialStep={setTutorialStep}
               embla={embla}
             />
           </CarouselItem>
@@ -219,7 +209,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
               />
               <span className={cn(`max-sm:hidden`)}>Manage</span>
             </ManageDropdown>
-            {user && (
+            {user && !tutorialMode && (
               <Button
                 onClick={handleSave}
                 color={`secondary`}

@@ -1,9 +1,6 @@
 'use client';
 
-import React, {
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import React from 'react';
 
 import { useAtom } from 'jotai';
 import {
@@ -39,8 +36,6 @@ interface OutlineAndIdProps extends OutlineProps {
 interface OutlineIdProps {
   outlineId: number | null;
   tutorialMode: boolean;
-  tutorialStep: number;
-  setTutorialStep: Dispatch<SetStateAction<number>>;
   embla: any;
 }
 
@@ -249,8 +244,6 @@ const ReviewComponent: React.FC<OutlineIdProps> = ({
       {tutorialMode && (
         <Tutorial
           builderPage={'review'}
-          tutorialStep={tutorialStep}
-          setTutorialStep={setTutorialStep}
           embla={embla}
         />
       )}

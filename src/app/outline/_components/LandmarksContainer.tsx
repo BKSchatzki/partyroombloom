@@ -1,15 +1,22 @@
 'use client';
 
-import React, { Dispatch, SetStateAction, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { useAtom } from 'jotai';
-import { Plus, Pyramid } from 'lucide-react';
+import {
+  Plus,
+  Pyramid,
+} from 'lucide-react';
 import { v7 } from 'uuid';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
+import {
+  existingOutlineAtom,
+  newOutlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -19,16 +26,12 @@ import Landmarks from './Landmarks';
 interface LandmarksProps {
   outlineId: number | null;
   tutorialMode: boolean;
-  tutorialStep: number;
-  setTutorialStep: Dispatch<SetStateAction<number>>;
   embla: any;
 }
 
 const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
   outlineId,
   tutorialMode,
-  tutorialStep,
-  setTutorialStep,
   embla,
 }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
@@ -66,8 +69,6 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
       {tutorialMode && (
         <Tutorial
           builderPage={'landmarks'}
-          tutorialStep={tutorialStep}
-          setTutorialStep={setTutorialStep}
           embla={embla}
         />
       )}
