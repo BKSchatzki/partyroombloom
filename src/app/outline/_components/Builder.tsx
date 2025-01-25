@@ -15,6 +15,7 @@ import ManageDropdown from '@/components/ManageDropdown';
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -32,6 +33,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
+import Tutorial from '../tutorial/_components/Tutorial';
 import Info from './Info';
 import InteractablesContainer from './InteractablesContainer';
 import LandmarksContainer from './LandmarksContainer';
@@ -54,6 +56,8 @@ const BuilderComponent: React.FC<BuilderProps> = ({
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);
+  const [tutorialStep, setTutorialStep] = useState(0);
+  const [embla, setEmbla] = useState<CarouselApi>();
 
   const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
   const setThisOutline = tutorialMode
@@ -144,11 +148,22 @@ const BuilderComponent: React.FC<BuilderProps> = ({
   }
 
   return (
-    <Carousel className={cn(`h-full max-w-full`)}>
+    <Carousel
+      setApi={setEmbla}
+      className={cn(`h-full max-w-full`)}
+    >
       <div className={cn(`flex max-h-full select-none flex-col pb-4`)}>
         <CarouselContent>
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
+              {tutorialMode && (
+                <Tutorial
+                  builderPage={'info'}
+                  tutorialStep={tutorialStep}
+                  setTutorialStep={setTutorialStep}
+                  embla={embla}
+                />
+              )}
               <Info
                 outlineId={outlineId}
                 tutorialMode={tutorialMode}
@@ -159,24 +174,36 @@ const BuilderComponent: React.FC<BuilderProps> = ({
             <LandmarksContainer
               outlineId={outlineId}
               tutorialMode={tutorialMode}
+              tutorialStep={tutorialStep}
+              setTutorialStep={setTutorialStep}
+              embla={embla}
             />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <InteractablesContainer
               outlineId={outlineId}
               tutorialMode={tutorialMode}
+              tutorialStep={tutorialStep}
+              setTutorialStep={setTutorialStep}
+              embla={embla}
             />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <SecretsContainer
               outlineId={outlineId}
               tutorialMode={tutorialMode}
+              tutorialStep={tutorialStep}
+              setTutorialStep={setTutorialStep}
+              embla={embla}
             />
           </CarouselItem>
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <Review
               outlineId={outlineId}
               tutorialMode={tutorialMode}
+              tutorialStep={tutorialStep}
+              setTutorialStep={setTutorialStep}
+              embla={embla}
             />
           </CarouselItem>
         </CarouselContent>

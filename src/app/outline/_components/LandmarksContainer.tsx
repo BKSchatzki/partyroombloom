@@ -1,6 +1,10 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import {
@@ -20,14 +24,24 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
+import Tutorial from '../tutorial/_components/Tutorial';
 import Landmarks from './Landmarks';
 
 interface LandmarksProps {
   outlineId: number | null;
   tutorialMode: boolean;
+  tutorialStep: number;
+  setTutorialStep: Dispatch<SetStateAction<number>>;
+  embla: any;
 }
 
-const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tutorialMode }) => {
+const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
+  outlineId,
+  tutorialMode,
+  tutorialStep,
+  setTutorialStep,
+  embla,
+}) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
@@ -60,6 +74,14 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({ outlineId, tuto
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
+      {tutorialMode && (
+        <Tutorial
+          builderPage={'landmarks'}
+          tutorialStep={tutorialStep}
+          setTutorialStep={setTutorialStep}
+          embla={embla}
+        />
+      )}
       <section
         className={cn(
           `my-8 flex items-center justify-center gap-4 text-primary max-sm:flex-col sm:gap-2`

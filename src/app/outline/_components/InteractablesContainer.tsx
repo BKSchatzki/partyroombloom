@@ -1,6 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { MousePointerClick } from 'lucide-react';
@@ -18,16 +21,23 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
+import Tutorial from '../tutorial/_components/Tutorial';
 import Interactables from './Interactables';
 
 interface InteractablesContainerProps {
   outlineId: number | null;
   tutorialMode: boolean;
+  tutorialStep: number;
+  setTutorialStep: Dispatch<SetStateAction<number>>;
+  embla: any;
 }
 
 const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = ({
   outlineId,
   tutorialMode,
+  tutorialStep,
+  setTutorialStep,
+  embla,
 }) => {
   const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
@@ -38,6 +48,14 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
+      {tutorialMode && (
+        <Tutorial
+          builderPage={'interactables'}
+          tutorialStep={tutorialStep}
+          setTutorialStep={setTutorialStep}
+          embla={embla}
+        />
+      )}
       <section
         className={cn(
           `my-8 flex items-center justify-center gap-4 text-info max-sm:flex-col sm:gap-2`

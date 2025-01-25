@@ -1,6 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { Lock } from 'lucide-react';
@@ -18,16 +21,23 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
+import Tutorial from '../tutorial/_components/Tutorial';
 import Secrets from './Secrets';
 
 interface SecretsContainerProps {
   outlineId: number | null;
   tutorialMode: boolean;
+  tutorialStep: number;
+  setTutorialStep: Dispatch<SetStateAction<number>>;
+  embla: any;
 }
 
 const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
   outlineId,
   tutorialMode,
+  tutorialStep,
+  setTutorialStep,
+  embla,
 }) => {
   const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
@@ -45,6 +55,14 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
+      {tutorialMode && (
+        <Tutorial
+          builderPage={'secrets'}
+          tutorialStep={tutorialStep}
+          setTutorialStep={setTutorialStep}
+          embla={embla}
+        />
+      )}
       <section
         className={cn(
           `my-8 flex items-center justify-center gap-4 text-error max-sm:flex-col sm:gap-2`

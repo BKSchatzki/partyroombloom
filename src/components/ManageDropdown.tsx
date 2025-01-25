@@ -1,6 +1,10 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useRef,
+} from 'react';
 
 import dayjs from 'dayjs';
 import saveAs from 'file-saver';
@@ -26,7 +30,8 @@ import { cn } from '@/lib/utils';
 
 interface ManageDropdownProps {
   outline: Outline;
-  setOutline: ((value: Outline | ((prev: Outline) => Outline)) => void) | null;
+  setOutline: Dispatch<SetStateAction<Outline>>;
+  // setOutline: ((value: Outline | ((prev: Outline) => Outline)) => void) | null;
   className?: string;
   children: React.ReactNode;
 }

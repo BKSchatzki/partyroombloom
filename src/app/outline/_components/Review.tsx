@@ -1,6 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import {
@@ -23,6 +26,8 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
+import Tutorial from '../tutorial/_components/Tutorial';
+
 interface OutlineProps {
   outline: Outline;
 }
@@ -34,6 +39,9 @@ interface OutlineAndIdProps extends OutlineProps {
 interface OutlineIdProps {
   outlineId: number | null;
   tutorialMode: boolean;
+  tutorialStep: number;
+  setTutorialStep: Dispatch<SetStateAction<number>>;
+  embla: any;
 }
 
 const SecretsReviewComponent: React.FC<OutlineAndIdProps> = ({ outline, id }) => {
@@ -225,13 +233,27 @@ const InfoReview = React.memo(InfoReviewComponent);
 
 InfoReview.displayName = 'InfoReview';
 
-const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode }) => {
+const ReviewComponent: React.FC<OutlineIdProps> = ({
+  outlineId,
+  tutorialMode,
+  tutorialStep,
+  setTutorialStep,
+  embla,
+}) => {
   const [tutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline] = useAtom(newOutlineAtom);
   const [outline] = useAtom(existingOutlineAtom);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
+      {tutorialMode && (
+        <Tutorial
+          builderPage={'review'}
+          tutorialStep={tutorialStep}
+          setTutorialStep={setTutorialStep}
+          embla={embla}
+        />
+      )}
       <InfoReview
         outline={tutorialMode ? tutorialOutline : outlineId ? outline : newOutline}
       ></InfoReview>
