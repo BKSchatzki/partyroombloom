@@ -812,7 +812,7 @@ const TutorialCard: React.FC<TutorialProps> = ({ builderPage, embla }) => {
             tutorialOutlineFinal.elements[7],
           ],
         });
-        embla.scrollTo(3);
+        embla.scrollTo(4);
       },
     },
   ];
@@ -821,6 +821,7 @@ const TutorialCard: React.FC<TutorialProps> = ({ builderPage, embla }) => {
     if (!embla) {
       return;
     }
+    steps[step].setStateToStep();
     handleGoToStepPage(steps[step].page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embla]);
