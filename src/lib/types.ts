@@ -4,9 +4,10 @@
 
 export type TutorialStep = {
   id: number;
-  target: string;
-  content: string;
-  action?: () => void;
+  page: 'info' | 'landmarks' | 'interactables' | 'secrets' | 'review';
+  title: string;
+  content: React.ReactNode;
+  setStateToStep: () => void;
 };
 
 export type Element = {
