@@ -7,6 +7,7 @@ import AutoScroll from 'embla-carousel-auto-scroll';
 import { Globe } from 'lucide-react';
 import Link from 'next/link';
 
+import { Card } from '@/components/ui/card';
 import {
   Carousel,
   CarouselContent,
@@ -277,20 +278,24 @@ const Acknowledgements = () => {
           loop: true,
           skipSnaps: true,
         }}
-        plugins={[AutoScroll({ startDelay: 0, speed: 0.5, stopOnInteraction: false })]}
-        className={cn(`border-t-2 border-[#302a2a] py-4`)}
+        plugins={[AutoScroll({ startDelay: 0, speed: 1, stopOnInteraction: false })]}
+        className={cn(`border-y-2 border-[#302a2a] py-0.5`)}
       >
         <CarouselContent>
           {logos.map((logo) => (
             <CarouselItem
               key={logo.name}
-              className={cn(`basis-auto`)}
+              className={cn(
+                `flex min-w-0 basis-1/3 items-center justify-center pl-0 sm:basis-1/4 md:basis-1/5 lg:basis-1/6`
+              )}
             >
-              <img
-                src={logo.src}
-                alt={`${logo.name} Logo`}
-                className={cn(`h-6`)}
-              />
+              <Card className={cn(`bg-base-100 basis-full rounded-2xl border-l-2 py-4`)}>
+                <img
+                  src={logo.src}
+                  alt={`${logo.name} Logo`}
+                  className={cn(`h-6`)}
+                />
+              </Card>
             </CarouselItem>
           ))}
         </CarouselContent>
