@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { Theater } from 'lucide-react';
@@ -32,7 +35,10 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
@@ -116,9 +122,6 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
     </div>
   );
 };
-
 const Info = React.memo(InfoComponent);
-
 Info.displayName = 'Info';
-
 export default Info;

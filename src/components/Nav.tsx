@@ -6,7 +6,6 @@ import {
   Grid2X2,
   Leaf,
   Menu,
-  Sparkle,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -32,7 +31,7 @@ interface NavProps {
   user: User | null;
 }
 
-const Nav: React.FC<NavProps> = ({ user }) => {
+const NavComponent: React.FC<NavProps> = ({ user }) => {
   return (
     <nav
       className={cn(
@@ -103,18 +102,6 @@ const Nav: React.FC<NavProps> = ({ user }) => {
                 </Button>
               </Link>
             </li>
-            {/* <li>
-              <Link href={`/simulate`}>
-                <Button
-                  color={`primary`}
-                  outlined={true}
-                  className={cn(`flex items-center gap-2 border-0 text-lg`)}
-                >
-                  <Sparkle className={cn(`size-5`)} />
-                  Simulate
-                </Button>
-              </Link>
-            </li> */}
             <li>
               <SignOut />
             </li>
@@ -171,19 +158,6 @@ const Nav: React.FC<NavProps> = ({ user }) => {
                   </Link>
                 </li>
                 <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} />
-                {/* <li>
-                  <Link href={`/simulate`}>
-                    <DrawerClose
-                      className={cn(
-                        `btn btn-outline btn-primary btn-wide flex items-center gap-2 border-0 text-lg`
-                      )}
-                    >
-                      <Sparkle className={cn(`size-5`)} />
-                      Simulate
-                    </DrawerClose>
-                  </Link>
-                </li>
-                <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} /> */}
                 <li>
                   <SignOut classProps={'btn-wide'} />
                 </li>
@@ -196,5 +170,6 @@ const Nav: React.FC<NavProps> = ({ user }) => {
     </nav>
   );
 };
-
+const Nav = React.memo(NavComponent);
+Nav.displayName = 'Nav';
 export default Nav;

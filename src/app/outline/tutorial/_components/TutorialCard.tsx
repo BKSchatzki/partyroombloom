@@ -33,12 +33,7 @@ interface ActionPromptProps {
   children: React.ReactNode;
 }
 
-interface TutorialProps {
-  builderPage: string;
-  embla: any;
-}
-
-const ActionPrompt: React.FC<ActionPromptProps> = ({ children }) => {
+const ActionPromptComponent: React.FC<ActionPromptProps> = ({ children }) => {
   return (
     <div className={cn(`pt-2`)}>
       <div className={cn(`flex gap-2 rounded-md bg-secondary/25 p-2`)}>
@@ -51,8 +46,15 @@ const ActionPrompt: React.FC<ActionPromptProps> = ({ children }) => {
     </div>
   );
 };
+const ActionPrompt = React.memo(ActionPromptComponent);
+ActionPrompt.displayName = 'ActionPrompt';
 
-const TutorialCard: React.FC<TutorialProps> = ({ builderPage, embla }) => {
+interface TutorialProps {
+  builderPage: string;
+  embla: any;
+}
+
+const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) => {
   const [step, setStep] = useAtom(tutorialStepAtom);
   const [_, setTutorialOutline] = useAtom(tutorialOutlineAtom);
 
@@ -906,4 +908,6 @@ const TutorialCard: React.FC<TutorialProps> = ({ builderPage, embla }) => {
   );
 };
 
-export default TutorialCard;
+const TutorialCard = React.memo(TutorialCardComponent);
+TutorialCard.displayName = 'TutorialCard';
+export default TutorialCardComponent;

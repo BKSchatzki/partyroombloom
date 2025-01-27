@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {
+  useCallback,
+  useState,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { User } from 'lucia';
@@ -53,19 +56,22 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
     },
   });
 
-  const handleDelete = async (outlineId: number) => {
-    try {
-      const response = await fetch(`/api/outline/${outlineId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+  const handleDelete = useCallback(
+    async (outlineId: number) => {
+      try {
+        const response = await fetch(`/api/outline/${outlineId}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        setOutlinesList(outlinesList.filter((outline) => outline.id !== outlineId));
+      } catch (error) {
+        console.error('Error deleting outline:', error);
       }
-      setOutlinesList(outlinesList.filter((outline) => outline.id !== outlineId));
-    } catch (error) {
-      console.error('Error deleting outline:', error);
-    }
-  };
+    },
+    [outlinesList, setOutlinesList]
+  );
 
   if (error) {
     return (

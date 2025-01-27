@@ -32,7 +32,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
-import TutorialCard from '../tutorial/_components/TutorialCard';
+import TutorialCardComponent from '../tutorial/_components/TutorialCard';
 import Info from './Info';
 import InteractablesContainer from './InteractablesContainer';
 import LandmarksContainer from './LandmarksContainer';
@@ -154,7 +154,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
               {tutorialMode && (
-                <TutorialCard
+                <TutorialCardComponent
                   builderPage={'info'}
                   embla={embla}
                 />
@@ -230,9 +230,6 @@ const BuilderComponent: React.FC<BuilderProps> = ({
     </Carousel>
   );
 };
-
 const Builder = React.memo(BuilderComponent);
-
 Builder.displayName = 'Builder';
-
 export default Builder;

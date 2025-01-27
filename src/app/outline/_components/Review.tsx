@@ -23,7 +23,7 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import TutorialCard from '../tutorial/_components/TutorialCard';
+import TutorialCardComponent from '../tutorial/_components/TutorialCard';
 
 interface OutlineProps {
   outline: Outline;
@@ -236,7 +236,7 @@ const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode, em
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       {tutorialMode && (
-        <TutorialCard
+        <TutorialCardComponent
           builderPage={'review'}
           embla={embla}
         />
@@ -250,9 +250,6 @@ const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode, em
     </ScrollArea>
   );
 };
-
 const Review = React.memo(ReviewComponent);
-
 Review.displayName = 'Review';
-
 export default Review;

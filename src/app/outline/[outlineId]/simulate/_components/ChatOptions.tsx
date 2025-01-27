@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { Dices } from 'lucide-react';
@@ -22,17 +25,19 @@ import {
   conversationAtom,
   userMessageAtom,
 } from '@/lib/atoms';
+import {
+  Message,
+  UserMessage,
+} from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const ChatOptions = ({
-  options,
-  index,
-  disabled,
-}: {
+interface ChatOptionsProps {
   options: Array<any>;
   index: number;
   disabled: boolean;
-}) => {
+}
+
+const ChatOptionsComponent: React.FC<ChatOptionsProps> = ({ options, index, disabled }) => {
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
   const [conversation] = useAtom(conversationAtom);
 
@@ -70,11 +75,22 @@ const ChatOptions = ({
     [options, setUserMessage]
   );
 
+  const isUserMessage = useCallback((message: Message): message is UserMessage => {
+    return message.role === 'user';
+  }, []);
+  const prevUserMessage = useMemo(
+    () =>
+      isUserMessage(conversation[index + 1]) ? (conversation[index + 1] as UserMessage) : null,
+    [conversation, index, isUserMessage]
+  );
+
   return (
     <div className={cn(`flex flex-col gap-4 max-sm:px-1`)}>
       <RadioGroup
         value={
-          disabled ? conversation[index + 1]?.content.choice : userMessage.content.choice || ''
+          disabled
+            ? (prevUserMessage?.content as { choice: string }).choice
+            : userMessage.content.choice || ''
         }
         onValueChange={(value) => handleChange('choice', value)}
         className={cn(`flex flex-col gap-4 rounded-2xl`)}
@@ -98,15 +114,16 @@ const ChatOptions = ({
             >
               {option.description}
               {!option.roll ? null : userMessage.content.choice === option.description ||
-                conversation[index + 1]?.content.choice === option.description ? (
+                (prevUserMessage?.content as { choice: string }).choice === option.description ? (
                 <RollSelect
                   rollResult={
                     disabled
-                      ? conversation[index + 1]?.content.rollResult
+                      ? (prevUserMessage?.content as { rollResult: string }).rollResult
                       : userMessage.content.rollResult
                   }
                   handleChange={handleChange}
                   index={index}
+                  prevUserMessage={prevUserMessage}
                   disabled={disabled}
                 />
               ) : null}
@@ -119,35 +136,47 @@ const ChatOptions = ({
         disabled={disabled}
         placeholder={`Type your thoughts here...`}
         value={
-          disabled ? conversation[index + 1]?.content.comments : userMessage.content.comments || ''
+          disabled
+            ? (prevUserMessage?.content as { comments: string }).comments
+            : userMessage.content.comments || ''
         }
         onChange={(event) => handleChange('comments', event.target.value)}
       />
     </div>
   );
 };
+const ChatOptions = React.memo(ChatOptionsComponent);
+ChatOptions.displayName = 'ChatOptions';
+export default ChatOptions;
 
-function RollSelect({
-  rollResult,
-  handleChange,
-  index,
-  disabled,
-}: {
+interface RollSelectProps {
   rollResult: string | null;
   handleChange: any;
   index: number;
+  prevUserMessage: UserMessage | null;
   disabled: boolean;
-}) {
+}
+
+const RollSelectComponent: React.FC<RollSelectProps> = ({
+  rollResult,
+  handleChange,
+  index,
+  prevUserMessage,
+  disabled,
+}) => {
   const [conversation] = useAtom(conversationAtom);
 
-  const rolls = [
-    'Critical Success',
-    'Normal Success',
-    'Close Success',
-    'Close Failure',
-    'Normal Failure',
-    'Critical Failure',
-  ];
+  const rolls = useMemo(
+    () => [
+      'Critical Success',
+      'Normal Success',
+      'Close Success',
+      'Close Failure',
+      'Normal Failure',
+      'Critical Failure',
+    ],
+    []
+  );
 
   return (
     <div
@@ -163,8 +192,8 @@ function RollSelect({
         disabled={disabled}
         value={
           index !== conversation.length - 1
-            ? conversation[index + 1].content.rollResult || ''
-            : rollResult
+            ? (prevUserMessage?.content as { rollResult: string | null }).rollResult || ''
+            : rollResult || ''
         }
         onValueChange={(value) => handleChange('rollResult', value)}
       >
@@ -189,6 +218,6 @@ function RollSelect({
       </Select>
     </div>
   );
-}
-
-export default ChatOptions;
+};
+const RollSelect = React.memo(RollSelectComponent);
+RollSelect.displayName = 'RollSelect';

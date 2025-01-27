@@ -1,9 +1,13 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 
+import DeleteButton from '@/components/DeleteButton';
 import {
   Card,
   CardContent,
@@ -20,8 +24,6 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from '../../../components/DeleteButton';
-
 interface LandmarksProps {
   elementId: string;
   outlineId: number | null;
@@ -33,11 +35,22 @@ const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tu
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisElement = tutorialMode
-    ? tutorialOutline.elements.find((element) => element.id === elementId)
-    : outlineId
-      ? existingOutline.elements.find((element) => element.id === elementId)
-      : newOutline.elements.find((element) => element.id === elementId);
+  const thisElement = useMemo(
+    () =>
+      tutorialMode
+        ? tutorialOutline.elements.find((element) => element.id === elementId)
+        : outlineId
+          ? existingOutline.elements.find((element) => element.id === elementId)
+          : newOutline.elements.find((element) => element.id === elementId),
+    [
+      elementId,
+      existingOutline.elements,
+      newOutline.elements,
+      outlineId,
+      tutorialMode,
+      tutorialOutline.elements,
+    ]
+  );
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
@@ -124,9 +137,6 @@ const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tu
     </Card>
   );
 };
-
 const Landmarks = React.memo(LandmarksComponent);
-
 Landmarks.displayName = 'Landmarks';
-
 export default Landmarks;

@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 
@@ -29,8 +32,14 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
-  const thisElement = thisOutline.elements.find((element) => element.id === elementId);
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
+  const thisElement = useMemo(
+    () => thisOutline.elements.find((element) => element.id === elementId),
+    [elementId, thisOutline.elements]
+  );
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>, property: string) => {
@@ -88,9 +97,6 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
     </Card>
   );
 };
-
 const Rollable = React.memo(RollableComponent);
-
 Rollable.displayName = 'Rollable';
-
 export default Rollable;

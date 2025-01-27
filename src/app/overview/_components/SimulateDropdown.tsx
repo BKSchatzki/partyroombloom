@@ -25,7 +25,7 @@ interface SimulateDropdownProps {
   tokenCount: number;
 }
 
-const SimulateDropdown: React.FC<SimulateDropdownProps> = ({ outline, tokenCount }) => {
+const SimulateDropdownComponent: React.FC<SimulateDropdownProps> = ({ outline, tokenCount }) => {
   return outline.conversations.length === 0 ? (
     <Link
       href={`/outline/${outline.id}/simulate`}
@@ -130,5 +130,9 @@ const SimulateDropdown: React.FC<SimulateDropdownProps> = ({ outline, tokenCount
     </DropdownMenu>
   );
 };
+
+const SimulateDropdown = React.memo(SimulateDropdownComponent);
+
+SimulateDropdown.displayName = 'SimulateDropdown';
 
 export default SimulateDropdown;

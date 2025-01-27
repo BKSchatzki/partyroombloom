@@ -3,6 +3,8 @@
 import React, {
   Dispatch,
   SetStateAction,
+  useCallback,
+  useMemo,
   useRef,
 } from 'react';
 
@@ -30,20 +32,20 @@ import { cn } from '@/lib/utils';
 
 interface ManageDropdownProps {
   outline: Outline;
-  setOutline: Dispatch<SetStateAction<Outline>>;
-  tutorialMode: boolean;
+  setOutline: Dispatch<SetStateAction<Outline>> | null;
+  tutorialMode?: boolean;
   className?: string;
   children: React.ReactNode;
 }
 
-const ManageDropdown: React.FC<ManageDropdownProps> = ({
+const ManageDropdownComponent: React.FC<ManageDropdownProps> = ({
   outline,
   setOutline,
-  tutorialMode,
+  tutorialMode = false,
   className,
   children,
 }) => {
-  const handleDownload = async () => {
+  const handleDownload = useCallback(async () => {
     try {
       if (typeof window !== 'undefined') {
         const { pdf } = await import('@react-pdf/renderer');
@@ -54,47 +56,54 @@ const ManageDropdown: React.FC<ManageDropdownProps> = ({
     } catch (error) {
       console.error('PDF generation failed:', error);
     }
-  };
+  }, [outline]);
 
-  const fileToSave = new Blob([JSON.stringify(outline)], {
-    type: 'application/json',
-  });
+  const fileToSave = useMemo(
+    () =>
+      new Blob([JSON.stringify(outline)], {
+        type: 'application/json',
+      }),
+    [outline]
+  );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files?.length) {
-      return;
-    }
-    if (!setOutline) {
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e?.target?.result as string);
-        const idMap = new Map<string, string>();
-        data.elements.forEach((element: Element) => {
-          idMap.set(element.id, v7());
-        });
-        data.elements = data.elements.map((element: Element) => ({
-          ...element,
-          id: idMap.get(element.id),
-          parentId: element.parentId ? (idMap.get(element.parentId) ?? null) : null,
-        }));
-        data.id = null;
-        data.conversations = [];
-        data.elements.sort((a: Element, b: Element) =>
-          a.userCreatedAt.toString().localeCompare(b.userCreatedAt.toString())
-        );
-        setOutline(data);
-      } catch (error) {
-        console.error('Error parsing JSON:', error);
+  const handleUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      if (!files?.length) {
+        return;
       }
-    };
-    reader.readAsText(files[0]);
-    event.target.value = '';
-  };
+      if (!setOutline) {
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e?.target?.result as string);
+          const idMap = new Map<string, string>();
+          data.elements.forEach((element: Element) => {
+            idMap.set(element.id, v7());
+          });
+          data.elements = data.elements.map((element: Element) => ({
+            ...element,
+            id: idMap.get(element.id),
+            parentId: element.parentId ? (idMap.get(element.parentId) ?? null) : null,
+          }));
+          data.id = null;
+          data.conversations = [];
+          data.elements.sort((a: Element, b: Element) =>
+            a.userCreatedAt.toString().localeCompare(b.userCreatedAt.toString())
+          );
+          setOutline(data);
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
+      };
+      reader.readAsText(files[0]);
+      event.target.value = '';
+    },
+    [setOutline]
+  );
 
   return (
     <>
@@ -176,5 +185,6 @@ const ManageDropdown: React.FC<ManageDropdownProps> = ({
     </>
   );
 };
-
+const ManageDropdown = React.memo(ManageDropdownComponent);
+ManageDropdown.displayName = 'ManageDropdown';
 export default ManageDropdown;

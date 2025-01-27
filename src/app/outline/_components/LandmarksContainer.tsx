@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import {
@@ -20,7 +23,7 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import TutorialCard from '../tutorial/_components/TutorialCard';
+import TutorialCardComponent from '../tutorial/_components/TutorialCard';
 import Landmarks from './Landmarks';
 
 interface LandmarksProps {
@@ -38,7 +41,10 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
 
   const handleAddLandmark = useCallback(() => {
     const addNewLandmark = (outline: Outline): Outline => ({
@@ -67,7 +73,7 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       {tutorialMode && (
-        <TutorialCard
+        <TutorialCardComponent
           builderPage={'landmarks'}
           embla={embla}
         />
@@ -126,9 +132,6 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
     </ScrollArea>
   );
 };
-
 const LandmarksContainer = React.memo(LandmarksContainerComponent);
-
 LandmarksContainer.displayName = 'LandmarksContainer';
-
 export default LandmarksContainer;

@@ -29,7 +29,7 @@ interface DeleteButtonProps {
   message: string;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({
+const DeleteButtonComponent: React.FC<DeleteButtonProps> = ({
   block = false,
   first = true,
   handleDelete,
@@ -114,5 +114,6 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
     </div>
   );
 };
-
+const DeleteButton = React.memo(DeleteButtonComponent);
+DeleteButton.displayName = 'DeleteButton';
 export default DeleteButton;

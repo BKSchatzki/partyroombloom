@@ -1,11 +1,15 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import { v7 } from 'uuid';
 
+import DeleteButton from '@/components/DeleteButton';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -26,7 +30,6 @@ import {
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from '../../../components/DeleteButton';
 import Rollable from './Rollable';
 
 interface SecretsProps {
@@ -40,10 +43,18 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
-  const thisElement = thisOutline.elements.find((element) => element.id === elementId);
-  const hasElements =
-    thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0;
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
+  const thisElement = useMemo(
+    () => thisOutline.elements.find((element) => element.id === elementId),
+    [elementId, thisOutline.elements]
+  );
+  const hasElements = useMemo(
+    () => thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0,
+    [thisElement?.id, thisOutline.elements]
+  );
 
   const handleAddSecret = useCallback(() => {
     if (!thisElement) return;
@@ -199,9 +210,6 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
     </Card>
   );
 };
-
 const Secrets = React.memo(SecretsComponent);
-
 Secrets.displayName = 'Secrets';
-
 export default Secrets;

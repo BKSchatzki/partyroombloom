@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 import { MousePointerClick } from 'lucide-react';
@@ -18,7 +18,7 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import TutorialCard from '../tutorial/_components/TutorialCard';
+import TutorialCardComponent from '../tutorial/_components/TutorialCard';
 import Interactables from './Interactables';
 
 interface InteractablesContainerProps {
@@ -36,13 +36,19 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
   const [newOutline] = useAtom(newOutlineAtom);
   const [existingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
-  const landmarks = thisOutline.elements.filter((element) => element.type === 'landmark');
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
+  const landmarks = useMemo(
+    () => thisOutline.elements.filter((element) => element.type === 'landmark'),
+    [thisOutline.elements]
+  );
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       {tutorialMode && (
-        <TutorialCard
+        <TutorialCardComponent
           builderPage={'interactables'}
           embla={embla}
         />
@@ -91,9 +97,6 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
     </ScrollArea>
   );
 };
-
 const InteractablesContainer = React.memo(InteractablesContainerComponent);
-
 InteractablesContainer.displayName = 'InteractablesContainer';
-
 export default InteractablesContainer;

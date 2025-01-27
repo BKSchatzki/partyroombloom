@@ -1,6 +1,7 @@
 'use client';
 
-import {
+import React, {
+  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -45,7 +46,7 @@ interface ChatProps {
   user: User | null;
 }
 
-const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
+const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
   const [tokenCount, setTokenCount] = useState(user ? user.chatTokens : 0);
   const [outlinesList] = useAtom(outlinesListAtom);
   const [conversation, setConversation] = useAtom(conversationAtom);
@@ -97,45 +98,48 @@ const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
     },
   });
 
-  const handleSubmit = async (userMessage: UserMessage) => {
-    setIsSaving(true);
-    if (!user || tokenCount <= 0) {
-      setTokenCount(0);
-      setIsSaving(false);
-      return;
-    }
-    try {
-      const response = await fetch('/api/simulate/converse', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          input: userMessage.content,
-          conversation: conversation,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.status}`);
+  const handleSubmit = useCallback(
+    async (userMessage: UserMessage) => {
+      setIsSaving(true);
+      if (!user || tokenCount <= 0) {
+        setTokenCount(0);
+        setIsSaving(false);
+        return;
       }
+      try {
+        const response = await fetch('/api/simulate/converse', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            input: userMessage.content,
+            conversation: conversation,
+          }),
+        });
 
-      const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`Failed to fetch: ${response.status}`);
+        }
 
-      setConversation(data.conversation);
-      setTokenCount(data.user.chatTokens);
-      setUserMessage(userMessageInit);
-      setIsSaving(false);
-      return data;
-    } catch (error) {
-      console.error('Error in handleSubmit:', error);
-      throw error;
-    } finally {
-      setIsSaving(false);
-    }
-  };
+        const data = await response.json();
 
-  const handleSave = async () => {
+        setConversation(data.conversation);
+        setTokenCount(data.user.chatTokens);
+        setUserMessage(userMessageInit);
+        setIsSaving(false);
+        return data;
+      } catch (error) {
+        console.error('Error in handleSubmit:', error);
+        throw error;
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [conversation, setConversation, setUserMessage, tokenCount, user]
+  );
+
+  const handleSave = useCallback(async () => {
     setIsSaving(true);
     if (simulateId) {
       try {
@@ -174,7 +178,7 @@ const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
         setIsSaving(false);
       }
     }
-  };
+  }, [conversation, outline, router, simulateId]);
 
   useEffect(() => {
     if (!embla) {
@@ -322,5 +326,6 @@ const Chat: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {
     </Carousel>
   );
 };
-
+const Chat = React.memo(ChatComponent);
+Chat.displayName = 'Chat';
 export default Chat;

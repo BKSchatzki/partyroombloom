@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 import { Lock } from 'lucide-react';
@@ -18,7 +18,7 @@ import {
 } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
-import TutorialCard from '../tutorial/_components/TutorialCard';
+import TutorialCardComponent from '../tutorial/_components/TutorialCard';
 import Secrets from './Secrets';
 
 interface SecretsContainerProps {
@@ -36,20 +36,27 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
   const [newOutline] = useAtom(newOutlineAtom);
   const [existingOutline] = useAtom(existingOutlineAtom);
 
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
 
-  const sortedInteractables = thisOutline.elements
-    .filter((element) => element.type === 'interactable')
-    .sort(
-      (a, b) =>
-        thisOutline.elements.findIndex((element) => element.id === a.parentId) -
-        thisOutline.elements.findIndex((element) => element.id === b.parentId)
-    );
+  const sortedInteractables = useMemo(
+    () =>
+      thisOutline.elements
+        .filter((element) => element.type === 'interactable')
+        .sort(
+          (a, b) =>
+            thisOutline.elements.findIndex((element) => element.id === a.parentId) -
+            thisOutline.elements.findIndex((element) => element.id === b.parentId)
+        ),
+    [thisOutline.elements]
+  );
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
       {tutorialMode && (
-        <TutorialCard
+        <TutorialCardComponent
           builderPage={'secrets'}
           embla={embla}
         />
@@ -101,9 +108,6 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
     </ScrollArea>
   );
 };
-
 const SecretsContainer = React.memo(SecretsContainerComponent);
-
 SecretsContainer.displayName = 'SecretsContainer';
-
 export default SecretsContainer;

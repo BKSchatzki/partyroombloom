@@ -16,7 +16,7 @@ interface OutputProps {
   outline: Outline;
 }
 
-const OutlinePdfOutput: React.FC<OutputProps> = ({ outline }) => {
+const OutlinePdfOutputComponent: React.FC<OutputProps> = ({ outline }) => {
   return (
     <Document>
       <Page
@@ -127,5 +127,6 @@ const OutlinePdfOutput: React.FC<OutputProps> = ({ outline }) => {
     </Document>
   );
 };
-
+const OutlinePdfOutput = React.memo(OutlinePdfOutputComponent);
+OutlinePdfOutput.displayName = 'OutlinePdfOutput';
 export default OutlinePdfOutput;
