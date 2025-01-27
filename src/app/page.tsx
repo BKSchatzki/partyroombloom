@@ -4,6 +4,7 @@ import { validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
 import About from './_components/About';
+import Acknowledgements from './_components/Acknowledgements';
 import Faq from './_components/Faq';
 import Hero from './_components/Hero';
 
@@ -18,6 +19,7 @@ export default async function Home() {
         <Hero user={user} />
         <About />
         <Faq />
+        <Acknowledgements />
       </ScrollArea>
     </Container>
   );
