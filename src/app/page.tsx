@@ -4,6 +4,7 @@ import { validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
 import About from './_components/About';
+import Faq from './_components/Faq';
 import Hero from './_components/Hero';
 
 export default async function Home() {
@@ -16,6 +17,7 @@ export default async function Home() {
       <ScrollArea className={cn(`flex h-full w-full flex-col gap-4`)}>
         <Hero user={user} />
         <About />
+        <Faq />
       </ScrollArea>
     </Container>
   );
