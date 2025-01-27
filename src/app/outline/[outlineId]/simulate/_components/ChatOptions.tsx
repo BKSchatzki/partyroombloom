@@ -75,13 +75,9 @@ const ChatOptionsComponent: React.FC<ChatOptionsProps> = ({ options, index, disa
     [options, setUserMessage]
   );
 
-  const isUserMessage = useCallback((message: Message): message is UserMessage => {
-    return message.role === 'user';
-  }, []);
   const prevUserMessage = useMemo(
-    () =>
-      isUserMessage(conversation[index + 1]) ? (conversation[index + 1] as UserMessage) : null,
-    [conversation, index, isUserMessage]
+    () => conversation[index + 1] as UserMessage,
+    [conversation, index]
   );
 
   return (
@@ -114,12 +110,10 @@ const ChatOptionsComponent: React.FC<ChatOptionsProps> = ({ options, index, disa
             >
               {option.description}
               {!option.roll ? null : userMessage.content.choice === option.description ||
-                (prevUserMessage?.content as { choice: string }).choice === option.description ? (
+                prevUserMessage?.content.choice === option.description ? (
                 <RollSelect
                   rollResult={
-                    disabled
-                      ? (prevUserMessage?.content as { rollResult: string }).rollResult
-                      : userMessage.content.rollResult
+                    disabled ? prevUserMessage?.content.rollResult : userMessage.content.rollResult
                   }
                   handleChange={handleChange}
                   index={index}
