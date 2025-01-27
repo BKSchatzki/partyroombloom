@@ -38,7 +38,7 @@ const Hero = ({ user }: { user: User | null }) => {
   return (
     <div
       className={cn(
-        `flex w-full flex-col items-center text-balance bg-gradient-to-b from-base-300 to-transparent px-4 pb-16 pt-16 text-center`
+        `flex w-full flex-col items-center text-balance bg-gradient-to-b from-base-300 to-transparent px-4 pt-16 text-center`
       )}
     >
       <div className={cn(`max-w-xl`)}>
@@ -55,7 +55,7 @@ const Hero = ({ user }: { user: User | null }) => {
           better than ever.
         </p>
       </div>
-      <div className={cn(`flex gap-4 max-sm:flex-col`)}>
+      <div className={cn(`flex gap-8 max-sm:flex-col`)}>
         <Link
           href={`/outline/tutorial`}
           role={`none`}
@@ -102,46 +102,91 @@ const Hero = ({ user }: { user: User | null }) => {
 const About = () => {
   const features = [
     {
-      title: 'Exploration planning made easy',
-      description:
-        "Always have a plan for player exploration. PartyRoomBloom uses a tried-and-tested exploration framework, sure to draw your players' attention where it needs to be without railroading them! Say goodbye to feeling lost planning and running the exploration scenes of your sessions.",
-      imgSrc: 'https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYqfSAWJrI2gZQf4dhsVzSJ1tFlwiUBjmNq3u5O',
+      title: (
+        <span>
+          Exploration planning <span className={cn(`text-secondary`)}>made easy</span>
+        </span>
+      ),
+      description: (
+        <span>
+          Always have a plan for player exploration. PartyRoomBloom's{' '}
+          <span className={cn(`text-secondary`)}>Outline Builder</span> uses a tried-and-tested
+          exploration framework, sure to draw your players' attention where it needs to be without
+          railroading them! Say goodbye to feeling lost planning and running the exploration scenes
+          of your sessions.
+        </span>
+      ),
+      imgSrc: 'https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYq7sFXn66Qhdeki6VKaqoOupjLYXb4INxMycAl',
+      imgAlt: 'Image of Outline Builder',
     },
     {
-      title: 'Easily reference your scenes',
-      description:
-        "The Overview provides an extremely convenient single-page interface for viewing an entire session's worth of scenes, allowing you to run a series of explorations from a single tab or window. No more scrolling up and down your session document!",
-      imgSrc: 'https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYqpxFRWoh12GMRPFEh6tmloHuJycI4gnwfSV9b',
+      title: (
+        <span>
+          <span className={cn(`text-info`)}>Easily reference</span> your outlines
+        </span>
+      ),
+      description: (
+        <span>
+          The <span className={cn(`text-info`)}>Overview Page</span> provides an extremely
+          convenient single-page interface for viewing an entire session's worth of scenes, allowing
+          you to run a series of explorations from a single tab or window. No more scrolling up and
+          down your session document!
+        </span>
+      ),
+      imgSrc: 'https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYq5L4MSTXQuSiydK38UMNGnRkeXZ0BroTvCH7z',
+      imgAlt: 'Image of Overview Page',
     },
     {
-      title: 'Simulate and extend your scenes',
-      description:
-        "PartyRoomBloom's Simulate Assistant walks you through your scenes, making sure you've left no stone unturned. Occasionally, it might even spark your imagination and send you back to your outlines to add more ideas to your scene outlines!",
-      imgSrc: 'https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYqkU4FDA7N7LmIMu8ilRneSUFtWG3P5jz9QJfK',
+      title: (
+        <span>
+          <span className={cn(`text-indigo-500`)}>Simulate and extend</span> your ideas
+        </span>
+      ),
+      description: (
+        <span>
+          PartyRoomBloom's <span className={cn(`text-indigo-500`)}>Simulate Assistant</span> walks
+          you through your scenes, making sure you've left no stone unturned. Occasionally, it might
+          even spark your imagination and send you back to the drawing board to add more ideas to
+          your scene outlines!
+        </span>
+      ),
+      imgSrc: 'https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYquPno0fCzVSYq3AlxZQWGPNMT85uhptaFeBCJ',
+      imgAlt: 'Image of Simulate Assistant',
     },
     {
-      title: 'Print and backup your scenes',
-      description:
-        "Should you want to take your plans offline, print them as PDFs, and back them up on your own machine as JSON files, ready to add back to a new outline. (This feature is great when characters return to a place after it's changed!)",
-      imgSrc: 'https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYqF2L27ewvgUs3HjDGNKhCcIzTVFif4WSXre2n',
+      title: (
+        <span>
+          <span className={cn(`text-orange-500`)}>Print and backup</span> your work
+        </span>
+      ),
+      description: (
+        <span>
+          Should you want to take your plans offline,{' '}
+          <span className={cn(`text-orange-500`)}>print them as PDFs</span>, and back them up on
+          your own machine as JSON files, ready to add back to a new outline. (This feature is great
+          when characters return to a place after it's changed!)
+        </span>
+      ),
+      imgSrc: 'https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYq55Agb4XQuSiydK38UMNGnRkeXZ0BroTvCH7z',
+      imgAlt: 'Image of PDF Saving',
     },
   ];
 
   return (
     <div
       className={cn(
-        `item-center grid grid-cols-2 gap-16 text-balance bg-gradient-to-b from-transparent to-indigo-950 px-4 py-16 sm:px-32`
+        `item-center grid grid-cols-2 gap-16 text-balance bg-gradient-to-b from-transparent to-indigo-950 px-4 pb-16 pt-16 sm:px-16`
       )}
     >
-      {features.map((feature) => (
+      {features.map((feature, index) => (
         <Card
-          key={feature.title}
+          key={index}
           className={cn(
-            `bg-base-100 col-span-2 items-center justify-end text-center shadow-xl shadow-base-300 lg:col-span-1`
+            `col-span-2 items-center justify-end bg-base-100/75 text-center shadow-xl shadow-base-300 lg:col-span-1`
           )}
         >
           <CardContent className={cn(`flex h-full flex-col-reverse justify-end gap-4`)}>
-            <div className={cn(`flex max-w-96 flex-col gap-2 pb-4`)}>
+            <div className={cn(`flex max-w-96 flex-col gap-4 py-4`)}>
               <h2 className={cn(`text-3xl font-bold`)}>{feature.title}</h2>
               <span>{feature.description}</span>
             </div>
@@ -151,10 +196,10 @@ const About = () => {
             >
               <Image
                 src={feature.imgSrc}
-                alt={feature.title}
+                alt={feature.imgAlt}
                 width={800}
                 height={600}
-                className={cn(`h-full rounded-xl object-cover pt-4`)}
+                className={cn(`mt-4 h-full rounded-xl object-cover pt-4`)}
               />
             </AspectRatio>
           </CardContent>
