@@ -22,13 +22,13 @@ const Faq = () => {
       question: 'What is the premise of PartyRoomBloom?',
       answer: (
         <p>
-          The goal of PartyRoomBloom is to make planning and running aspects of your sessions
-          easier. At the moment, our main attraction is the{' '}
+          The goal of PartyRoomBloom is to make planning and running exploration and social aspects
+          of your sessions easier. At the moment, its main attraction is the{' '}
           <span className={cn(`text-secondary`)}>Outline Builder</span>, a tool designed on a
           framework that presents information to players in layers. This framework provides a good
-          balance of convenience, structure, and potential for emergent gameplay. We've also
-          designed the <span className={cn(`text-indigo-500`)}>Simulate Assistant</span>, an AI
-          narrator designed to extend scenes in order to generate new ideas for you while planning.
+          balance of convenience, structure, and potential for emergent gameplay. There is also the{' '}
+          <span className={cn(`text-indigo-500`)}>Simulate Assistant</span>, an AI narrator designed
+          to extend scenes in order to generate new ideas for you while planning.
         </p>
       ),
     },
@@ -46,27 +46,35 @@ const Faq = () => {
           <p>
             Once you have built several scenes, you will also be able to reference them very easily
             in the <span className={cn(`text-info`)}>Overview Page</span>, which absolutely beats
-            sifting through documents. You may have a system you are perfectly happy with, but we
+            sifting through documents. You may have a system you are perfectly happy with, but I
             believe PartyRoomBloom is still worth a try.
           </p>
         </>
       ),
     },
     {
-      question: 'Is the Simulate Assistant a replacement for game masters?',
+      question: '"Eww. Another AI product trying to erase creativity. Pass."',
       answer: (
         <>
           <p>
-            Absolutely not. We abhor the "replace human creativity" talk currently streaking through
-            the tech and business world, and the tabletop community is full of creatives who deserve
-            respect for the love they pour into their craft, game masters included.
+            I get that reaction. But absolutely not. I abhor the "replace human creativity" talk
+            currently streaking through the tech and business world, and the tabletop community is
+            full of creatives who deserve respect for the love they pour into their craft, game
+            masters included.
           </p>
           <p>
-            The <span className={cn(`text-indigo-500`)}>Simulate Assistant</span> is a brainstorming
-            tool off of which you can bounce ideas, and is best used when your scenes are already
-            well-developed and you feed it as much context as possible. It would make an exceedingly
-            poor game master, in no small part due to its deliberate design to be bad at that exact
-            job.
+            First off, the <span className={cn(`text-indigo-500`)}>Simulate Assistant</span> is not
+            the main attraction; it is a completely optional supplement to the framework, and you
+            can absolutely choose to completely ignore it. What it is is a brainstorming tool off of
+            which you can bounce ideas, and it's best used when your scenes are already
+            well-developed and you feed it as much context as possible.
+          </p>
+          <p>
+            It would make an exceedingly poor game master, in no small part due to it being
+            deliberately designed to be bad at that exact job. It doesn't print its back ideas back
+            into your work; it only reads your outlines and prototypes how one might color them in.
+            It's a mental cobweb remover, not a game master replacement. So if I find you using it
+            that way, I'll probably...look on with bemusement or something.
           </p>
         </>
       ),
@@ -124,9 +132,9 @@ const Faq = () => {
             creation you will receive 50 free credits, so make sure you use them wisely!
           </p>
           <p>
-            As we are currently in beta, there is no way to purchase more credits at the moment, but
-            feel free to contact us and we will trade you credits for meaningful feedback and
-            testing on your part.
+            As PartyRoomBloom is currently in beta, there is no way to purchase more credits at the
+            moment, but feel free to contact me and I will trade you credits for meaningful feedback
+            and testing on your part.
           </p>
         </>
       ),
@@ -136,9 +144,9 @@ const Faq = () => {
       answer: (
         <>
           <p>
-            The only data of yours we store are your Google ID, email, name, and avatar. The scenes
+            The only data of yours I store are your Google ID, email, name, and avatar. The scenes
             you build with the <span className={cn(`text-secondary`)}>Outline Builder</span> that
-            you save with us, along with any conversations you have with the{' '}
+            you save with me, along with any conversations you have with the{' '}
             <span className={cn(`text-indigo-500`)}>Simulate Assistant</span>, are associated with
             your account. Deleted scenes and conversations are not kept; even elements of an outline
             you delete are gone forever.
@@ -146,7 +154,7 @@ const Faq = () => {
           <p>
             You may notice that the <span className={cn(`text-secondary`)}>Outline Builder</span>{' '}
             sometimes remembers what you were working on; that's your browser saving the
-            information, not our databases. We don't see it until you click the{' '}
+            information, not my databases. I don't see it until you click the{' '}
             <Save
               aria-hidden={true}
               className={cn(`inline size-4`)}
@@ -154,16 +162,16 @@ const Faq = () => {
             Save button.
           </p>
           <p>
-            We can't speak to what the AI that runs the{' '}
+            I can't speak to what the AI that runs the{' '}
             <span className={cn(`text-indigo-500`)}>Simulate Assistant</span> does, but since
             requests to the AI are from PartyRoomBloom, it is actually more anonymized than if you
             were using a chatbot by yourself.
           </p>
           <p>
-            We have no interest in using any of your information other than to provide this tool for
-            you, and if you ever wanted to delete your account, contact us and we'll make it happen.
-            A record of these account deletion requests will be kept to prevent abuse of the free
-            credits on sign up.
+            I have no interest in using any of your information other than to provide this tool for
+            you, and if you ever wanted to delete your account, contact me and I'll make it happen.
+            A minimal record of these account deletion requests will be kept to prevent abuse of the
+            free credits on sign up.
           </p>
         </>
       ),

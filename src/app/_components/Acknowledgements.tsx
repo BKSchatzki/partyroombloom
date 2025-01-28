@@ -212,11 +212,13 @@ const Acknowledgements = () => {
     <footer className={cn(``)}>
       <div
         className={cn(
-          `flex flex-col items-center border-t-2 border-[#302a2a] bg-base-300 p-4 sm:px-16`
+          `flex flex-col items-center border-t-2 border-[#302a2a] bg-base-300 p-4 py-8 sm:px-16`
         )}
       >
         <div
-          className={cn(`flex w-full items-center justify-between gap-8 max-lg:flex-col-reverse`)}
+          className={cn(
+            `flex w-full items-center justify-between gap-8 max-lg:flex-col-reverse max-lg:gap-4`
+          )}
         >
           <div className={cn(`flex flex-col gap-2`)}>
             <p>
