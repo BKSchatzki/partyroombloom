@@ -17,7 +17,7 @@ const Hero: React.FC<HeroProps> = ({ user }) => {
   return (
     <div
       className={cn(
-        `flex w-full flex-col items-center text-balance bg-gradient-to-b from-base-300 to-transparent px-4 pt-16 text-center`
+        `flex w-full flex-col items-center text-balance bg-gradient-to-b from-base-300/75 to-transparent px-4 pt-16 text-center`
       )}
     >
       <div className={cn(`max-w-xl`)}>

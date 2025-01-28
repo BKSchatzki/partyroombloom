@@ -1,5 +1,7 @@
 import Container from '@/components/Container';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { ShootingStars } from '@/components/ui/shooting-stars';
+import { StarsBackground } from '@/components/ui/stars-background';
 import { validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +22,11 @@ export default async function Home() {
         <About />
         <Faq />
         <Acknowledgements />
+        <StarsBackground
+          starDensity={0.0003}
+          className={cn(`-z-10`)}
+        />
+        <ShootingStars className={cn(`-z-10`)} />
       </ScrollArea>
     </Container>
   );
