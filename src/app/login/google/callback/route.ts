@@ -66,7 +66,7 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: '/overview',
+        Location: '/outline/tutorial',
       },
     });
   } catch (e) {
