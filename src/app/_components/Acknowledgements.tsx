@@ -224,17 +224,6 @@ const Acknowledgements = () => {
             <p>
               Credit must be given to the{' '}
               <Link
-                href={`https://www.youtube.com/watch?v=Sd2svbU7t50`}
-                target={`_blank`}
-                rel={`noreferrer noopener`}
-                className={cn(
-                  `text-warning underline decoration-2 hover:brightness-125 focus:brightness-125`
-                )}
-              >
-                original video
-              </Link>{' '}
-              and{' '}
-              <Link
                 href={`https://diyanddragons.blogspot.com/2019/10/landmark-hidden-secret.html`}
                 target={`_blank`}
                 rel={`noreferrer noopener`}
@@ -242,7 +231,18 @@ const Acknowledgements = () => {
                   `text-warning underline decoration-2 hover:brightness-125 focus:brightness-125`
                 )}
               >
-                blogpost
+                original blogpost
+              </Link>{' '}
+              and{' '}
+              <Link
+                href={`https://www.youtube.com/watch?v=Sd2svbU7t50`}
+                target={`_blank`}
+                rel={`noreferrer noopener`}
+                className={cn(
+                  `text-warning underline decoration-2 hover:brightness-125 focus:brightness-125`
+                )}
+              >
+                video
               </Link>{' '}
               that brought the three-layered framework into the spotlight and inspired the
               development of this application.
