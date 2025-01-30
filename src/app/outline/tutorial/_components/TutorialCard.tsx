@@ -71,18 +71,15 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
               draft scenes for our players to explore with their characters.
             </p>
             <p>
-              Feel free to look around, and don't worry about messing anything up. Every time you go
-              forward or back a step, the tutorial will update the scene with the right info for
-              that step. The UI is only enabled here so you can mess around, and won't affect the
-              progression of the tutorial.
+              Feel free to look around; drag the carousel or click or tap the chevrons icons at the
+              bottom to move between pages. And don't worry about messing anything up! Every time
+              you go forward or back a step, the tutorial will update the scene with the right info
+              for that step. The UI is only enabled here so you can mess around, and won't affect
+              the progression of the tutorial.
             </p>
             <ActionPrompt>
-              When you're ready, come back to this page and click or tap the{' '}
-              <ArrowRight
-                aria-hidden={true}
-                className={cn(`inline size-4`)}
-              />{' '}
-              icon above to continue with the tutorial. We'll start with the "Title."
+              When you're ready, come back to this page and click or tap the arrow icon above to
+              continue with the tutorial. We'll start with the "Title."
             </ActionPrompt>
           </div>
         ),
