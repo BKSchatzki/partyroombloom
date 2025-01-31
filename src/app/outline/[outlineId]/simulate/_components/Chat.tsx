@@ -104,7 +104,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
           body: JSON.stringify({ conversation: updatedConversation }),
         });
         if (!updatedResponse.ok) {
-          throw new Error(`Error: ${updatedResponse.status}`);
+          throw new Error(`Failed to update conversation: ${updatedResponse.status}`);
         }
         const data = await updatedResponse.json();
         router.replace(`/outline/${outlineId}/simulate/${newSimulateId}`);
@@ -132,7 +132,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         return;
       }
       try {
-        const response = await fetch('/api/simulate/converse', {
+        const conversationResponse = await fetch('/api/simulate/converse', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -142,26 +142,35 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
             conversation: conversation,
           }),
         });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.status}`);
+        if (!conversationResponse.ok) {
+          throw new Error(`Failed to get response from AI: ${conversationResponse.status}`);
         }
-
-        const data = await response.json();
-
-        setConversation(data.conversation);
-        setTokenCount(data.user.chatTokens);
+        const { conversation: updatedConversation, user: updatedUser } =
+          await conversationResponse.json();
+        const updatedResponse = await fetch(`/api/simulate/${simulateId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ conversation: updatedConversation }),
+        });
+        if (!updatedResponse.ok) {
+          throw new Error(`Failed to update conversation: ${updatedResponse.status}`);
+        }
+        const data = await updatedResponse.json();
+        setConversation(updatedConversation);
+        setTokenCount(updatedUser.chatTokens);
         setUserMessage(userMessageInit);
         setIsSaving(false);
         return data;
       } catch (error) {
-        console.error('Error in handleSubmit:', error);
+        console.error('Failed to get response from AI or update conversation:', error);
         throw error;
       } finally {
         setIsSaving(false);
       }
     },
-    [conversation, setConversation, setUserMessage, tokenCount, user]
+    [conversation, setConversation, setUserMessage, simulateId, tokenCount, user]
   );
 
   const handleSave = useCallback(async () => {
