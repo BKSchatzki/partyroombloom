@@ -64,13 +64,24 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
   const { isLoading, error } = useQuery({
     queryKey: ['conversation'],
     queryFn: async () => {
-      let response;
       if (simulateId === null) {
         if (!user || tokenCount <= 0) {
           setTokenCount(0);
+          router.push('/overview');
           return tokenCount;
         }
-        response = await fetch('/api/simulate/converse', {
+        const createResponse = await fetch('/api/simulate/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ outline }),
+        });
+        if (!createResponse.ok) {
+          throw new Error(`Failed to create conversation: ${createResponse.status}`);
+        }
+        const { id: newSimulateId } = await createResponse.json();
+        const conversationResponse = await fetch('/api/simulate/converse', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -80,21 +91,35 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
             conversation: [],
           }),
         });
+        if (!conversationResponse.ok) {
+          throw new Error(`Failed to fetch conversation: ${conversationResponse.status}`);
+        }
+        const { conversation: updatedConversation, user: updatedUser } =
+          await conversationResponse.json();
+        const updatedResponse = await fetch(`/api/simulate/${newSimulateId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ conversation: updatedConversation }),
+        });
+        if (!updatedResponse.ok) {
+          throw new Error(`Error: ${updatedResponse.status}`);
+        }
+        const data = await updatedResponse.json();
+        router.replace(`/outline/${outlineId}/simulate/${newSimulateId}`);
+        setConversation(updatedConversation);
+        setTokenCount(updatedUser.chatTokens);
+        setIsLocalLoading(false);
+        return data;
       } else {
-        response = await fetch(`/api/simulate/${simulateId}`);
+        const response = await fetch(`/api/simulate/${simulateId}`);
+        const data = await response.json();
+        setConversation(data.conversation);
+        setTokenCount(data.user.chatTokens);
+        setIsLocalLoading(false);
+        return data;
       }
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch conversation: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      console.log(data);
-      setConversation(data.conversation);
-      setTokenCount(data.user.chatTokens);
-      setIsLocalLoading(false);
-      return data;
     },
   });
 
