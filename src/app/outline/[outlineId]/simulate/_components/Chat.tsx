@@ -173,47 +173,6 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
     [conversation, setConversation, setUserMessage, simulateId, tokenCount, user]
   );
 
-  const handleSave = useCallback(async () => {
-    setIsSaving(true);
-    if (simulateId) {
-      try {
-        const response = await fetch(`/api/simulate/${simulateId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ conversation }),
-        });
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-      } catch (error) {
-        console.error('Error saving conversation:', error);
-      } finally {
-        setIsSaving(false);
-      }
-    }
-    if (!simulateId) {
-      try {
-        const response = await fetch('/api/simulate/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ conversation, outline }),
-        });
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-        router.push(`/overview`);
-      } catch (error) {
-        console.error('Error saving conversation:', error);
-      } finally {
-        setIsSaving(false);
-      }
-    }
-  }, [conversation, outline, router, simulateId]);
-
   useEffect(() => {
     if (!embla) {
       return;
@@ -340,21 +299,6 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
               `border-indigo-500 text-indigo-500 hover:border-indigo-500 hover:bg-indigo-500 focus-visible:outline-indigo-500 disabled:border-indigo-500/30 disabled:bg-indigo-500/10 disabled:text-indigo-500/30`
             )}
           />
-          <Button
-            onClick={handleSave}
-            color={`default`}
-            disabled={isSaving}
-            outlined={true}
-            className={cn(
-              `absolute bottom-0 right-20 flex items-center gap-2 border-indigo-500 text-indigo-500 outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:border-indigo-500 hover:bg-indigo-500 hover:brightness-90 focus:ring-2 disabled:border-indigo-500/30 disabled:bg-indigo-500/10 disabled:text-indigo-500/30`
-            )}
-          >
-            <Save
-              aria-hidden={true}
-              className={cn(`size-5`)}
-            />
-            {isSaving ? `Wait` : `Save`}
-          </Button>
         </div>
       </div>
     </Carousel>
