@@ -23,9 +23,11 @@ export const POST = async (req: NextRequest) => {
     if (!input) {
       return NextResponse.json({ error: 'Input is required' }, { status: 400 });
     }
-    // Call completions helper function, decrementing user chat token count
+    // Calculate tokenCost as 1 per 10 exchanges
+    const tokenCost = Math.ceil(conversation.length / 20);
+    // Call completions helper function, decrementing user chat token count by tokenCost
     const updatedConversation = await getStructuredResponse(input, conversation);
-    const updatedTokenCount = user.chatTokens - 1;
+    const updatedTokenCount = user.chatTokens - tokenCost;
     const updatedUser = await prisma.user.update({
       where: {
         id: user.id,

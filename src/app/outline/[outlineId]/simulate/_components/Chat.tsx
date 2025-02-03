@@ -11,7 +11,6 @@ import { User } from 'lucia';
 import {
   Check,
   Coins,
-  Save,
   Sparkles,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -270,6 +269,11 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
                                 aria-hidden={true}
                                 className={cn(`size-3`)}
                               />
+                              {conversation.length / 20 > 1 && (
+                                <span className={cn(`text-base-content`)}>
+                                  (Cost: {Math.ceil(conversation.length / 20)})
+                                </span>
+                              )}
                             </span>
                           </span>
                         )}
