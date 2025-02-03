@@ -176,6 +176,12 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
     if (!embla) {
       return;
     }
+    embla.on('init', () => {
+      embla.scrollTo(conversation.length - 1);
+    });
+    embla.on('slidesChanged', () => {
+      embla.scrollTo(conversation.length - 1);
+    });
     embla.scrollTo(conversation.length - 1);
   }, [embla, conversation.length]);
 
