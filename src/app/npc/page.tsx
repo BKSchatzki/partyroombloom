@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 
+import Container from '@/components/Container';
 import GenericError from '@/components/GenericError';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
@@ -55,17 +57,19 @@ const Npc = () => {
   }
 
   return (
-    <div className={cn(`flex items-center justify-center px-4 py-16 sm:px-16`)}>
-      <div>
-        This is {npc?.name}, a {npc?.gender}, {npc?.anatomy.height}, {npc?.anatomy.build},{' '}
-        {npc?.age} {npc?.species}. They have {npc?.skin.color}, {npc?.skin.texture} skin,{' '}
-        {npc?.hair.color} hair in a {npc?.hair.style}. They have {npc?.eyes.shape},{' '}
-        {npc?.eyes.color} eyes. They have a {npc?.voice.pitch}, {npc?.voice.quality} voice, and
-        speak with {npc?.voice.speed} speed and {npc?.voice.volume} volume. They have{' '}
-        {npc?.features}, and {npc?.mannerisms}. They are motivated by {npc?.motivation}, and they{' '}
-        {npc?.plotHooks}.
-      </div>
-    </div>
+    <Container>
+      <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 sm:px-4`)}>
+        <div className={cn(`mx-auto flex flex-col gap-6 px-4 py-8 max-sm:px-0`)}>
+          This is {npc?.name}, a {npc?.gender}, {npc?.anatomy.height}, {npc?.anatomy.build},{' '}
+          {npc?.age} {npc?.species}. They have {npc?.skin.color}, {npc?.skin.texture} skin,{' '}
+          {npc?.hair.color} hair in a {npc?.hair.style}. They have {npc?.eyes.shape},{' '}
+          {npc?.eyes.color} eyes. They have a {npc?.voice.pitch}, {npc?.voice.quality} voice, and
+          speak with {npc?.voice.speed} speed and {npc?.voice.volume} volume. They have{' '}
+          {npc?.features}, and {npc?.mannerisms}. They are motivated by {npc?.motivation}, and they{' '}
+          {npc?.plotHooks}.
+        </div>
+      </ScrollArea>
+    </Container>
   );
 };
 
