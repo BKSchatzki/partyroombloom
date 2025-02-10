@@ -12,7 +12,42 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'PartyRoomBloom',
-  description: 'Bloom the Party Room!',
+  description: "The game master's inspirational session planning toolkit",
+  metadataBase: new URL('https://partyroombloom.vercel.app'),
+  applicationName: 'PartyRoomBloom',
+  authors: [{ name: 'Brendan K. Schatzki' }],
+  generator: 'Next.js',
+  keywords: ['tabletop roleplaying games', 'session planning', 'social gaming'],
+  themeColor: '#1db88e', // Your brand color
+  manifest: '/manifest.json',
+  openGraph: {
+    type: 'website',
+    title: "PartyRoomBloom - The game master's inspirational session planning toolkit",
+    description:
+      'PartyRoomBloom scaffolds your exploration scenes to help you plan engaging game nights better than ever',
+    siteName: 'PartyRoomBloom',
+    // images: [
+    //   {
+    //     url: '/og-image.jpg',
+    //     width: 1200,
+    //     height: 630,
+    //     alt: 'PartyRoomBloom Preview',
+    //   },
+    // ],
+  },
+  // twitter: {
+  //   card: 'summary_large_image',
+  //   creator: '@yourhandle',
+  //   images: '/twitter-image.jpg',
+  // },
+  // robots: {
+  //   index: true,
+  //   follow: true,
+  // },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+  },
 };
 
 export default async function RootLayout({
