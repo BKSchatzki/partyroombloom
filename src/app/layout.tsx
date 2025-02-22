@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   generator: 'Next.js',
   keywords: ['tabletop roleplaying games', 'session planning', 'social gaming'],
   themeColor: '#1db88e', // Your brand color
-  manifest: '/manifest.json',
+  // manifest: '/manifest.json',
   openGraph: {
     type: 'website',
     title: "PartyRoomBloom - The game master's inspirational session planning toolkit",
