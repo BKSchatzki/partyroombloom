@@ -2,28 +2,42 @@
 
 ## Description
 
-PartyRoomBloom is an app for game masters of tabletop roleplaying games to develop their sessions through scene creation and iteration using generative AI. The Outline functionality is complete and being polished. Looking at reimplementing PDF, markdown, and JSON exports to allow users to self-manage / backup data. Prompt refinement and connection of Outline to Simulation is next step.
+PartyRoomBloom is an app for game masters of tabletop roleplaying games to develop their sessions through scene creation and iteration using generative AI.
+
+## Current Status
+
+PartyRoomBloom's core featureset is complete: The Outline Builder, Overview Page, Simulate Assistant, and PDF & JSON backups are all functional.
+
+Currently troubleshooting saved elements not being properly deleted when outline is updated. Possible solutions are frontend delete handler calling DELETE controller on new /element route, or restructuring of Outline state to include deleted flags for elements and modifying PUT controller on outline/[outlineId]. Latter solution likely to be developed with general refactoring of Outline state logic to isolate outline properties atomically to allow for memoization of handler functions and derived values (optimization logic already implemented).
+
+Featureset expanding to include the use of a (currently public) Express service API that can be found at <https://github.com/BKSchatzki/prb-npc-service> and hosted at <https://prb-npc-service.onrender.com/>. Possibly rolling said separate Express API into the main PartyRoomBloom repo to take advantage of Next.js and Vercel's serverless architecture, whether it will remain public of be internal to PartyRoomBloom is TBD.
 
 ## Features
 
-<!-- - Feature 1: Brief description of major functionality
-- Feature 2: Another key feature of your application
-- Feature 3: Additional important capability -->
+- Outline Builder: Users can create outlines of scenes for social storytelling settings using a proven three-layered information framework.
+- Overview Page: Users can quickly reference and manage all information in created scenes.
+- Simulate Assistant: Users can walk through a created scene using an AI assistant to spark more creative writing ideas for social storytelling sessions.
+- PDF Export: Users can export created scenes to a PDF file for easy print reference.
+- JSON Backup & Restore: Users can back up scene data locally to a JSON file, and restore the data to new scenes if they are accidentally deleted in the application.
 
 ## Technologies Used
 
-<!-- - Technology 1
-- Technology 2
-- Technology 3 -->
+- Node
+- React
+- Jotai
+- Next.js
+- Tailwind CSS
+- TypeScript
+- Neon PostgreSQL
+- OpenAI API
+- Lucia Auth
+- Next.js
 
-<!-- ## Dependencies
+## Required Services
 
-```json
-{
-  "dependency1": "^1.0.0",
-  "dependency2": "^2.0.0"
-}
-``` -->
+- Vercel (for ideal deployment)
+- OpenAI API (for Simulate Assistant)
+- Google Cloud Platform (for authentication using Lucia Auth)
 
 ## Installation
 
@@ -57,7 +71,7 @@ PartyRoomBloom is an app for game masters of tabletop roleplaying games to devel
    AUTH_GOOGLE_ID="Your Google Client ID"
    AUTH_GOOGLE_SECRET="Your Google Client secret"
    AUTH_GOOGLE_REDIRECT_URI="http://localhost:3000/login/google/callback"
-   NPC_SERVICE="Currently under construction, will possibly be moved into this repo"
+   NEXT_PUBLIC_NPC_SERVICE_URL="Currently under construction, will possibly be moved into this repo"
    ```
 
 ## Usage
@@ -84,27 +98,32 @@ To build the project for production:
 npm run build
 ```
 
-<!-- ## Deployment
+## Deployment Checklist
 
-1. Build the project
-2. Configure deployment platform settings
-3. Deploy using your preferred method:
-
-   ```bash
-   npm run deploy
-   ``` -->
-
-<!-- ## Testing
-
-Explain how to run tests:
-
-```bash
-npm test
-``` -->
+- Vercel Build and Deployment Settings:
+  - Framework Settings is set to Next.js defaults:
+    - Build Command: `npm run build` or `next build`
+    - Output Directory: Next.js default
+    - Install Command: `yarn install`, `pnpm install`, `npm install`, or `bun install`
+    - Development Command: `next`
+  - Root directory field is empty
+  - Node.js version is 20.x
+- Environment Variables all filled in Vercel Project Settings, especially note:
+  - Your PostgreSQL database URL
+  - Your OpenAI API key
+  - The Client ID and secret in your created application on GCP, found on the same page as the authorized origins and URIs (below)
+- Application created in GCP, with OAuth 2.0 Client ID:
+  - Authorized JavaScript origins:
+    - <http://localhost:3000>
+    - The subdomain at <https://project-name.vercel.app>
+    - Any domains on which you are hosting the site
+  - Authorized redirect URIs should have the following paths for each Authorized JavaScript Origin:
+    - /api/auth/callback/google
+    - /login/google/callback
 
 ## Contributing
 
-Instructions for potential contributors:
+You know the drill:
 
 1. Fork the repository
 2. Create a feature branch
@@ -112,9 +131,9 @@ Instructions for potential contributors:
 4. Push to the branch
 5. Create a Pull Request
 
-<!-- ## License
+## License
 
-This project is licensed under the [LICENSE NAME] - see the [LICENSE.md](LICENSE.md) file for details. -->
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Contact
 
