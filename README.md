@@ -1,5 +1,7 @@
 # PartyRoomBloom
 
+![PartyRoomBloom Outline Builder](https://cmt76lyntq.ufs.sh/f/uvtHsYCzVSYq7sFXn66Qhdeki6VKaqoOupjLYXb4INxMycAl)
+
 ## Description
 
 PartyRoomBloom is an app for game masters of tabletop roleplaying games to develop their sessions through scene creation and iteration using generative AI.
