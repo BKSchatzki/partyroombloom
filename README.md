@@ -12,7 +12,7 @@ PartyRoomBloom's core featureset is complete: The Outline Builder, Overview Page
 
 Currently troubleshooting saved elements not being properly deleted when outline is updated. Possible solutions are frontend delete handler calling DELETE controller on new /element route, or restructuring of Outline state to include deleted flags for elements and modifying PUT controller on outline/[outlineId]. Latter solution likely to be developed with general refactoring of Outline state logic to isolate outline properties atomically to allow for memoization of handler functions and derived values (optimization logic already implemented).
 
-Featureset expanding to include the use of a (currently public) Express service API that can be found at <https://github.com/BKSchatzki/prb-npc-service> and hosted at <https://prb-npc-service.onrender.com/>. Possibly rolling said separate Express API into the main PartyRoomBloom repo to take advantage of Next.js and Vercel's serverless architecture, whether it will remain public of be internal to PartyRoomBloom is TBD.
+Featureset expanding to include the use of a (currently public) Express service API that can be found at <https://github.com/BKSchatzki/prb-npc-service> and hosted at <https://prb-npc-service.onrender.com/>. Possibly rolling said separate Express API into the main PartyRoomBloom repo to take advantage of Next.js and Vercel's serverless architecture, whether it will remain public or be internal to PartyRoomBloom is TBD.
 
 ## Features
 
@@ -119,7 +119,7 @@ npm run build
     - <http://localhost:3000>
     - The subdomain at <https://project-name.vercel.app>
     - Any domains on which you are hosting the site
-  - Authorized redirect URIs should have the following paths for each Authorized JavaScript Origin:
+  - Authorized redirect URIs should have the following paths for each of the Authorized JavaScript Origins:
     - /api/auth/callback/google
     - /login/google/callback
 
