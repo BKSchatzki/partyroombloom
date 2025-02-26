@@ -1,6 +1,9 @@
 import '@/styles/globals.css';
 
-import type { Metadata } from 'next';
+import type {
+  Metadata,
+  Viewport,
+} from 'next';
 import { Inter } from 'next/font/google';
 
 import Nav from '@/components/Nav';
@@ -18,7 +21,6 @@ export const metadata: Metadata = {
   authors: [{ name: 'Brendan K. Schatzki' }],
   generator: 'Next.js',
   keywords: ['tabletop roleplaying games', 'session planning', 'social gaming'],
-  themeColor: '#1db88e', // Your brand color
   // manifest: '/manifest.json',
   openGraph: {
     type: 'website',
@@ -44,10 +46,12 @@ export const metadata: Metadata = {
   //   index: true,
   //   follow: true,
   // },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#1db88e',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default async function RootLayout({
