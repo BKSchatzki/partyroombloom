@@ -100,6 +100,24 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
         comments: outline.comments ?? '',
       },
     });
+    // Delete elements in database for this outline not included in elements from request body
+    const databaseElements = await prisma.element.findMany({
+      where: {
+        outlineId: outlineId,
+        userId: user.id,
+      },
+    });
+    const outlineElementIds = outline.elements.map((element) => element.id);
+    const idsOfElementsToDelete = databaseElements
+      .filter((element) => !outlineElementIds.includes(element.id))
+      .map((element) => element.id);
+    await prisma.element.deleteMany({
+      where: {
+        id: {
+          in: idsOfElementsToDelete,
+        },
+      },
+    });
     // Declare three element types from body and filter each into own variables
     const landmarks = outline.elements.filter((element) => element.type === 'landmark');
     const interactables = outline.elements.filter((element) => element.type === 'interactable');
