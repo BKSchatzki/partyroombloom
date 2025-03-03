@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 
 import { User } from 'lucia';
@@ -44,8 +45,13 @@ const NavComponent: React.FC<NavProps> = ({ user }) => {
         tabIndex={-1}
       >
         <Button role={`link`}>
-          <Flower
+          {/* <Flower
             aria-hidden={true}
+            className={cn(`size-8`)}
+          /> */}
+          <img
+            src={`/assets/prb-logo.png`}
+            alt={`PartyRoomBloom Logo`}
             className={cn(`size-8`)}
           />
           <h2
