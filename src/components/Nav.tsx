@@ -10,10 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-import {
-  SignIn,
-  SignOut,
-} from '@/components/SignIn';
+import { SignIn, SignOut } from '@/components/SignIn';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,

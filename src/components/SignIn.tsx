@@ -6,10 +6,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-import {
-  lucia,
-  validateRequest,
-} from '@/lib/auth';
+import { lucia, validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
 export const SignIn = async ({ className }: { className?: string }) => {

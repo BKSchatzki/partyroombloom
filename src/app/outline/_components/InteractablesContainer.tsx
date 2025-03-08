@@ -5,11 +5,7 @@ import React, { useMemo } from 'react';
 import { useAtom } from 'jotai';
 import { MousePointerClick } from 'lucide-react';
 
-import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   existingOutlineAtom,

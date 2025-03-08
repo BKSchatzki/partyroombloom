@@ -1,10 +1,7 @@
 import { OAuth2RequestError } from 'arctic';
 import { cookies } from 'next/headers';
 
-import {
-  google,
-  lucia,
-} from '@/lib/auth';
+import { google, lucia } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
 
 export async function GET(request: Request): Promise<Response> {

@@ -2,13 +2,7 @@
 
 import React from 'react';
 
-import {
-  Lock,
-  MousePointerClick,
-  Pyramid,
-  ThumbsDown,
-  ThumbsUp,
-} from 'lucide-react';
+import { Lock, MousePointerClick, Pyramid, ThumbsDown, ThumbsUp } from 'lucide-react';
 
 import {
   Accordion,

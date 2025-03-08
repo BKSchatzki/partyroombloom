@@ -5,10 +5,7 @@ import {
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import {
-  Element,
-  Outline,
-} from '@/lib/types';
+import { Element, Outline } from '@/lib/types';
 
 /* Service for:
   - Getting outline from URL param and its associated user
