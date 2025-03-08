@@ -11,6 +11,7 @@ export const outlineInit: Outline = {
   goal: '',
   comments: '',
   elements: [],
+  conversations: [],
 };
 
 export const userMessageInit: UserMessage = {
@@ -22,7 +23,10 @@ export const userMessageInit: UserMessage = {
   },
 };
 
-export const outlineAtom = atomWithStorage<Outline>('outline', outlineInit);
+export const tutorialStepAtom = atomWithStorage('tutorialStep', 0);
+export const tutorialOutlineAtom = atomWithStorage<Outline>('tutorialOutline', outlineInit);
+export const newOutlineAtom = atomWithStorage<Outline>('newOutline', outlineInit);
+export const existingOutlineAtom = atomWithStorage<Outline>('existingOutline', outlineInit);
 export const outlinesListAtom = atomWithStorage<Outline[]>('outlinesList', outlinesListInit);
 export const conversationAtom = atomWithStorage<Conversation>('conversation', []);
 export const userMessageAtom = atomWithStorage<UserMessage>('userMessage', userMessageInit);

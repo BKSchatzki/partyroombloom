@@ -8,11 +8,31 @@ import { Lock, MousePointerClick, Pyramid, Theater, ThumbsDown, ThumbsUp } from 
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  existingOutlineAtom,
+  newOutlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const SecretsReview = ({ outline, id }: { outline: Outline; id: string }) => {
+import TutorialCardComponent from '../tutorial/_components/TutorialCard';
+
+interface OutlineProps {
+  outline: Outline;
+}
+
+interface OutlineAndIdProps extends OutlineProps {
+  id: string;
+}
+
+interface OutlineIdProps {
+  outlineId: number | null;
+  tutorialMode: boolean;
+  embla: any;
+}
+
+const SecretsReviewComponent: React.FC<OutlineAndIdProps> = ({ outline, id }) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-8 has-[div]:mb-0`)}>
       {outline.elements
@@ -74,7 +94,17 @@ const SecretsReview = ({ outline, id }: { outline: Outline; id: string }) => {
   );
 };
 
-const InteractablesReview = ({ outline, id }: { outline: Outline; id: string }) => {
+const SecretsReview = React.memo(SecretsReviewComponent);
+
+SecretsReview.displayName = 'SecretsReview';
+
+const InteractablesReviewComponent: React.FC<OutlineAndIdProps> = ({
+  outline,
+  id,
+}: {
+  outline: Outline;
+  id: string;
+}) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-10 has-[div]:mb-0`)}>
       {outline.elements
@@ -110,9 +140,13 @@ const InteractablesReview = ({ outline, id }: { outline: Outline; id: string }) 
   );
 };
 
-const LandmarksReview = ({ outline }: { outline: Outline }) => {
+const InteractablesReview = React.memo(InteractablesReviewComponent);
+
+InteractablesReview.displayName = 'InteractablesReview';
+
+const LandmarksReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Outline }) => {
   return (
-    <div className={cn(`flex flex-col gap-6`)}>
+    <div className={cn(`mb-8 flex flex-col gap-6`)}>
       {outline.elements
         .filter((element) => element.type === 'landmark')
         .map((landmark) => (
@@ -146,11 +180,15 @@ const LandmarksReview = ({ outline }: { outline: Outline }) => {
   );
 };
 
-const InfoReview = ({ outline }: { outline: Outline }) => {
+const LandmarksReview = React.memo(LandmarksReviewComponent);
+
+LandmarksReview.displayName = 'LandmarksReview';
+
+const InfoReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Outline }) => {
   return (
     <Card
       className={cn(
-        `mb-6 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
+        `mb-4 mt-4 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
       )}
     >
       <span
@@ -179,15 +217,32 @@ const InfoReview = ({ outline }: { outline: Outline }) => {
   );
 };
 
-const Review = () => {
-  const [outline] = useAtom(outlineAtom);
+const InfoReview = React.memo(InfoReviewComponent);
+
+InfoReview.displayName = 'InfoReview';
+
+const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode, embla }) => {
+  const [tutorialOutline] = useAtom(tutorialOutlineAtom);
+  const [newOutline] = useAtom(newOutlineAtom);
+  const [outline] = useAtom(existingOutlineAtom);
 
   return (
-    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
-      <InfoReview outline={outline}></InfoReview>
-      <LandmarksReview outline={outline}></LandmarksReview>
+    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
+      {tutorialMode && (
+        <TutorialCardComponent
+          builderPage={'review'}
+          embla={embla}
+        />
+      )}
+      <InfoReview
+        outline={tutorialMode ? tutorialOutline : outlineId ? outline : newOutline}
+      ></InfoReview>
+      <LandmarksReview
+        outline={tutorialMode ? tutorialOutline : outlineId ? outline : newOutline}
+      ></LandmarksReview>
     </ScrollArea>
   );
 };
-
+const Review = React.memo(ReviewComponent);
+Review.displayName = 'Review';
 export default Review;

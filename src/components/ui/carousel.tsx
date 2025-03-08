@@ -49,7 +49,8 @@ const Carousel = React.forwardRef<
     {
       ...opts,
       axis: orientation === 'horizontal' ? 'x' : 'y',
-      watchDrag: false,
+      duration: 20,
+      watchDrag: true,
     },
     plugins
   );

@@ -16,7 +16,7 @@ const Overview = async () => {
 
   return (
     <Container>
-      <OutlinesList />
+      <OutlinesList user={user} />
     </Container>
   );
 };

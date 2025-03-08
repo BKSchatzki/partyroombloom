@@ -14,16 +14,18 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  googleId  String    @unique
-  email     String    @unique
-  name      String?
-  picture   String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt @default(now())
-  sessions  Session[]
-  outlines  Outline[]
-  elements  Element[]
+  id            Int            @id @default(autoincrement())
+  googleId      String         @unique
+  email         String         @unique
+  name          String?
+  picture       String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  sessions      Session[]
+  outlines      Outline[]
+  elements      Element[]
+  conversations Conversation[]
+  chatTokens    Int
 
   @@map("PRB_Users")
 }
@@ -39,22 +41,23 @@ model Session {
 }
 
 model Outline {
-  id          Int       @id @default(autoincrement())
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title       String?
-  description String?
-  goal        String?
-  comments    String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt @default(now())
-  elements    Element[]
+  id            Int            @id @default(autoincrement())
+  userId        Int
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String?
+  description   String?
+  goal          String?
+  comments      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  elements      Element[]
+  conversations Conversation[]
 
   @@map("PRB_Outlines")
 }
 
 model Element {
-  id              String    @id
+  id              String    @id @default(uuid())
   outlineId       Int
   outline         Outline   @relation(fields: [outlineId], references: [id], onDelete: Cascade)
   userId          Int
@@ -68,8 +71,21 @@ model Element {
   rollableFailure String?
   userCreatedAt   DateTime  @default(now())
   createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
   children        Element[] @relation("Element")
 
   @@map("PRB_Elements")
+}
+
+model Conversation {
+  id        Int      @id @default(autoincrement())
+  outlineId Int
+  outline   Outline  @relation(fields: [outlineId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  thread    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("PRB_Conversations")
 }

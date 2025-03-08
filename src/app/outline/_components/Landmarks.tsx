@@ -1,38 +1,78 @@
 'use client';
 
-import React from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import DeleteButton from '@/components/DeleteButton';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  existingOutlineAtom,
+  newOutlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from '../../../components/DeleteButton';
+interface LandmarksProps {
+  elementId: string;
+  outlineId: number | null;
+  tutorialMode: boolean;
+}
 
-const Landmarks = ({ elementId }: { elementId: string }) => {
-  const [outline, setOutline] = useAtom(outlineAtom);
-  const thisElement = outline.elements.find((element) => element.id === elementId);
+const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tutorialMode }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    property: string
-  ) => {
+  const thisElement = useMemo(
+    () =>
+      tutorialMode
+        ? tutorialOutline.elements.find((element) => element.id === elementId)
+        : outlineId
+          ? existingOutline.elements.find((element) => element.id === elementId)
+          : newOutline.elements.find((element) => element.id === elementId),
+    [
+      elementId,
+      existingOutline.elements,
+      newOutline.elements,
+      outlineId,
+      tutorialMode,
+      tutorialOutline.elements,
+    ]
+  );
+
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
+      if (!thisElement) return;
+      const updateLandmark = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
+        ),
+      });
+      tutorialMode
+        ? setTutorialOutline(updateLandmark)
+        : outlineId
+          ? setExistingOutline(updateLandmark)
+          : setNewOutline(updateLandmark);
+    },
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]
+  );
+
+  const handleDelete = useCallback(() => {
     if (!thisElement) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.map((element) =>
-        element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
-      ),
-    }));
-  };
-
-  const handleDelete = () => {
-    if (!thisElement) return;
-    setOutline((outline) => {
+    const deleteLandmark = (outline: Outline) => {
       const deleteCascade = (parentId: string): string[] => {
         const children = outline.elements
           .filter((element) => element.parentId === parentId)
@@ -48,8 +88,13 @@ const Landmarks = ({ elementId }: { elementId: string }) => {
         ...outline,
         elements: updatedElements,
       };
-    });
-  };
+    };
+    tutorialMode
+      ? setTutorialOutline(deleteLandmark)
+      : outlineId
+        ? setExistingOutline(deleteLandmark)
+        : setNewOutline(deleteLandmark);
+  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]);
 
   return (
     <Card className={cn(`mb-8 w-full bg-primary/10 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
@@ -92,5 +137,6 @@ const Landmarks = ({ elementId }: { elementId: string }) => {
     </Card>
   );
 };
-
+const Landmarks = React.memo(LandmarksComponent);
+Landmarks.displayName = 'Landmarks';
 export default Landmarks;

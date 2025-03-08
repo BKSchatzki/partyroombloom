@@ -1,58 +1,73 @@
 'use client';
 
-import React from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import { v7 } from 'uuid';
 
+import DeleteButton from '@/components/DeleteButton';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  existingOutlineAtom,
+  newOutlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from '../../../components/DeleteButton';
+interface InteractablesProps {
+  elementId: string;
+  outlineId: number | null;
+  tutorialMode: boolean;
+}
 
-const Interactables = ({ elementId }: { elementId: string }) => {
-  const [outline, setOutline] = useAtom(outlineAtom);
-  const thisElement = outline.elements.find((element) => element.id === elementId);
+const InteractablesComponent: React.FC<InteractablesProps> = ({
+  elementId,
+  outlineId,
+  tutorialMode,
+}) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const handleChange = (
-    id: string,
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    property: string
-  ) => {
-    if (!id) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.map((element) =>
-        element.id === id ? { ...element, [property]: event.target.value } : element
-      ),
-    }));
-  };
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
+  const thisElement = useMemo(
+    () => thisOutline.elements.find((element) => element.id === elementId),
+    [elementId, thisOutline.elements]
+  );
+  const hasElements = useMemo(
+    () => thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0,
+    [thisElement?.id, thisOutline.elements]
+  );
 
-  const handleDelete = (id: string) => {
-    if (!id) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.filter((element) => element.id !== id && element.parentId !== id),
-    }));
-  };
-
-  const handleAddInteractable = () => {
+  const handleAddInteractable = useCallback(() => {
     if (!thisElement) return;
-    setOutline((outline) => ({
+    const addNewInteractable = (outline: Outline): Outline => ({
       ...outline,
       elements: [
         ...outline.elements,
         {
           id: v7(),
           parentId: thisElement.id,
-          type: 'interactable',
+          type: 'interactable' as const,
           name: '',
           description: '',
           rollableSuccess: '',
@@ -60,8 +75,53 @@ const Interactables = ({ elementId }: { elementId: string }) => {
           userCreatedAt: new Date().toISOString(),
         },
       ],
-    }));
-  };
+    });
+    tutorialMode
+      ? setTutorialOutline(addNewInteractable)
+      : outlineId
+        ? setExistingOutline(addNewInteractable)
+        : setNewOutline(addNewInteractable);
+  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]);
+
+  const handleChange = useCallback(
+    (
+      id: string,
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      property: string
+    ) => {
+      if (!id) return;
+      const updateInteractable = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === id ? { ...element, [property]: event.target.value } : element
+        ),
+      });
+      tutorialMode
+        ? setTutorialOutline(updateInteractable)
+        : outlineId
+          ? setExistingOutline(updateInteractable)
+          : setNewOutline(updateInteractable);
+    },
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
+  );
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      if (!id) return;
+      const deleteInteractable = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.filter(
+          (element) => element.id !== id && element.parentId !== id
+        ),
+      });
+      tutorialMode
+        ? setTutorialOutline(deleteInteractable)
+        : outlineId
+          ? setExistingOutline(deleteInteractable)
+          : setNewOutline(deleteInteractable);
+    },
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
+  );
 
   return (
     <Card
@@ -72,7 +132,7 @@ const Interactables = ({ elementId }: { elementId: string }) => {
       <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Landmark'}
       </CardTitle>
-      {outline.elements
+      {thisOutline.elements
         .filter(
           (element) => element.parentId === thisElement?.id && element.type === 'interactable'
         )
@@ -129,7 +189,8 @@ const Interactables = ({ elementId }: { elementId: string }) => {
       <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
         <Card
           className={cn(
-            `mx-auto mb-2 mt-6 w-[99%] rounded-full bg-info/10 shadow-xl shadow-base-300`
+            `mx-auto mb-2 w-[99%] rounded-full bg-info/10 shadow-xl shadow-base-300`,
+            !hasElements && `mt-6`
           )}
         >
           <Button
@@ -137,12 +198,17 @@ const Interactables = ({ elementId }: { elementId: string }) => {
             onClick={handleAddInteractable}
             size={`block`}
           >
-            <Plus className={cn(`size-5`)} /> Interactable
+            <Plus
+              aria-hidden={true}
+              className={cn(`size-5`)}
+            />{' '}
+            Interactable
           </Button>
         </Card>
       </CardFooter>
     </Card>
   );
 };
-
+const Interactables = React.memo(InteractablesComponent);
+InteractablesComponent.displayName = 'InteractablesComponent';
 export default Interactables;

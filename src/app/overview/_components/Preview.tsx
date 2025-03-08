@@ -33,7 +33,10 @@ const SecretsPreview = ({ outline, id }: { outline: Outline; id: string }) => {
                   !secret.name && `italic opacity-30`
                 )}
               >
-                <Lock className={cn(`size-4`)} />
+                <Lock
+                  aria-hidden={true}
+                  className={cn(`size-4`)}
+                />
                 {secret.name || 'Untitled Secret'}
               </span>
               <span className={cn(!secret.description && `italic opacity-30`)}>
@@ -51,7 +54,10 @@ const SecretsPreview = ({ outline, id }: { outline: Outline; id: string }) => {
                   !secret.rollableSuccess && `italic opacity-30`
                 )}
               >
-                <ThumbsUp className={cn(`size-3`)} />
+                <ThumbsUp
+                  aria-hidden={true}
+                  className={cn(`size-3`)}
+                />
                 Success
               </span>
               <span className={cn(!secret.rollableSuccess && `italic opacity-30`)}>
@@ -63,7 +69,10 @@ const SecretsPreview = ({ outline, id }: { outline: Outline; id: string }) => {
                   !secret.rollableFailure && `italic opacity-30`
                 )}
               >
-                <ThumbsDown className={cn(`size-3`)} />
+                <ThumbsDown
+                  aria-hidden={true}
+                  className={cn(`size-3`)}
+                />
                 Failure
               </span>
               <span className={cn(!secret.rollableFailure && `italic opacity-30`)}>
@@ -99,7 +108,10 @@ const InteractablesPreview = ({ outline, id }: { outline: Outline; id: string })
                   !interactable.name && `italic opacity-30`
                 )}
               >
-                <MousePointerClick className={cn(`size-5`)} />
+                <MousePointerClick
+                  aria-hidden={true}
+                  className={cn(`size-5`)}
+                />
                 {interactable.name || 'Untitled Interactable'}
               </span>
               <span className={cn(!interactable.description && `italic opacity-30`)}>
@@ -133,7 +145,12 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
             )}
           >
             <AccordionItem value={`${landmark.id}`}>
-              <AccordionTrigger iconSize={6}>
+              <AccordionTrigger
+                iconSize={6}
+                className={cn(
+                  `rounded-2xl outline-none ring-inset ring-primary focus:ring-2 max-sm:rounded-none [&[data-state=open]]:rounded-b-none`
+                )}
+              >
                 <div className={cn(`flex flex-col gap-2 p-4 hover:brightness-125`)}>
                   <span
                     className={cn(
@@ -141,7 +158,10 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
                       !landmark.name && `italic opacity-30`
                     )}
                   >
-                    <Pyramid className={cn(`size-6`)} />
+                    <Pyramid
+                      aria-hidden={true}
+                      className={cn(`size-6`)}
+                    />
                     {landmark.name || 'Untitled Landmark'}
                   </span>
                   <span className={cn(!landmark.description && `italic opacity-30`)}>

@@ -1,40 +1,74 @@
 'use client';
 
+import React, { useMemo } from 'react';
+
 import { useAtom } from 'jotai';
 import { MousePointerClick } from 'lucide-react';
 
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  existingOutlineAtom,
+  newOutlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
+import TutorialCardComponent from '../tutorial/_components/TutorialCard';
 import Interactables from './Interactables';
 
-const InteractablesContainer = () => {
-  const [outline] = useAtom(outlineAtom);
+interface InteractablesContainerProps {
+  outlineId: number | null;
+  tutorialMode: boolean;
+  embla: any;
+}
 
-  const landmarks = outline.elements.filter((element) => element.type === 'landmark');
+const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = ({
+  outlineId,
+  tutorialMode,
+  embla,
+}) => {
+  const [tutorialOutline] = useAtom(tutorialOutlineAtom);
+  const [newOutline] = useAtom(newOutlineAtom);
+  const [existingOutline] = useAtom(existingOutlineAtom);
+
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
+  const landmarks = useMemo(
+    () => thisOutline.elements.filter((element) => element.type === 'landmark'),
+    [thisOutline.elements]
+  );
 
   return (
-    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 pb-4 sm:px-4`)}>
-      <section
-        className={cn(
-          `mb-8 mt-4 flex items-center justify-center gap-4 text-info max-sm:flex-col sm:gap-2`
-        )}
-      >
-        <h2
+    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
+      {tutorialMode && (
+        <TutorialCardComponent
+          builderPage={'interactables'}
+          embla={embla}
+        />
+      )}
+      {!tutorialMode && (
+        <section
           className={cn(
-            `flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center`
+            `my-8 flex items-center justify-center gap-4 text-info max-sm:flex-col sm:gap-2`
           )}
         >
-          <MousePointerClick className={cn(`size-9`)} />
-          Interactables
-        </h2>
-        <p className={cn(`px-2 text-sm text-base-content/75`)}>
-          Interactables are aspects of landmarks the player characters can interact with. They are
-          revealed only when the player characters interact with their associated landmark.
-        </p>
-      </section>
+          <h2
+            className={cn(
+              `flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center`
+            )}
+          >
+            <MousePointerClick className={cn(`size-9`)} />
+            Interactables
+          </h2>
+          <p className={cn(`px-2 text-sm text-base-content/75`)}>
+            Interactables are aspects of landmarks the player characters can interact with. They are
+            revealed only when the player characters interact with their associated landmark.
+          </p>
+        </section>
+      )}
       {landmarks.length === 0 ? (
         <Card
           className={cn(
@@ -49,13 +83,16 @@ const InteractablesContainer = () => {
       ) : (
         landmarks.map((element) => (
           <Interactables
-            elementId={element.id}
             key={element.id}
+            elementId={element.id}
+            outlineId={outlineId}
+            tutorialMode={tutorialMode}
           />
         ))
       )}
     </ScrollArea>
   );
 };
-
+const InteractablesContainer = React.memo(InteractablesContainerComponent);
+InteractablesContainer.displayName = 'InteractablesContainer';
 export default InteractablesContainer;

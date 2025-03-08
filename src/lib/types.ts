@@ -1,3 +1,15 @@
+// ---------------
+// Outline Types
+// ---------------
+
+export type TutorialStep = {
+  id: number;
+  page: 'info' | 'landmarks' | 'interactables' | 'secrets' | 'review';
+  title: string;
+  content: React.ReactNode;
+  setStateToStep: () => void;
+};
+
 export type Element = {
   id: string;
   parentId: string | null;
@@ -16,7 +28,17 @@ export type Outline = {
   goal?: string;
   comments?: string;
   elements: Array<Element>;
+  conversations: Array<ConversationRel>;
 };
+
+export type ConversationRel = {
+  id: number;
+  createdAt: string;
+};
+
+// ------------------
+// Conversation Types
+// ------------------
 
 type BaseMessage = {
   role: 'system' | 'user' | 'assistant';

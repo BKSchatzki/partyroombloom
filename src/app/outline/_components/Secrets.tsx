@@ -1,61 +1,65 @@
 'use client';
 
-import React from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import { v7 } from 'uuid';
 
+import DeleteButton from '@/components/DeleteButton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  existingOutlineAtom,
+  newOutlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-import DeleteButton from '../../../components/DeleteButton';
 import Rollable from './Rollable';
 
-(' use client');
+interface SecretsProps {
+  elementId: string;
+  outlineId: number | null;
+  tutorialMode: boolean;
+}
 
-const Secrets = ({ elementId }: { elementId: string }) => {
-  const [outline, setOutline] = useAtom(outlineAtom);
-  const thisElement = outline.elements.find((element) => element.id === elementId);
+const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutorialMode }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
 
-  const handleChange = (
-    id: string,
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    property: string
-  ) => {
-    if (!id) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.map((element) =>
-        element.id === id ? { ...element, [property]: event.target.value } : element
-      ),
-    }));
-  };
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
+  const thisElement = useMemo(
+    () => thisOutline.elements.find((element) => element.id === elementId),
+    [elementId, thisOutline.elements]
+  );
+  const hasElements = useMemo(
+    () => thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0,
+    [thisElement?.id, thisOutline.elements]
+  );
 
-  const handleDelete = (id: string) => {
-    if (!id) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.filter((element) => element.id !== id),
-    }));
-  };
-
-  const handleAddSecret = () => {
+  const handleAddSecret = useCallback(() => {
     if (!thisElement) return;
-    setOutline((outline) => ({
+    const addNewSecret = (outline: Outline): Outline => ({
       ...outline,
       elements: [
         ...outline.elements,
         {
           id: v7(),
           parentId: thisElement.id,
-          type: 'secret',
+          type: 'secret' as const,
           name: '',
           description: '',
           rollableSuccess: '',
@@ -63,8 +67,51 @@ const Secrets = ({ elementId }: { elementId: string }) => {
           userCreatedAt: new Date().toISOString(),
         },
       ],
-    }));
-  };
+    });
+    tutorialMode
+      ? setTutorialOutline(addNewSecret)
+      : outlineId
+        ? setExistingOutline(addNewSecret)
+        : setNewOutline(addNewSecret);
+  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]);
+
+  const handleChange = useCallback(
+    (
+      id: string,
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      property: string
+    ) => {
+      if (!id) return;
+      const updateSecret = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === id ? { ...element, [property]: event.target.value } : element
+        ),
+      });
+      tutorialMode
+        ? setTutorialOutline(updateSecret)
+        : outlineId
+          ? setExistingOutline(updateSecret)
+          : setNewOutline(updateSecret);
+    },
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
+  );
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      if (!id) return;
+      const deleteSecret = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.filter((element) => element.id !== id),
+      });
+      tutorialMode
+        ? setTutorialOutline(deleteSecret)
+        : outlineId
+          ? setExistingOutline(deleteSecret)
+          : setNewOutline(deleteSecret);
+    },
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
+  );
 
   return (
     <Card
@@ -75,7 +122,7 @@ const Secrets = ({ elementId }: { elementId: string }) => {
       <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Interactable'}
       </CardTitle>
-      {outline.elements
+      {thisOutline.elements
         .filter((element) => element.parentId === thisElement?.id && element.type === 'secret')
         .map((element, index) => (
           <div key={element.id}>
@@ -124,7 +171,11 @@ const Secrets = ({ elementId }: { elementId: string }) => {
                 value={element.description}
               />
               <div className={cn(`max-sm:mx-[-0.5rem]`)}>
-                <Rollable elementId={element.id} />
+                <Rollable
+                  elementId={element.id}
+                  outlineId={thisOutline.id}
+                  tutorialMode={tutorialMode}
+                />
               </div>
             </CardContent>
             <Separator className={cn(`my-2 mb-0`)} />
@@ -133,7 +184,8 @@ const Secrets = ({ elementId }: { elementId: string }) => {
       <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
         <Card
           className={cn(
-            `mx-auto mb-2 mt-6 w-[99%] rounded-full bg-error/10 shadow-xl shadow-base-300`
+            `mx-auto mb-2 w-[99%] rounded-full bg-error/10 shadow-xl shadow-base-300`,
+            !hasElements && `mt-6`
           )}
         >
           <Button
@@ -141,12 +193,17 @@ const Secrets = ({ elementId }: { elementId: string }) => {
             onClick={handleAddSecret}
             size={`block`}
           >
-            <Plus className={cn(`size-5`)} /> Secret
+            <Plus
+              aria-hidden={true}
+              className={cn(`size-5`)}
+            />{' '}
+            Secret
           </Button>
         </Card>
       </CardFooter>
     </Card>
   );
 };
-
+const Secrets = React.memo(SecretsComponent);
+Secrets.displayName = 'Secrets';
 export default Secrets;

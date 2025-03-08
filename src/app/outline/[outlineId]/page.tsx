@@ -31,7 +31,10 @@ const ViewOutline = async ({ params }: { params: { outlineId: string } }) => {
 
   return (
     <Container>
-      <Builder outlineId={outline.id} />
+      <Builder
+        outlineId={outline.id}
+        user={user}
+      />
     </Container>
   );
 };

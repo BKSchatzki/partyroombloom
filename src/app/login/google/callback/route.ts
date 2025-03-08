@@ -38,7 +38,7 @@ export async function GET(request: Request): Promise<Response> {
       return new Response(null, {
         status: 302,
         headers: {
-          Location: '/',
+          Location: '/overview',
         },
       });
     }
@@ -49,6 +49,7 @@ export async function GET(request: Request): Promise<Response> {
         email: googleUser.email,
         name: googleUser.name,
         picture: googleUser.picture,
+        chatTokens: 50,
       },
     });
 
@@ -62,7 +63,7 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: '/',
+        Location: '/outline/tutorial',
       },
     });
   } catch (e) {

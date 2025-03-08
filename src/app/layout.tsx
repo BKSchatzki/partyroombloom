@@ -1,6 +1,9 @@
 import '@/styles/globals.css';
 
-import type { Metadata } from 'next';
+import type {
+  Metadata,
+  Viewport,
+} from 'next';
 import { Inter } from 'next/font/google';
 
 import Nav from '@/components/Nav';
@@ -12,7 +15,43 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'PartyRoomBloom',
-  description: 'Bloom the Party Room!',
+  description: "The game master's inspirational session planning toolkit",
+  metadataBase: new URL('https://partyroombloom.vercel.app'),
+  applicationName: 'PartyRoomBloom',
+  authors: [{ name: 'Brendan K. Schatzki' }],
+  generator: 'Next.js',
+  keywords: ['tabletop roleplaying games', 'session planning', 'social gaming'],
+  // manifest: '/manifest.json',
+  openGraph: {
+    type: 'website',
+    title: "PartyRoomBloom - The game master's inspirational session planning toolkit",
+    description:
+      'PartyRoomBloom scaffolds your exploration scenes to help you plan engaging game nights better than ever',
+    siteName: 'PartyRoomBloom',
+    // images: [
+    //   {
+    //     url: '/og-image.jpg',
+    //     width: 1200,
+    //     height: 630,
+    //     alt: 'PartyRoomBloom Preview',
+    //   },
+    // ],
+  },
+  // twitter: {
+  //   card: 'summary_large_image',
+  //   creator: '@yourhandle',
+  //   images: '/twitter-image.jpg',
+  // },
+  // robots: {
+  //   index: true,
+  //   follow: true,
+  // },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#1db88e',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default async function RootLayout({
@@ -30,7 +69,7 @@ export default async function RootLayout({
             <Nav user={user} />
             <main
               className={cn(
-                `no-scrollbar bg-base-200 flex flex-col items-center justify-start overflow-y-scroll`
+                `no-scrollbar bg-flowers flex flex-col items-center justify-start overflow-y-scroll`
               )}
             >
               {children}

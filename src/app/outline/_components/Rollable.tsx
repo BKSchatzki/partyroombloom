@@ -1,33 +1,65 @@
 'use client';
 
-import React from 'react';
+import React, {
+  useCallback,
+  useMemo,
+} from 'react';
 
 import { useAtom } from 'jotai';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { outlineAtom } from '@/lib/atoms';
+import {
+  existingOutlineAtom,
+  newOutlineAtom,
+  tutorialOutlineAtom,
+} from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const Rollable = ({ elementId }: { elementId: string }) => {
-  const [outline, setOutline] = useAtom(outlineAtom);
-  const thisElement = outline.elements.find((element) => element.id === elementId);
+interface RollableProps {
+  elementId: string;
+  outlineId: number | null;
+  tutorialMode: boolean;
+}
 
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>, property: string) => {
-    if (!thisElement) return;
-    setOutline((outline) => ({
-      ...outline,
-      elements: outline.elements.map((element) =>
-        element.id === thisElement.id
-          ? {
-              ...element,
-              [property]: event.target.value,
-            }
-          : element
-      ),
-    }));
-  };
+const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tutorialMode }) => {
+  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
+  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
+  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
+
+  const thisOutline = useMemo(
+    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
+    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+  );
+  const thisElement = useMemo(
+    () => thisOutline.elements.find((element) => element.id === elementId),
+    [elementId, thisOutline.elements]
+  );
+
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>, property: string) => {
+      if (!thisElement) return;
+      const updateRollable = (outline: Outline) => ({
+        ...outline,
+        elements: outline.elements.map((element) =>
+          element.id === thisElement.id
+            ? {
+                ...element,
+                [property]: event.target.value,
+              }
+            : element
+        ),
+      });
+      tutorialMode
+        ? setTutorialOutline(updateRollable)
+        : outlineId
+          ? setExistingOutline(updateRollable)
+          : setNewOutline(updateRollable);
+    },
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]
+  );
 
   return (
     <Card className={cn(`w-full bg-warning/10 shadow-lg shadow-base-200 max-sm:rounded-none`)}>
@@ -62,5 +94,6 @@ const Rollable = ({ elementId }: { elementId: string }) => {
     </Card>
   );
 };
-
+const Rollable = React.memo(RollableComponent);
+Rollable.displayName = 'Rollable';
 export default Rollable;
