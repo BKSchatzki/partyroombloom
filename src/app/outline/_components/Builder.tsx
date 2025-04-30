@@ -4,10 +4,7 @@ import React, { useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { User } from 'lucia';
-import {
-  ChevronUp,
-  Save,
-} from 'lucide-react';
+import { ChevronUp, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import GenericError from '@/components/GenericError';
@@ -29,6 +26,7 @@ import {
   outlinesListAtom,
   tutorialOutlineAtom,
 } from '@/lib/atoms';
+import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
@@ -89,6 +87,17 @@ const BuilderComponent: React.FC<BuilderProps> = ({
       return data;
     },
   });
+
+  const handleInfoChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    property: string
+  ) => {
+    const updateInfo = (outline: Outline) => ({
+      ...outline,
+      [property]: event.target.value,
+    });
+    setThisOutline(updateInfo);
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -160,7 +169,11 @@ const BuilderComponent: React.FC<BuilderProps> = ({
                 />
               )}
               <Info
-                outlineId={outlineId}
+                title={thisOutline.title}
+                description={thisOutline.description}
+                goal={thisOutline.goal}
+                comments={thisOutline.comments}
+                handleChange={handleInfoChange}
                 tutorialMode={tutorialMode}
               />
             </ScrollArea>
