@@ -7,15 +7,11 @@ import { Lock } from 'lucide-react';
 
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
+import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 
 import TutorialCardComponent from '../tutorial/_components/TutorialCard';
-import Secrets from './Secrets';
+import Secrets from './Secret';
 
 interface SecretsContainerProps {
   outlineId: number | null;

@@ -1,9 +1,6 @@
 'use client';
 
-import React, {
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
@@ -16,23 +13,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
+import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 import Rollable from './Rollable';
 
-interface SecretsProps {
+interface SecretProps {
   elementId: string;
   outlineId: number | null;
   tutorialMode: boolean;
 }
 
-const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutorialMode }) => {
+const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorialMode }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
@@ -204,6 +197,6 @@ const SecretsComponent: React.FC<SecretsProps> = ({ elementId, outlineId, tutori
     </Card>
   );
 };
-const Secrets = React.memo(SecretsComponent);
-Secrets.displayName = 'Secrets';
-export default Secrets;
+const Secret = React.memo(SecretComponent);
+Secret.displayName = 'Secret';
+export default Secret;

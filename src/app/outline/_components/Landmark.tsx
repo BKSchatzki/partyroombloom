@@ -1,36 +1,25 @@
 'use client';
 
-import React, {
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 
 import DeleteButton from '@/components/DeleteButton';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
+import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-interface LandmarksProps {
+interface LandmarkProps {
   elementId: string;
   outlineId: number | null;
   tutorialMode: boolean;
 }
 
-const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tutorialMode }) => {
+const LandmarkComponent: React.FC<LandmarkProps> = ({ elementId, outlineId, tutorialMode }) => {
   const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
   const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
   const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
@@ -137,6 +126,6 @@ const LandmarksComponent: React.FC<LandmarksProps> = ({ elementId, outlineId, tu
     </Card>
   );
 };
-const Landmarks = React.memo(LandmarksComponent);
-Landmarks.displayName = 'Landmarks';
-export default Landmarks;
+const Landmark = React.memo(LandmarkComponent);
+Landmark.displayName = 'Landmark';
+export default Landmark;

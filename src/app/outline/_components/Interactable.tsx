@@ -1,9 +1,6 @@
 'use client';
 
-import React, {
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
@@ -11,32 +8,22 @@ import { v7 } from 'uuid';
 
 import DeleteButton from '@/components/DeleteButton';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
+import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-interface InteractablesProps {
+interface InteractableProps {
   elementId: string;
   outlineId: number | null;
   tutorialMode: boolean;
 }
 
-const InteractablesComponent: React.FC<InteractablesProps> = ({
+const InteractableComponent: React.FC<InteractableProps> = ({
   elementId,
   outlineId,
   tutorialMode,
@@ -209,6 +196,6 @@ const InteractablesComponent: React.FC<InteractablesProps> = ({
     </Card>
   );
 };
-const Interactables = React.memo(InteractablesComponent);
-InteractablesComponent.displayName = 'InteractablesComponent';
-export default Interactables;
+const Interactable = React.memo(InteractableComponent);
+InteractableComponent.displayName = 'InteractableComponent';
+export default Interactable;

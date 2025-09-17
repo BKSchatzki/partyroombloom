@@ -1,30 +1,20 @@
 'use client';
 
-import React, {
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
-import {
-  Plus,
-  Pyramid,
-} from 'lucide-react';
+import { Plus, Pyramid } from 'lucide-react';
 import { v7 } from 'uuid';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
+import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 import TutorialCardComponent from '../tutorial/_components/TutorialCard';
-import Landmarks from './Landmarks';
+import Landmarks from './Landmark';
 
 interface LandmarksProps {
   outlineId: number | null;
