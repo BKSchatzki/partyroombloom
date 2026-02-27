@@ -34,7 +34,11 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
     [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
   );
   const thisElement = useMemo(
-    () => thisOutline.elements.find((element) => element.id === elementId),
+    () =>
+      thisOutline.elements
+        .flatMap((landmark) => landmark.children)
+        .flatMap((interactable) => interactable.children)
+        .find((element) => element.id === elementId),
     [elementId, thisOutline.elements]
   );
 
@@ -43,14 +47,20 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
       if (!thisElement) return;
       const updateRollable = (outline: Outline) => ({
         ...outline,
-        elements: outline.elements.map((element) =>
-          element.id === thisElement.id
-            ? {
-                ...element,
-                [property]: event.target.value,
-              }
-            : element
-        ),
+        elements: outline.elements.map((landmark) => ({
+          ...landmark,
+          children: landmark.children.map((interactable) => ({
+            ...interactable,
+            children: interactable.children.map((secret) =>
+              secret.id === thisElement.id
+                ? {
+                    ...secret,
+                    [property]: event.target.value,
+                  }
+                : secret
+            ),
+          })),
+        })),
       });
       tutorialMode
         ? setTutorialOutline(updateRollable)

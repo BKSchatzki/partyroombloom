@@ -4,7 +4,9 @@ import {
 } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
+import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
 import { prisma } from '@/lib/prisma';
+import { OutlineTreeSchema } from '@/lib/schemas';
 import { Element, Outline } from '@/lib/types';
 
 /* Service for:
@@ -46,16 +48,18 @@ export const GET = async (req: NextRequest) => {
       description: outline.description ?? '',
       goal: outline.goal ?? '',
       comments: outline.comments ?? '',
-      elements: outline.elements.map((element) => ({
-        id: element.id,
-        parentId: element.parentId,
-        type: element.type,
-        name: element.name ?? '',
-        description: element.description ?? '',
-        rollableSuccess: element.rollableSuccess ?? '',
-        rollableFailure: element.rollableFailure ?? '',
-        userCreatedAt: element.userCreatedAt.toISOString(),
-      })),
+      elements: buildTreeFromFlat(
+        outline.elements.map((element) => ({
+          id: element.id,
+          parentId: element.parentId,
+          type: element.type as Element['type'],
+          name: element.name ?? '',
+          description: element.description ?? '',
+          rollableSuccess: element.rollableSuccess ?? '',
+          rollableFailure: element.rollableFailure ?? '',
+          userCreatedAt: element.userCreatedAt.toISOString(),
+        }))
+      ),
       conversations: outline.conversations.map((conversation) => ({
         id: conversation.id,
         createdAt: conversation.createdAt.toISOString(),
@@ -82,7 +86,14 @@ export const POST = async (req: NextRequest) => {
   try {
     // Insert outline info from body into table and associate with user
     const body = await req.json();
-    const outline: Outline = body.payload;
+    const parsedOutline = OutlineTreeSchema.safeParse(body.payload);
+    if (!parsedOutline.success) {
+      return NextResponse.json(
+        { message: 'Invalid outline payload', errors: parsedOutline.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const outline: Outline = parsedOutline.data;
     const createdOutline = await prisma.outline.create({
       data: {
         userId: user.id,
@@ -92,35 +103,24 @@ export const POST = async (req: NextRequest) => {
         comments: outline.comments ?? '',
       },
     });
-    // Declare three element types from body and filter each into own variables
-    const landmarks = outline.elements.filter((element) => element.type === 'landmark');
-    const interactables = outline.elements.filter((element) => element.type === 'interactable');
-    const secrets = outline.elements.filter((element) => element.type === 'secret');
-    // Declare helper for creating element entries by asynchronously mapping over element arrays
-    const createElements = async (elements: Element[]) => {
-      const elementPromises = elements.map((element: Element) =>
-        prisma.element.create({
-          data: {
-            id: element.id,
-            outlineId: createdOutline.id,
-            userId: user.id,
-            parentId: element.parentId,
-            type: element.type,
-            name: element.name ?? '',
-            description: element.description ?? '',
-            rollableSuccess: element.rollableSuccess ?? '',
-            rollableFailure: element.rollableFailure ?? '',
-            userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
-          },
-        })
-      );
-      // Ensure map runs asynchronously, resolving only if every item is successfully resolved
-      return Promise.all(elementPromises);
-    };
-    // Invoke helper in order of element hierarchy to ensure relations are inserted correctly
-    await createElements(landmarks);
-    await createElements(interactables);
-    await createElements(secrets);
+    const flattenedElements = flattenTreeForPersistence(outline.elements);
+
+    for (const element of flattenedElements) {
+      await prisma.element.create({
+        data: {
+          id: element.id,
+          outlineId: createdOutline.id,
+          userId: user.id,
+          parentId: element.parentId,
+          type: element.type,
+          name: element.name ?? '',
+          description: element.description ?? '',
+          rollableSuccess: element.rollableSuccess ?? '',
+          rollableFailure: element.rollableFailure ?? '',
+          userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
+        },
+      });
+    }
     // Return id of created outline
     return NextResponse.json({ id: createdOutline.id }, { status: 201 });
   } catch (error) {

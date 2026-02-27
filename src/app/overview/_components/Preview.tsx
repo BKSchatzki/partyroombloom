@@ -14,12 +14,10 @@ import { Card } from '@/components/ui/card';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
-const SecretsPreview = ({ outline, id }: { outline: Outline; id: string }) => {
+const SecretsPreview = ({ secrets }: { secrets: Outline['elements'][number]['children'][number]['children'] }) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-8 has-[div]:mb-0`)}>
-      {outline.elements
-        .filter((element) => element.parentId === id && element.type === 'secret')
-        .map((secret) => (
+      {secrets.map((secret) => (
           <Card
             key={secret.id}
             className={cn(
@@ -85,16 +83,18 @@ const SecretsPreview = ({ outline, id }: { outline: Outline; id: string }) => {
   );
 };
 
-const InteractablesPreview = ({ outline, id }: { outline: Outline; id: string }) => {
+const InteractablesPreview = ({
+  interactables,
+}: {
+  interactables: Outline['elements'][number]['children'];
+}) => {
   return (
     <div
       className={cn(
         `-mb-7 flex flex-col gap-10 border-t-2 border-base-300 p-4 pb-0 pt-7 has-[div]:mb-0`
       )}
     >
-      {outline.elements
-        .filter((element) => element.parentId === id && element.type === 'interactable')
-        .map((interactable) => (
+      {interactables.map((interactable) => (
           <Card
             key={interactable.id}
             className={cn(
@@ -118,10 +118,7 @@ const InteractablesPreview = ({ outline, id }: { outline: Outline; id: string })
                 {interactable.description || 'What is noticed when inspected more closely.'}
               </span>
             </div>
-            <SecretsPreview
-              outline={outline}
-              id={interactable.id}
-            />
+            <SecretsPreview secrets={interactable.children} />
           </Card>
         ))}
     </div>
@@ -135,9 +132,7 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
       collapsible={true}
       className={cn(`flex flex-col gap-4 border-t-2 border-base-300/30 pt-4 sm:px-4`)}
     >
-      {outline.elements
-        .filter((element) => element.type === 'landmark')
-        .map((landmark) => (
+      {outline.elements.map((landmark) => (
           <Card
             key={landmark.id}
             className={cn(
@@ -170,10 +165,7 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <InteractablesPreview
-                  outline={outline}
-                  id={landmark.id}
-                />
+                <InteractablesPreview interactables={landmark.children} />
               </AccordionContent>
             </AccordionItem>
           </Card>

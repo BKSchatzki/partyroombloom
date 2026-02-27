@@ -33,15 +33,8 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
     [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
   );
 
-  const sortedInteractables = useMemo(
-    () =>
-      thisOutline.elements
-        .filter((element) => element.type === 'interactable')
-        .sort(
-          (a, b) =>
-            thisOutline.elements.findIndex((element) => element.id === a.parentId) -
-            thisOutline.elements.findIndex((element) => element.id === b.parentId)
-        ),
+  const interactables = useMemo(
+    () => thisOutline.elements.flatMap((landmark) => landmark.children),
     [thisOutline.elements]
   );
 
@@ -76,7 +69,7 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
           </p>
         </section>
       )}
-      {sortedInteractables.length === 0 ? (
+      {interactables.length === 0 ? (
         <Card
           className={cn(
             `mb-8 flex h-[7.5rem] w-full flex-col items-center justify-center bg-error/5 shadow-lg shadow-base-300`
@@ -88,7 +81,7 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
           </CardDescription>
         </Card>
       ) : (
-        sortedInteractables.map((element) => (
+        interactables.map((element) => (
           <Secrets
             key={element.id}
             elementId={element.id}

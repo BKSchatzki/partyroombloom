@@ -22,22 +22,18 @@ interface OutlineProps {
   outline: Outline;
 }
 
-interface OutlineAndIdProps extends OutlineProps {
-  id: string;
-}
-
 interface OutlineIdProps {
   outlineId: number | null;
   tutorialMode: boolean;
   embla: any;
 }
 
-const SecretsReviewComponent: React.FC<OutlineAndIdProps> = ({ outline, id }) => {
+const SecretsReviewComponent: React.FC<{ secrets: Outline['elements'][number]['children'][number]['children'] }> = ({
+  secrets,
+}) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-8 has-[div]:mb-0`)}>
-      {outline.elements
-        .filter((element) => element.parentId === id && element.type === 'secret')
-        .map((secret) => (
+      {secrets.map((secret) => (
           <Card
             key={secret.id}
             className={cn(
@@ -98,18 +94,12 @@ const SecretsReview = React.memo(SecretsReviewComponent);
 
 SecretsReview.displayName = 'SecretsReview';
 
-const InteractablesReviewComponent: React.FC<OutlineAndIdProps> = ({
-  outline,
-  id,
-}: {
-  outline: Outline;
-  id: string;
+const InteractablesReviewComponent: React.FC<{ interactables: Outline['elements'][number]['children'] }> = ({
+  interactables,
 }) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-10 has-[div]:mb-0`)}>
-      {outline.elements
-        .filter((element) => element.parentId === id && element.type === 'interactable')
-        .map((interactable) => (
+      {interactables.map((interactable) => (
           <Card
             key={interactable.id}
             className={cn(
@@ -130,10 +120,7 @@ const InteractablesReviewComponent: React.FC<OutlineAndIdProps> = ({
                 {interactable.description || 'What is noticed when inspected more closely.'}
               </span>
             </div>
-            <SecretsReview
-              outline={outline}
-              id={interactable.id}
-            />
+            <SecretsReview secrets={interactable.children} />
           </Card>
         ))}
     </div>
@@ -147,9 +134,7 @@ InteractablesReview.displayName = 'InteractablesReview';
 const LandmarksReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Outline }) => {
   return (
     <div className={cn(`mb-8 flex flex-col gap-6`)}>
-      {outline.elements
-        .filter((element) => element.type === 'landmark')
-        .map((landmark) => (
+      {outline.elements.map((landmark) => (
           <Card
             className={cn(
               `relative flex flex-col gap-7 bg-primary/10 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
@@ -170,10 +155,7 @@ const LandmarksReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline
                 {landmark.description || 'The first-glance impression of the landmark.'}
               </span>
             </div>
-            <InteractablesReview
-              outline={outline}
-              id={landmark.id}
-            />
+            <InteractablesReview interactables={landmark.children} />
           </Card>
         ))}
     </div>

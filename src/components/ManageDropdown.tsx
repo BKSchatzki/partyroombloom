@@ -15,7 +15,6 @@ import {
   FileText,
   Upload,
 } from 'lucide-react';
-import { v7 } from 'uuid';
 
 import {
   DropdownMenu,
@@ -25,10 +24,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
-  Element,
+  InteractableNode,
+  LandmarkNode,
   Outline,
+  SecretNode,
 } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { OutlineTreeSchema } from '@/lib/schemas';
 
 interface ManageDropdownProps {
   outline: Outline;
@@ -79,22 +81,53 @@ const ManageDropdownComponent: React.FC<ManageDropdownProps> = ({
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          const data = JSON.parse(e?.target?.result as string);
-          const idMap = new Map<string, string>();
-          data.elements.forEach((element: Element) => {
-            idMap.set(element.id, v7());
+          const rawData = JSON.parse(e?.target?.result as string);
+          const parsedOutline = OutlineTreeSchema.safeParse(rawData);
+          if (!parsedOutline.success) {
+            console.error('Invalid JSON outline payload:', parsedOutline.error.flatten());
+            return;
+          }
+
+          const remapSecret = (secret: SecretNode, parentId: string): SecretNode => ({
+            ...secret,
+            id: crypto.randomUUID(),
+            parentId,
+            children: [],
           });
-          data.elements = data.elements.map((element: Element) => ({
-            ...element,
-            id: idMap.get(element.id),
-            parentId: element.parentId ? (idMap.get(element.parentId) ?? null) : null,
-          }));
-          data.id = null;
-          data.conversations = [];
-          data.elements.sort((a: Element, b: Element) =>
-            a.userCreatedAt.toString().localeCompare(b.userCreatedAt.toString())
-          );
-          setOutline(data);
+
+          const remapInteractable = (
+            interactable: InteractableNode,
+            parentId: string
+          ): InteractableNode => {
+            const interactableId = crypto.randomUUID();
+            return {
+              ...interactable,
+              id: interactableId,
+              parentId,
+              children: interactable.children.map((secret) => remapSecret(secret, interactableId)),
+            };
+          };
+
+          const remapLandmark = (landmark: LandmarkNode): LandmarkNode => {
+            const landmarkId = crypto.randomUUID();
+            return {
+              ...landmark,
+              id: landmarkId,
+              parentId: null,
+              children: landmark.children.map((interactable) =>
+                remapInteractable(interactable, landmarkId)
+              ),
+            };
+          };
+
+          const normalizedOutline: Outline = {
+            ...parsedOutline.data,
+            id: null,
+            conversations: [],
+            elements: parsedOutline.data.elements.map((landmark) => remapLandmark(landmark)),
+          };
+
+          setOutline(normalizedOutline);
         } catch (error) {
           console.error('Error parsing JSON:', error);
         }

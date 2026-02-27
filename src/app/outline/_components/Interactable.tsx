@@ -4,7 +4,6 @@ import React, { useCallback, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
-import { v7 } from 'uuid';
 
 import DeleteButton from '@/components/DeleteButton';
 import { Button } from '@/components/ui/button';
@@ -40,28 +39,33 @@ const InteractableComponent: React.FC<InteractableProps> = ({
     () => thisOutline.elements.find((element) => element.id === elementId),
     [elementId, thisOutline.elements]
   );
-  const hasElements = useMemo(
-    () => thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0,
-    [thisElement?.id, thisOutline.elements]
-  );
+  const hasElements = useMemo(() => (thisElement?.children.length ?? 0) > 0, [thisElement?.children]);
 
   const handleAddInteractable = useCallback(() => {
     if (!thisElement) return;
     const addNewInteractable = (outline: Outline): Outline => ({
       ...outline,
-      elements: [
-        ...outline.elements,
-        {
-          id: v7(),
-          parentId: thisElement.id,
-          type: 'interactable' as const,
-          name: '',
-          description: '',
-          rollableSuccess: '',
-          rollableFailure: '',
-          userCreatedAt: new Date().toISOString(),
-        },
-      ],
+      elements: outline.elements.map((element) =>
+        element.id === thisElement.id
+          ? {
+              ...element,
+              children: [
+                ...element.children,
+                {
+                  id: crypto.randomUUID(),
+                  parentId: thisElement.id,
+                  type: 'interactable' as const,
+                  name: '',
+                  description: '',
+                  rollableSuccess: '',
+                  rollableFailure: '',
+                  userCreatedAt: new Date().toISOString(),
+                  children: [],
+                },
+              ],
+            }
+          : element
+      ),
     });
     tutorialMode
       ? setTutorialOutline(addNewInteractable)
@@ -79,8 +83,17 @@ const InteractableComponent: React.FC<InteractableProps> = ({
       if (!id) return;
       const updateInteractable = (outline: Outline) => ({
         ...outline,
-        elements: outline.elements.map((element) =>
-          element.id === id ? { ...element, [property]: event.target.value } : element
+        elements: outline.elements.map((landmark) =>
+          landmark.id === thisElement?.id
+            ? {
+                ...landmark,
+                children: landmark.children.map((interactable) =>
+                  interactable.id === id
+                    ? { ...interactable, [property]: event.target.value }
+                    : interactable
+                ),
+              }
+            : landmark
         ),
       });
       tutorialMode
@@ -89,7 +102,7 @@ const InteractableComponent: React.FC<InteractableProps> = ({
           ? setExistingOutline(updateInteractable)
           : setNewOutline(updateInteractable);
     },
-    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement?.id, tutorialMode]
   );
 
   const handleDelete = useCallback(
@@ -97,8 +110,13 @@ const InteractableComponent: React.FC<InteractableProps> = ({
       if (!id) return;
       const deleteInteractable = (outline: Outline) => ({
         ...outline,
-        elements: outline.elements.filter(
-          (element) => element.id !== id && element.parentId !== id
+        elements: outline.elements.map((landmark) =>
+          landmark.id === thisElement?.id
+            ? {
+                ...landmark,
+                children: landmark.children.filter((interactable) => interactable.id !== id),
+              }
+            : landmark
         ),
       });
       tutorialMode
@@ -107,7 +125,7 @@ const InteractableComponent: React.FC<InteractableProps> = ({
           ? setExistingOutline(deleteInteractable)
           : setNewOutline(deleteInteractable);
     },
-    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
+    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement?.id, tutorialMode]
   );
 
   return (
@@ -119,11 +137,7 @@ const InteractableComponent: React.FC<InteractableProps> = ({
       <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Landmark'}
       </CardTitle>
-      {thisOutline.elements
-        .filter(
-          (element) => element.parentId === thisElement?.id && element.type === 'interactable'
-        )
-        .map((element, index) => (
+      {thisElement?.children.map((element, index) => (
           <div key={element.id}>
             <CardHeader className={cn(`relative pt-7`)}>
               <DeleteButton

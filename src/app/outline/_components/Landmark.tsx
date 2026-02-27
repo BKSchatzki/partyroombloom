@@ -61,23 +61,10 @@ const LandmarkComponent: React.FC<LandmarkProps> = ({ elementId, outlineId, tuto
 
   const handleDelete = useCallback(() => {
     if (!thisElement) return;
-    const deleteLandmark = (outline: Outline) => {
-      const deleteCascade = (parentId: string): string[] => {
-        const children = outline.elements
-          .filter((element) => element.parentId === parentId)
-          .map((element) => element.id);
-        const descendants = children.flatMap((childId) => deleteCascade(childId));
-        return [...children, ...descendants];
-      };
-      const elementsToDelete = deleteCascade(thisElement.id);
-      const updatedElements = outline.elements.filter(
-        (element) => element.id !== thisElement.id && !elementsToDelete.includes(element.id)
-      );
-      return {
-        ...outline,
-        elements: updatedElements,
-      };
-    };
+    const deleteLandmark = (outline: Outline) => ({
+      ...outline,
+      elements: outline.elements.filter((element) => element.id !== thisElement.id),
+    });
     tutorialMode
       ? setTutorialOutline(deleteLandmark)
       : outlineId

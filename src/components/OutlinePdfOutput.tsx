@@ -55,9 +55,7 @@ const OutlinePdfOutputComponent: React.FC<OutputProps> = ({ outline }) => {
           </View>
         </View>
         <View style={tw(`flex flex-col gap-1`)}>
-          {outline.elements
-            .filter((element) => element.type === 'landmark')
-            .map((landmark) => (
+          {outline.elements.map((landmark) => (
               <View
                 key={landmark.id}
                 wrap={false}
@@ -71,12 +69,7 @@ const OutlinePdfOutputComponent: React.FC<OutputProps> = ({ outline }) => {
                   {landmark.description}
                 </Text>
                 <View style={tw(`flex flex-col gap-1 pl-4`)}>
-                  {outline.elements
-                    .filter(
-                      (element) =>
-                        element.parentId === landmark.id && element.type === 'interactable'
-                    )
-                    .map((interactable) => (
+                  {landmark.children.map((interactable) => (
                       <React.Fragment key={interactable.id}>
                         <Text style={tw(`py-1 text-neutral-900`)}>
                           <Text style={tw(`text-base font-bold leading-4 text-cyan-800`)}>
@@ -86,12 +79,7 @@ const OutlinePdfOutputComponent: React.FC<OutputProps> = ({ outline }) => {
                           {interactable.description}
                         </Text>
                         <View style={tw(`flex flex-col gap-1 pl-4`)}>
-                          {outline.elements
-                            .filter(
-                              (element) =>
-                                element.parentId === interactable.id && element.type === 'secret'
-                            )
-                            .map((secret) => (
+                          {interactable.children.map((secret) => (
                               <React.Fragment key={secret.id}>
                                 <Text style={tw(`py-1 text-neutral-800`)}>
                                   <Text style={tw(`text-sm font-bold leading-4 text-red-800`)}>

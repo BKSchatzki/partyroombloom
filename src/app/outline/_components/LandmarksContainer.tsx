@@ -4,7 +4,6 @@ import React, { useCallback, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus, Pyramid } from 'lucide-react';
-import { v7 } from 'uuid';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -42,7 +41,7 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
       elements: [
         ...outline.elements,
         {
-          id: v7(),
+          id: crypto.randomUUID(),
           parentId: null,
           type: 'landmark' as const,
           name: '',
@@ -50,6 +49,7 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
           rollableSuccess: '',
           rollableFailure: '',
           userCreatedAt: new Date().toISOString(),
+          children: [],
         },
       ],
     });
@@ -92,16 +92,14 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
           </p>
         </section>
       )}
-      {thisOutline.elements
-        .filter((element) => element.type === 'landmark')
-        .map((element) => (
-          <Landmarks
-            key={element.id}
-            elementId={element.id}
-            outlineId={outlineId}
-            tutorialMode={tutorialMode}
-          />
-        ))}
+      {thisOutline.elements.map((element) => (
+        <Landmarks
+          key={element.id}
+          elementId={element.id}
+          outlineId={outlineId}
+          tutorialMode={tutorialMode}
+        />
+      ))}
       <Card
         className={cn(
           `mx-auto mb-4 w-[99%] rounded-full bg-primary/10 shadow-xl shadow-base-300 max-sm:w-11/12`

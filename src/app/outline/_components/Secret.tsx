@@ -4,7 +4,6 @@ import React, { useCallback, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
-import { v7 } from 'uuid';
 
 import DeleteButton from '@/components/DeleteButton';
 import { Button } from '@/components/ui/button';
@@ -35,31 +34,42 @@ const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorial
     [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
   );
   const thisElement = useMemo(
-    () => thisOutline.elements.find((element) => element.id === elementId),
+    () =>
+      thisOutline.elements
+        .flatMap((landmark) => landmark.children)
+        .find((element) => element.id === elementId),
     [elementId, thisOutline.elements]
   );
-  const hasElements = useMemo(
-    () => thisOutline.elements.filter((element) => element.parentId === thisElement?.id).length > 0,
-    [thisElement?.id, thisOutline.elements]
-  );
+  const hasElements = useMemo(() => (thisElement?.children.length ?? 0) > 0, [thisElement?.children]);
 
   const handleAddSecret = useCallback(() => {
     if (!thisElement) return;
     const addNewSecret = (outline: Outline): Outline => ({
       ...outline,
-      elements: [
-        ...outline.elements,
-        {
-          id: v7(),
-          parentId: thisElement.id,
-          type: 'secret' as const,
-          name: '',
-          description: '',
-          rollableSuccess: '',
-          rollableFailure: '',
-          userCreatedAt: new Date().toISOString(),
-        },
-      ],
+      elements: outline.elements.map((landmark) => ({
+        ...landmark,
+        children: landmark.children.map((interactable) =>
+          interactable.id === thisElement.id
+            ? {
+                ...interactable,
+                children: [
+                  ...interactable.children,
+                  {
+                    id: crypto.randomUUID(),
+                    parentId: thisElement.id,
+                    type: 'secret' as const,
+                    name: '',
+                    description: '',
+                    rollableSuccess: '',
+                    rollableFailure: '',
+                    userCreatedAt: new Date().toISOString(),
+                    children: [],
+                  },
+                ],
+              }
+            : interactable
+        ),
+      })),
     });
     tutorialMode
       ? setTutorialOutline(addNewSecret)
@@ -77,9 +87,15 @@ const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorial
       if (!id) return;
       const updateSecret = (outline: Outline) => ({
         ...outline,
-        elements: outline.elements.map((element) =>
-          element.id === id ? { ...element, [property]: event.target.value } : element
-        ),
+        elements: outline.elements.map((landmark) => ({
+          ...landmark,
+          children: landmark.children.map((interactable) => ({
+            ...interactable,
+            children: interactable.children.map((secret) =>
+              secret.id === id ? { ...secret, [property]: event.target.value } : secret
+            ),
+          })),
+        })),
       });
       tutorialMode
         ? setTutorialOutline(updateSecret)
@@ -95,7 +111,13 @@ const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorial
       if (!id) return;
       const deleteSecret = (outline: Outline) => ({
         ...outline,
-        elements: outline.elements.filter((element) => element.id !== id),
+        elements: outline.elements.map((landmark) => ({
+          ...landmark,
+          children: landmark.children.map((interactable) => ({
+            ...interactable,
+            children: interactable.children.filter((secret) => secret.id !== id),
+          })),
+        })),
       });
       tutorialMode
         ? setTutorialOutline(deleteSecret)
@@ -115,9 +137,7 @@ const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorial
       <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Interactable'}
       </CardTitle>
-      {thisOutline.elements
-        .filter((element) => element.parentId === thisElement?.id && element.type === 'secret')
-        .map((element, index) => (
+      {thisElement?.children.map((element, index) => (
           <div key={element.id}>
             <CardHeader className={cn(`relative pt-7`)}>
               <DeleteButton

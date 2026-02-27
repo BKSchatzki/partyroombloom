@@ -33,7 +33,7 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
     [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
   );
   const landmarks = useMemo(
-    () => thisOutline.elements.filter((element) => element.type === 'landmark'),
+    () => thisOutline.elements,
     [thisOutline.elements]
   );
 

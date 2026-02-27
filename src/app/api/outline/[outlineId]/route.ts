@@ -4,7 +4,9 @@ import {
 } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
+import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
 import { prisma } from '@/lib/prisma';
+import { OutlineTreeSchema } from '@/lib/schemas';
 import { Element, Outline } from '@/lib/types';
 
 /* Service for:
@@ -47,16 +49,18 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
       description: outline.description ?? '',
       goal: outline.goal ?? '',
       comments: outline.comments ?? '',
-      elements: outline.elements.map((element) => ({
-        id: element.id,
-        parentId: element.parentId,
-        type: element.type as 'landmark' | 'interactable' | 'secret',
-        name: element.name ?? '',
-        description: element.description ?? '',
-        rollableSuccess: element.rollableSuccess ?? '',
-        rollableFailure: element.rollableFailure ?? '',
-        userCreatedAt: element.userCreatedAt.toISOString(),
-      })),
+      elements: buildTreeFromFlat(
+        outline.elements.map((element) => ({
+          id: element.id,
+          parentId: element.parentId,
+          type: element.type as Element['type'],
+          name: element.name ?? '',
+          description: element.description ?? '',
+          rollableSuccess: element.rollableSuccess ?? '',
+          rollableFailure: element.rollableFailure ?? '',
+          userCreatedAt: element.userCreatedAt.toISOString(),
+        }))
+      ),
       conversations: [],
     };
     // Return formatted outline
@@ -84,7 +88,14 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
     }
     // Update existing outline matching current user with data from body
     const body = await req.json();
-    const outline: Outline = body.payload;
+    const parsedOutline = OutlineTreeSchema.safeParse(body.payload);
+    if (!parsedOutline.success) {
+      return NextResponse.json(
+        { message: 'Invalid outline payload', errors: parsedOutline.error.flatten() },
+        { status: 400 }
+      );
+    }
+    const outline: Outline = parsedOutline.data;
     const updatedOutline = await prisma.outline.update({
       where: {
         id: outlineId,
@@ -104,7 +115,8 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
         userId: user.id,
       },
     });
-    const outlineElementIds = outline.elements.map((element) => element.id);
+    const flattenedElements = flattenTreeForPersistence(outline.elements);
+    const outlineElementIds = flattenedElements.map((element) => element.id);
     const idsOfElementsToDelete = databaseElements
       .filter((element) => !outlineElementIds.includes(element.id))
       .map((element) => element.id);
@@ -115,49 +127,36 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
         },
       },
     });
-    // Declare three element types from body and filter each into own variables
-    const landmarks = outline.elements.filter((element) => element.type === 'landmark');
-    const interactables = outline.elements.filter((element) => element.type === 'interactable');
-    const secrets = outline.elements.filter((element) => element.type === 'secret');
-    // Declare helper for asynchronously mapping over element arrays, updating element entries if found and creating new entries if not
-    const upsertElements = async (elements: Element[]) => {
-      const elementPromises = elements.map((element: Element) =>
-        prisma.element.upsert({
-          where: {
-            id: element.id,
-          },
-          update: {
-            outlineId: outlineId,
-            userId: user.id,
-            parentId: element.parentId,
-            type: element.type,
-            name: element.name ?? '',
-            description: element.description ?? '',
-            rollableSuccess: element.rollableSuccess ?? '',
-            rollableFailure: element.rollableFailure ?? '',
-            userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
-          },
-          create: {
-            id: element.id,
-            outlineId: outlineId,
-            userId: user.id,
-            parentId: element.parentId,
-            type: element.type,
-            name: element.name ?? '',
-            description: element.description ?? '',
-            rollableSuccess: element.rollableSuccess ?? '',
-            rollableFailure: element.rollableFailure ?? '',
-            userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
-          },
-        })
-      );
-      // Ensure map runs asynchronously, resolving only if every item is successfully resolved
-      return Promise.all(elementPromises);
-    };
-    // Invoke helper in order of element hierarchy to ensure relations are updated or inserted correctly
-    await upsertElements(landmarks);
-    await upsertElements(interactables);
-    await upsertElements(secrets);
+    for (const element of flattenedElements) {
+      await prisma.element.upsert({
+        where: {
+          id: element.id,
+        },
+        update: {
+          outlineId: outlineId,
+          userId: user.id,
+          parentId: element.parentId,
+          type: element.type,
+          name: element.name ?? '',
+          description: element.description ?? '',
+          rollableSuccess: element.rollableSuccess ?? '',
+          rollableFailure: element.rollableFailure ?? '',
+          userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
+        },
+        create: {
+          id: element.id,
+          outlineId: outlineId,
+          userId: user.id,
+          parentId: element.parentId,
+          type: element.type,
+          name: element.name ?? '',
+          description: element.description ?? '',
+          rollableSuccess: element.rollableSuccess ?? '',
+          rollableFailure: element.rollableFailure ?? '',
+          userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
+        },
+      });
+    }
     // Return id of updated outline
     return NextResponse.json({ id: updatedOutline.id }, { status: 200 });
   } catch (error) {
