@@ -1,30 +1,13 @@
 'use client';
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { useAtom } from 'jotai';
-import {
-  ArrowLeft,
-  ArrowRight,
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  outlineInit,
-  tutorialOutlineAtom,
-  tutorialStepAtom,
-} from '@/lib/atoms';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { outlineInit, tutorialOutlineAtom, tutorialStepAtom } from '@/lib/atoms';
 import { buildTreeFromFlat } from '@/lib/outlineTransformers';
 import { tutorialOutlineElementsFlat, tutorialOutlineFinal } from '@/lib/tutorial';
 import { TutorialStep } from '@/lib/types';
@@ -65,11 +48,13 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
   );
 
   const treeFromCountWithBlankFirstSecretRollables = useCallback(() => {
-    const elements = tutorialOutlineElementsFlat.slice(0, 3).map((element) =>
-      element.id === 'secret0'
-        ? { ...element, rollableSuccess: '', rollableFailure: '' }
-        : element
-    );
+    const elements = tutorialOutlineElementsFlat
+      .slice(0, 3)
+      .map((element) =>
+        element.id === 'secret0'
+          ? { ...element, rollableSuccess: '', rollableFailure: '' }
+          : element
+      );
     return buildTreeFromFlat(elements);
   }, []);
 

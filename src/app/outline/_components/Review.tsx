@@ -8,11 +8,7 @@ import { Lock, MousePointerClick, Pyramid, Theater, ThumbsDown, ThumbsUp } from 
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
+import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -28,64 +24,64 @@ interface OutlineIdProps {
   embla: any;
 }
 
-const SecretsReviewComponent: React.FC<{ secrets: Outline['elements'][number]['children'][number]['children'] }> = ({
-  secrets,
-}) => {
+const SecretsReviewComponent: React.FC<{
+  secrets: Outline['elements'][number]['children'][number]['children'];
+}> = ({ secrets }) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-8 has-[div]:mb-0`)}>
       {secrets.map((secret) => (
-          <Card
-            key={secret.id}
-            className={cn(
-              `relative -m-3 flex flex-col gap-7 bg-error/10 p-4 shadow-md shadow-base-100 max-sm:rounded-none`
-            )}
-          >
-            <div className={cn(`flex flex-col gap-2`)}>
-              <span
-                className={cn(
-                  `flex items-center gap-2 text-lg text-error`,
-                  !secret.name && `italic opacity-30`
-                )}
-              >
-                <Lock className={cn(`size-5`)} />
-                {secret.name || 'Untitled Secret'}
-              </span>
-              <span className={cn(!secret.description && `italic opacity-30`)}>
-                {secret.description || 'Information that must be earned with a roll.'}
-              </span>
-            </div>
-            <Card
+        <Card
+          key={secret.id}
+          className={cn(
+            `relative -m-3 flex flex-col gap-7 bg-error/10 p-4 shadow-md shadow-base-100 max-sm:rounded-none`
+          )}
+        >
+          <div className={cn(`flex flex-col gap-2`)}>
+            <span
               className={cn(
-                `relative -m-3 flex flex-col gap-2 bg-warning/10 p-4 shadow-sm shadow-base-100 max-sm:rounded-none`
+                `flex items-center gap-2 text-lg text-error`,
+                !secret.name && `italic opacity-30`
               )}
             >
-              <span
-                className={cn(
-                  `flex items-center gap-2 text-warning`,
-                  !secret.rollableSuccess && `italic opacity-30`
-                )}
-              >
-                <ThumbsUp className={cn(`size-4`)} />
-                Success
-              </span>
-              <span className={cn(!secret.rollableSuccess && `italic opacity-30`)}>
-                {secret.rollableSuccess || 'Outcome of a successful roll.'}
-              </span>
-              <span
-                className={cn(
-                  `flex items-center gap-2 text-warning`,
-                  !secret.rollableFailure && `italic opacity-30`
-                )}
-              >
-                <ThumbsDown className={cn(`size-4`)} />
-                Failure
-              </span>
-              <span className={cn(!secret.rollableFailure && `italic opacity-30`)}>
-                {secret.rollableFailure || 'Outcome of a failed roll.'}
-              </span>
-            </Card>
+              <Lock className={cn(`size-5`)} />
+              {secret.name || 'Untitled Secret'}
+            </span>
+            <span className={cn(!secret.description && `italic opacity-30`)}>
+              {secret.description || 'Information that must be earned with a roll.'}
+            </span>
+          </div>
+          <Card
+            className={cn(
+              `relative -m-3 flex flex-col gap-2 bg-warning/10 p-4 shadow-sm shadow-base-100 max-sm:rounded-none`
+            )}
+          >
+            <span
+              className={cn(
+                `flex items-center gap-2 text-warning`,
+                !secret.rollableSuccess && `italic opacity-30`
+              )}
+            >
+              <ThumbsUp className={cn(`size-4`)} />
+              Success
+            </span>
+            <span className={cn(!secret.rollableSuccess && `italic opacity-30`)}>
+              {secret.rollableSuccess || 'Outcome of a successful roll.'}
+            </span>
+            <span
+              className={cn(
+                `flex items-center gap-2 text-warning`,
+                !secret.rollableFailure && `italic opacity-30`
+              )}
+            >
+              <ThumbsDown className={cn(`size-4`)} />
+              Failure
+            </span>
+            <span className={cn(!secret.rollableFailure && `italic opacity-30`)}>
+              {secret.rollableFailure || 'Outcome of a failed roll.'}
+            </span>
           </Card>
-        ))}
+        </Card>
+      ))}
     </div>
   );
 };
@@ -94,35 +90,35 @@ const SecretsReview = React.memo(SecretsReviewComponent);
 
 SecretsReview.displayName = 'SecretsReview';
 
-const InteractablesReviewComponent: React.FC<{ interactables: Outline['elements'][number]['children'] }> = ({
-  interactables,
-}) => {
+const InteractablesReviewComponent: React.FC<{
+  interactables: Outline['elements'][number]['children'];
+}> = ({ interactables }) => {
   return (
     <div className={cn(`-mb-7 flex flex-col gap-10 has-[div]:mb-0`)}>
       {interactables.map((interactable) => (
-          <Card
-            key={interactable.id}
-            className={cn(
-              `relative -m-3 flex flex-col gap-7 bg-info/10 p-4 shadow-lg shadow-base-200 max-sm:rounded-none`
-            )}
-          >
-            <div className={cn(`flex flex-col gap-2`)}>
-              <span
-                className={cn(
-                  `flex items-center gap-2 text-xl text-info`,
-                  !interactable.name && `italic opacity-30`
-                )}
-              >
-                <MousePointerClick className={cn(`size-6`)} />
-                {interactable.name || 'Untitled Interactable'}
-              </span>
-              <span className={cn(!interactable.description && `italic opacity-30`)}>
-                {interactable.description || 'What is noticed when inspected more closely.'}
-              </span>
-            </div>
-            <SecretsReview secrets={interactable.children} />
-          </Card>
-        ))}
+        <Card
+          key={interactable.id}
+          className={cn(
+            `relative -m-3 flex flex-col gap-7 bg-info/10 p-4 shadow-lg shadow-base-200 max-sm:rounded-none`
+          )}
+        >
+          <div className={cn(`flex flex-col gap-2`)}>
+            <span
+              className={cn(
+                `flex items-center gap-2 text-xl text-info`,
+                !interactable.name && `italic opacity-30`
+              )}
+            >
+              <MousePointerClick className={cn(`size-6`)} />
+              {interactable.name || 'Untitled Interactable'}
+            </span>
+            <span className={cn(!interactable.description && `italic opacity-30`)}>
+              {interactable.description || 'What is noticed when inspected more closely.'}
+            </span>
+          </div>
+          <SecretsReview secrets={interactable.children} />
+        </Card>
+      ))}
     </div>
   );
 };
@@ -135,29 +131,29 @@ const LandmarksReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline
   return (
     <div className={cn(`mb-8 flex flex-col gap-6`)}>
       {outline.elements.map((landmark) => (
-          <Card
-            className={cn(
-              `relative flex flex-col gap-7 bg-primary/10 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
-            )}
-            key={landmark.id}
-          >
-            <div className={cn(`flex flex-col gap-2`)}>
-              <span
-                className={cn(
-                  `flex items-center gap-2 text-2xl text-primary`,
-                  !landmark.name && `italic opacity-30`
-                )}
-              >
-                <Pyramid className={cn(`size-7`)} />
-                {landmark.name || 'Untitled Landmark'}
-              </span>
-              <span className={cn(!landmark.description && `italic opacity-30`)}>
-                {landmark.description || 'The first-glance impression of the landmark.'}
-              </span>
-            </div>
-            <InteractablesReview interactables={landmark.children} />
-          </Card>
-        ))}
+        <Card
+          className={cn(
+            `relative flex flex-col gap-7 bg-primary/10 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
+          )}
+          key={landmark.id}
+        >
+          <div className={cn(`flex flex-col gap-2`)}>
+            <span
+              className={cn(
+                `flex items-center gap-2 text-2xl text-primary`,
+                !landmark.name && `italic opacity-30`
+              )}
+            >
+              <Pyramid className={cn(`size-7`)} />
+              {landmark.name || 'Untitled Landmark'}
+            </span>
+            <span className={cn(!landmark.description && `italic opacity-30`)}>
+              {landmark.description || 'The first-glance impression of the landmark.'}
+            </span>
+          </div>
+          <InteractablesReview interactables={landmark.children} />
+        </Card>
+      ))}
     </div>
   );
 };

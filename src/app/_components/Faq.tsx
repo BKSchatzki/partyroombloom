@@ -1,11 +1,4 @@
-import React from 'react';
-
-import {
-  Coins,
-  GraduationCap,
-  Save,
-  Sparkles,
-} from 'lucide-react';
+import { Coins, GraduationCap, Save, Sparkles } from 'lucide-react';
 
 import {
   Accordion,

@@ -1,17 +1,10 @@
 'use client';
 
-import React, {
-  useCallback,
-  useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { User } from 'lucia';
-import {
-  ChevronDown,
-  Leaf,
-  Pencil,
-} from 'lucide-react';
+import { ChevronDown, Leaf, Pencil } from 'lucide-react';
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';

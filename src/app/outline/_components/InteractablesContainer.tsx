@@ -32,10 +32,7 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
     () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
     [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
   );
-  const landmarks = useMemo(
-    () => thisOutline.elements,
-    [thisOutline.elements]
-  );
+  const landmarks = useMemo(() => thisOutline.elements, [thisOutline.elements]);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>

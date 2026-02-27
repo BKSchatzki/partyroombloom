@@ -1,10 +1,7 @@
 import Image from 'next/image';
 
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 const About = () => {

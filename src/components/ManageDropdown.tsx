@@ -1,20 +1,10 @@
 'use client';
 
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useMemo, useRef } from 'react';
 
 import dayjs from 'dayjs';
 import saveAs from 'file-saver';
-import {
-  Braces,
-  FileText,
-  Upload,
-} from 'lucide-react';
+import { Braces, FileText, Upload } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -23,14 +13,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import {
-  InteractableNode,
-  LandmarkNode,
-  Outline,
-  SecretNode,
-} from '@/lib/types';
-import { cn } from '@/lib/utils';
 import { OutlineTreeSchema } from '@/lib/schemas';
+import { InteractableNode, LandmarkNode, Outline, SecretNode } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 interface ManageDropdownProps {
   outline: Outline;

@@ -1,18 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import AutoScroll from 'embla-carousel-auto-scroll';
 import { Globe } from 'lucide-react';
 import Link from 'next/link';
 
 import { Card } from '@/components/ui/card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
 
 const Acknowledgements = () => {

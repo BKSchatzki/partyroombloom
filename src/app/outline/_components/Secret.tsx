@@ -40,7 +40,10 @@ const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorial
         .find((element) => element.id === elementId),
     [elementId, thisOutline.elements]
   );
-  const hasElements = useMemo(() => (thisElement?.children.length ?? 0) > 0, [thisElement?.children]);
+  const hasElements = useMemo(
+    () => (thisElement?.children.length ?? 0) > 0,
+    [thisElement?.children]
+  );
 
   const handleAddSecret = useCallback(() => {
     if (!thisElement) return;
@@ -138,62 +141,60 @@ const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorial
         {thisElement?.name || 'Interactable'}
       </CardTitle>
       {thisElement?.children.map((element, index) => (
-          <div key={element.id}>
-            <CardHeader className={cn(`relative pt-7`)}>
-              <DeleteButton
-                first={index === 0}
-                handleDelete={() => handleDelete(element.id)}
-                item={element.name || 'this Secret'}
-                message="Delete Secret"
-              />
-              <CardTitle className={cn(`relative`)}>
-                <div
-                  className={cn(
-                    `absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`
-                  )}
-                >
-                  <span className={cn(`sr-only`)}>Secret</span>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-              <Label
-                className={cn(`sr-only`)}
-                htmlFor={`name-${element.id}`}
+        <div key={element.id}>
+          <CardHeader className={cn(`relative pt-7`)}>
+            <DeleteButton
+              first={index === 0}
+              handleDelete={() => handleDelete(element.id)}
+              item={element.name || 'this Secret'}
+              message="Delete Secret"
+            />
+            <CardTitle className={cn(`relative`)}>
+              <div
+                className={cn(`absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`)}
               >
-                Secret Name
-              </Label>
-              <Input
-                className={cn(`w-full`)}
-                id={`name-${element.id}`}
-                onChange={(event) => handleChange(element.id, event, 'name')}
-                placeholder={`Name`}
-                value={element.name}
-              />
-              <Label
-                className={cn(`sr-only`)}
-                htmlFor={`description-${element.id}`}
-              >
-                Secret Description
-              </Label>
-              <Textarea
-                className={cn(`no-scrollbar`)}
-                id={`description-${element.id}`}
-                onChange={(event) => handleChange(element.id, event, 'description')}
-                placeholder={`Description`}
-                value={element.description}
-              />
-              <div className={cn(`max-sm:mx-[-0.5rem]`)}>
-                <Rollable
-                  elementId={element.id}
-                  outlineId={thisOutline.id}
-                  tutorialMode={tutorialMode}
-                />
+                <span className={cn(`sr-only`)}>Secret</span>
               </div>
-            </CardContent>
-            <Separator className={cn(`my-2 mb-0`)} />
-          </div>
-        ))}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
+            <Label
+              className={cn(`sr-only`)}
+              htmlFor={`name-${element.id}`}
+            >
+              Secret Name
+            </Label>
+            <Input
+              className={cn(`w-full`)}
+              id={`name-${element.id}`}
+              onChange={(event) => handleChange(element.id, event, 'name')}
+              placeholder={`Name`}
+              value={element.name}
+            />
+            <Label
+              className={cn(`sr-only`)}
+              htmlFor={`description-${element.id}`}
+            >
+              Secret Description
+            </Label>
+            <Textarea
+              className={cn(`no-scrollbar`)}
+              id={`description-${element.id}`}
+              onChange={(event) => handleChange(element.id, event, 'description')}
+              placeholder={`Description`}
+              value={element.description}
+            />
+            <div className={cn(`max-sm:mx-[-0.5rem]`)}>
+              <Rollable
+                elementId={element.id}
+                outlineId={thisOutline.id}
+                tutorialMode={tutorialMode}
+              />
+            </div>
+          </CardContent>
+          <Separator className={cn(`my-2 mb-0`)} />
+        </div>
+      ))}
       <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
         <Card
           className={cn(

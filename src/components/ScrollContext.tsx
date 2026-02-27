@@ -1,12 +1,7 @@
 // ScrollContext.tsx
 'use client';
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-} from 'react';
+import { createContext, useContext, useEffect, useRef } from 'react';
 
 import { ScrollArea } from './ui/scroll-area';
 

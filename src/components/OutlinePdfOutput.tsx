@@ -3,12 +3,7 @@ import React from 'react';
 import { createTw } from 'react-pdf-tailwind';
 
 import { Outline } from '@/lib/types';
-import {
-  Document,
-  Page,
-  Text,
-  View,
-} from '@react-pdf/renderer';
+import { Document, Page, Text, View } from '@react-pdf/renderer';
 
 const tw = createTw({});
 
@@ -56,60 +51,58 @@ const OutlinePdfOutputComponent: React.FC<OutputProps> = ({ outline }) => {
         </View>
         <View style={tw(`flex flex-col gap-1`)}>
           {outline.elements.map((landmark) => (
-              <View
-                key={landmark.id}
-                wrap={false}
-                style={tw(`border-b border-neutral-300 pb-2`)}
-              >
-                <Text style={tw(`py-2`)}>
-                  <Text style={tw(`text-lg font-bold leading-4 text-lime-800`)}>
-                    {landmark.name}
-                  </Text>
-                  {landmark.name && landmark.description && ': '}
-                  {landmark.description}
-                </Text>
-                <View style={tw(`flex flex-col gap-1 pl-4`)}>
-                  {landmark.children.map((interactable) => (
-                      <React.Fragment key={interactable.id}>
-                        <Text style={tw(`py-1 text-neutral-900`)}>
-                          <Text style={tw(`text-base font-bold leading-4 text-cyan-800`)}>
-                            {interactable.name}
+            <View
+              key={landmark.id}
+              wrap={false}
+              style={tw(`border-b border-neutral-300 pb-2`)}
+            >
+              <Text style={tw(`py-2`)}>
+                <Text style={tw(`text-lg font-bold leading-4 text-lime-800`)}>{landmark.name}</Text>
+                {landmark.name && landmark.description && ': '}
+                {landmark.description}
+              </Text>
+              <View style={tw(`flex flex-col gap-1 pl-4`)}>
+                {landmark.children.map((interactable) => (
+                  <React.Fragment key={interactable.id}>
+                    <Text style={tw(`py-1 text-neutral-900`)}>
+                      <Text style={tw(`text-base font-bold leading-4 text-cyan-800`)}>
+                        {interactable.name}
+                      </Text>
+                      {interactable.name && interactable.description && ': '}
+                      {interactable.description}
+                    </Text>
+                    <View style={tw(`flex flex-col gap-1 pl-4`)}>
+                      {interactable.children.map((secret) => (
+                        <React.Fragment key={secret.id}>
+                          <Text style={tw(`py-1 text-neutral-800`)}>
+                            <Text style={tw(`text-sm font-bold leading-4 text-red-800`)}>
+                              {secret.name}
+                            </Text>
+                            {secret.name && secret.description && ': '}
+                            {secret.description}
                           </Text>
-                          {interactable.name && interactable.description && ': '}
-                          {interactable.description}
-                        </Text>
-                        <View style={tw(`flex flex-col gap-1 pl-4`)}>
-                          {interactable.children.map((secret) => (
-                              <React.Fragment key={secret.id}>
-                                <Text style={tw(`py-1 text-neutral-800`)}>
-                                  <Text style={tw(`text-sm font-bold leading-4 text-red-800`)}>
-                                    {secret.name}
-                                  </Text>
-                                  {secret.name && secret.description && ': '}
-                                  {secret.description}
-                                </Text>
-                                <View
-                                  style={tw(
-                                    `flex flex-col gap-2 pb-1 pl-4 text-xs leading-4 text-neutral-700`
-                                  )}
-                                >
-                                  <Text>
-                                    <Text style={tw(`font-bold text-yellow-800`)}>Success: </Text>
-                                    {secret.rollableSuccess}
-                                  </Text>
-                                  <Text>
-                                    <Text style={tw(`font-bold text-yellow-800`)}>Failure: </Text>
-                                    {secret.rollableFailure}
-                                  </Text>
-                                </View>
-                              </React.Fragment>
-                            ))}
-                        </View>
-                      </React.Fragment>
-                    ))}
-                </View>
+                          <View
+                            style={tw(
+                              `flex flex-col gap-2 pb-1 pl-4 text-xs leading-4 text-neutral-700`
+                            )}
+                          >
+                            <Text>
+                              <Text style={tw(`font-bold text-yellow-800`)}>Success: </Text>
+                              {secret.rollableSuccess}
+                            </Text>
+                            <Text>
+                              <Text style={tw(`font-bold text-yellow-800`)}>Failure: </Text>
+                              {secret.rollableFailure}
+                            </Text>
+                          </View>
+                        </React.Fragment>
+                      ))}
+                    </View>
+                  </React.Fragment>
+                ))}
               </View>
-            ))}
+            </View>
+          ))}
         </View>
       </Page>
     </Document>
