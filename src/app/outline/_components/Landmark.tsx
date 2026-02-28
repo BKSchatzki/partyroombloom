@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
-import { useAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 
 import DeleteButton from '@/components/DeleteButton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
-import { Outline } from '@/lib/types';
+import { deleteOutlineNodeAtomFamily, outlineNodeAtomFamily, updateOutlineNodeFieldAtomFamily } from '@/lib/atoms';
+import { getOutlineMode, OutlineNodeField } from '@/lib/outlineState';
 import { cn } from '@/lib/utils';
 
 interface LandmarkProps {
@@ -20,57 +20,26 @@ interface LandmarkProps {
 }
 
 const LandmarkComponent: React.FC<LandmarkProps> = ({ elementId, outlineId, tutorialMode }) => {
-  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
-  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
-
-  const thisElement = useMemo(
-    () =>
-      tutorialMode
-        ? tutorialOutline.elements.find((element) => element.id === elementId)
-        : outlineId
-          ? existingOutline.elements.find((element) => element.id === elementId)
-          : newOutline.elements.find((element) => element.id === elementId),
-    [
-      elementId,
-      existingOutline.elements,
-      newOutline.elements,
-      outlineId,
-      tutorialMode,
-      tutorialOutline.elements,
-    ]
-  );
+  const mode = getOutlineMode(tutorialMode, outlineId);
+  const scopedNodeId = `${mode}:${elementId}`;
+  const thisElement = useAtomValue(outlineNodeAtomFamily(scopedNodeId));
+  const updateNodeField = useSetAtom(updateOutlineNodeFieldAtomFamily(mode));
+  const deleteNode = useSetAtom(deleteOutlineNodeAtomFamily(mode));
 
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
-      if (!thisElement) return;
-      const updateLandmark = (outline: Outline) => ({
-        ...outline,
-        elements: outline.elements.map((element) =>
-          element.id === thisElement.id ? { ...element, [property]: event.target.value } : element
-        ),
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: OutlineNodeField) => {
+      updateNodeField({
+        nodeId: elementId,
+        field,
+        value: event.target.value,
       });
-      tutorialMode
-        ? setTutorialOutline(updateLandmark)
-        : outlineId
-          ? setExistingOutline(updateLandmark)
-          : setNewOutline(updateLandmark);
     },
-    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]
+    [elementId, updateNodeField]
   );
 
   const handleDelete = useCallback(() => {
-    if (!thisElement) return;
-    const deleteLandmark = (outline: Outline) => ({
-      ...outline,
-      elements: outline.elements.filter((element) => element.id !== thisElement.id),
-    });
-    tutorialMode
-      ? setTutorialOutline(deleteLandmark)
-      : outlineId
-        ? setExistingOutline(deleteLandmark)
-        : setNewOutline(deleteLandmark);
-  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]);
+    deleteNode(elementId);
+  }, [deleteNode, elementId]);
 
   return (
     <Card className={cn(`mb-8 w-full bg-primary/10 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
@@ -94,7 +63,7 @@ const LandmarkComponent: React.FC<LandmarkProps> = ({ elementId, outlineId, tuto
           id={`name-${elementId}`}
           onChange={(event) => handleChange(event, 'name')}
           placeholder={`Name`}
-          value={thisElement?.name}
+          value={thisElement?.name ?? ''}
         />
         <Label
           className={cn(`sr-only`)}
@@ -107,7 +76,7 @@ const LandmarkComponent: React.FC<LandmarkProps> = ({ elementId, outlineId, tuto
           id={`description-${elementId}`}
           onChange={(event) => handleChange(event, 'description')}
           placeholder={`Description`}
-          value={thisElement?.description}
+          value={thisElement?.description ?? ''}
         />
       </CardContent>
     </Card>

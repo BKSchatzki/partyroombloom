@@ -58,12 +58,14 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
-        setOutlinesList(outlinesList.filter((outline) => outline.id !== outlineId));
+        setOutlinesList((prevOutlines) =>
+          prevOutlines.filter((outline) => outline.id !== outlineId)
+        );
       } catch (error) {
         console.error('Error deleting outline:', error);
       }
     },
-    [outlinesList, setOutlinesList]
+    [setOutlinesList]
   );
 
   if (error) {

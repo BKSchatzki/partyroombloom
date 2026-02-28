@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
-import { useAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { Plus, Pyramid } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
-import { Outline } from '@/lib/types';
+import { addLandmarkAtomFamily, rootLandmarkIdsAtomFamily } from '@/lib/atoms';
+import { getOutlineMode } from '@/lib/outlineState';
 import { cn } from '@/lib/utils';
 
 import TutorialCardComponent from '../tutorial/_components/TutorialCard';
@@ -26,39 +26,13 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
   tutorialMode,
   embla,
 }) => {
-  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
-  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
-
-  const thisOutline = useMemo(
-    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
-    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
-  );
+  const mode = getOutlineMode(tutorialMode, outlineId);
+  const landmarkIds = useAtomValue(rootLandmarkIdsAtomFamily(mode));
+  const addLandmark = useSetAtom(addLandmarkAtomFamily(mode));
 
   const handleAddLandmark = useCallback(() => {
-    const addNewLandmark = (outline: Outline): Outline => ({
-      ...outline,
-      elements: [
-        ...outline.elements,
-        {
-          id: crypto.randomUUID(),
-          parentId: null,
-          type: 'landmark' as const,
-          name: '',
-          description: '',
-          rollableSuccess: '',
-          rollableFailure: '',
-          userCreatedAt: new Date().toISOString(),
-          children: [],
-        },
-      ],
-    });
-    tutorialMode
-      ? setTutorialOutline(addNewLandmark)
-      : outlineId
-        ? setExistingOutline(addNewLandmark)
-        : setNewOutline(addNewLandmark);
-  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]);
+    addLandmark();
+  }, [addLandmark]);
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -92,10 +66,10 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
           </p>
         </section>
       )}
-      {thisOutline.elements.map((element) => (
+      {landmarkIds.map((landmarkId) => (
         <Landmarks
-          key={element.id}
-          elementId={element.id}
+          key={landmarkId}
+          elementId={landmarkId}
           outlineId={outlineId}
           tutorialMode={tutorialMode}
         />

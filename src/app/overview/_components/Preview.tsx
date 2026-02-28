@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import { Lock, MousePointerClick, Pyramid, ThumbsDown, ThumbsUp } from 'lucide-react';
 
 import {
@@ -84,6 +86,8 @@ const SecretsPreview = ({
     </div>
   );
 };
+const MemoizedSecretsPreview = React.memo(SecretsPreview);
+MemoizedSecretsPreview.displayName = 'SecretsPreview';
 
 const InteractablesPreview = ({
   interactables,
@@ -120,12 +124,14 @@ const InteractablesPreview = ({
               {interactable.description || 'What is noticed when inspected more closely.'}
             </span>
           </div>
-          <SecretsPreview secrets={interactable.children} />
+          <MemoizedSecretsPreview secrets={interactable.children} />
         </Card>
       ))}
     </div>
   );
 };
+const MemoizedInteractablesPreview = React.memo(InteractablesPreview);
+MemoizedInteractablesPreview.displayName = 'InteractablesPreview';
 
 const LandmarksPreview = ({ outline }: { outline: Outline }) => {
   return (
@@ -167,7 +173,7 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <InteractablesPreview interactables={landmark.children} />
+              <MemoizedInteractablesPreview interactables={landmark.children} />
             </AccordionContent>
           </AccordionItem>
         </Card>
@@ -175,5 +181,7 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
     </Accordion>
   );
 };
+const MemoizedLandmarksPreview = React.memo(LandmarksPreview);
+MemoizedLandmarksPreview.displayName = 'LandmarksPreview';
 
-export default LandmarksPreview;
+export default MemoizedLandmarksPreview;

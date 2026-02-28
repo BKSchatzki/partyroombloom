@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { Lock } from 'lucide-react';
 
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
+import { allInteractableIdsAtomFamily } from '@/lib/atoms';
+import { getOutlineMode } from '@/lib/outlineState';
 import { cn } from '@/lib/utils';
 
 import TutorialCardComponent from '../tutorial/_components/TutorialCard';
@@ -24,19 +25,8 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
   tutorialMode,
   embla,
 }) => {
-  const [tutorialOutline] = useAtom(tutorialOutlineAtom);
-  const [newOutline] = useAtom(newOutlineAtom);
-  const [existingOutline] = useAtom(existingOutlineAtom);
-
-  const thisOutline = useMemo(
-    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
-    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
-  );
-
-  const interactables = useMemo(
-    () => thisOutline.elements.flatMap((landmark) => landmark.children),
-    [thisOutline.elements]
-  );
+  const mode = getOutlineMode(tutorialMode, outlineId);
+  const interactableIds = useAtomValue(allInteractableIdsAtomFamily(mode));
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -69,7 +59,7 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
           </p>
         </section>
       )}
-      {interactables.length === 0 ? (
+      {interactableIds.length === 0 ? (
         <Card
           className={cn(
             `mb-8 flex h-[7.5rem] w-full flex-col items-center justify-center bg-error/5 shadow-lg shadow-base-300`
@@ -81,10 +71,10 @@ const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({
           </CardDescription>
         </Card>
       ) : (
-        interactables.map((element) => (
+        interactableIds.map((interactableId) => (
           <Secrets
-            key={element.id}
-            elementId={element.id}
+            key={interactableId}
+            elementId={interactableId}
             outlineId={outlineId}
             tutorialMode={tutorialMode}
           />

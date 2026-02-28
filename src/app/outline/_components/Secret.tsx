@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
-import { useAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 
 import DeleteButton from '@/components/DeleteButton';
@@ -12,8 +12,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
-import { Outline } from '@/lib/types';
+import {
+  addChildNodeAtomFamily,
+  deleteOutlineNodeAtomFamily,
+  outlineChildIdsAtomFamily,
+  outlineNodeAtomFamily,
+  updateOutlineNodeFieldAtomFamily,
+} from '@/lib/atoms';
+import { getOutlineMode, OutlineMode, OutlineNodeField } from '@/lib/outlineState';
 import { cn } from '@/lib/utils';
 
 import Rollable from './Rollable';
@@ -24,111 +30,131 @@ interface SecretProps {
   tutorialMode: boolean;
 }
 
-const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorialMode }) => {
-  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
-  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
+interface SecretItemProps {
+  nodeId: string;
+  mode: OutlineMode;
+  outlineId: number | null;
+  tutorialMode: boolean;
+  first: boolean;
+  onDelete: (id: string) => void;
+  onChange: (
+    id: string,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: OutlineNodeField
+  ) => void;
+}
 
-  const thisOutline = useMemo(
-    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
-    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+const SecretItemComponent: React.FC<SecretItemProps> = ({
+  nodeId,
+  mode,
+  outlineId,
+  tutorialMode,
+  first,
+  onDelete,
+  onChange,
+}) => {
+  const node = useAtomValue(outlineNodeAtomFamily(`${mode}:${nodeId}`));
+
+  if (!node) {
+    return null;
+  }
+
+  return (
+    <div>
+      <CardHeader className={cn(`relative pt-7`)}>
+        <DeleteButton
+          first={first}
+          handleDelete={() => onDelete(nodeId)}
+          item={node.name || 'this Secret'}
+          message="Delete Secret"
+        />
+        <CardTitle className={cn(`relative`)}>
+          <div
+            className={cn(`absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`)}
+          >
+            <span className={cn(`sr-only`)}>Secret</span>
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
+        <Label
+          className={cn(`sr-only`)}
+          htmlFor={`name-${nodeId}`}
+        >
+          Secret Name
+        </Label>
+        <Input
+          className={cn(`w-full`)}
+          id={`name-${nodeId}`}
+          onChange={(event) => onChange(nodeId, event, 'name')}
+          placeholder={`Name`}
+          value={node.name}
+        />
+        <Label
+          className={cn(`sr-only`)}
+          htmlFor={`description-${nodeId}`}
+        >
+          Secret Description
+        </Label>
+        <Textarea
+          className={cn(`no-scrollbar`)}
+          id={`description-${nodeId}`}
+          onChange={(event) => onChange(nodeId, event, 'description')}
+          placeholder={`Description`}
+          value={node.description}
+        />
+        <div className={cn(`max-sm:mx-[-0.5rem]`)}>
+          <Rollable
+            elementId={nodeId}
+            outlineId={outlineId}
+            tutorialMode={tutorialMode}
+          />
+        </div>
+      </CardContent>
+      <Separator className={cn(`my-2 mb-0`)} />
+    </div>
   );
-  const thisElement = useMemo(
-    () =>
-      thisOutline.elements
-        .flatMap((landmark) => landmark.children)
-        .find((element) => element.id === elementId),
-    [elementId, thisOutline.elements]
-  );
-  const hasElements = useMemo(
-    () => (thisElement?.children.length ?? 0) > 0,
-    [thisElement?.children]
-  );
+};
+
+const SecretItem = React.memo(SecretItemComponent);
+SecretItem.displayName = 'SecretItem';
+
+const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorialMode }) => {
+  const mode = getOutlineMode(tutorialMode, outlineId);
+  const thisElement = useAtomValue(outlineNodeAtomFamily(`${mode}:${elementId}`));
+  const secretIds = useAtomValue(outlineChildIdsAtomFamily(`${mode}:${elementId}`));
+  const addChildNode = useSetAtom(addChildNodeAtomFamily(mode));
+  const updateNodeField = useSetAtom(updateOutlineNodeFieldAtomFamily(mode));
+  const deleteNode = useSetAtom(deleteOutlineNodeAtomFamily(mode));
+  const hasElements = secretIds.length > 0;
 
   const handleAddSecret = useCallback(() => {
-    if (!thisElement) return;
-    const addNewSecret = (outline: Outline): Outline => ({
-      ...outline,
-      elements: outline.elements.map((landmark) => ({
-        ...landmark,
-        children: landmark.children.map((interactable) =>
-          interactable.id === thisElement.id
-            ? {
-                ...interactable,
-                children: [
-                  ...interactable.children,
-                  {
-                    id: crypto.randomUUID(),
-                    parentId: thisElement.id,
-                    type: 'secret' as const,
-                    name: '',
-                    description: '',
-                    rollableSuccess: '',
-                    rollableFailure: '',
-                    userCreatedAt: new Date().toISOString(),
-                    children: [],
-                  },
-                ],
-              }
-            : interactable
-        ),
-      })),
+    addChildNode({
+      parentId: elementId,
+      childType: 'secret',
     });
-    tutorialMode
-      ? setTutorialOutline(addNewSecret)
-      : outlineId
-        ? setExistingOutline(addNewSecret)
-        : setNewOutline(addNewSecret);
-  }, [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, thisElement, tutorialMode]);
+  }, [addChildNode, elementId]);
 
   const handleChange = useCallback(
     (
       id: string,
       event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-      property: string
+      field: OutlineNodeField
     ) => {
-      if (!id) return;
-      const updateSecret = (outline: Outline) => ({
-        ...outline,
-        elements: outline.elements.map((landmark) => ({
-          ...landmark,
-          children: landmark.children.map((interactable) => ({
-            ...interactable,
-            children: interactable.children.map((secret) =>
-              secret.id === id ? { ...secret, [property]: event.target.value } : secret
-            ),
-          })),
-        })),
+      updateNodeField({
+        nodeId: id,
+        field,
+        value: event.target.value,
       });
-      tutorialMode
-        ? setTutorialOutline(updateSecret)
-        : outlineId
-          ? setExistingOutline(updateSecret)
-          : setNewOutline(updateSecret);
     },
-    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
+    [updateNodeField]
   );
 
   const handleDelete = useCallback(
     (id: string) => {
-      if (!id) return;
-      const deleteSecret = (outline: Outline) => ({
-        ...outline,
-        elements: outline.elements.map((landmark) => ({
-          ...landmark,
-          children: landmark.children.map((interactable) => ({
-            ...interactable,
-            children: interactable.children.filter((secret) => secret.id !== id),
-          })),
-        })),
-      });
-      tutorialMode
-        ? setTutorialOutline(deleteSecret)
-        : outlineId
-          ? setExistingOutline(deleteSecret)
-          : setNewOutline(deleteSecret);
+      deleteNode(id);
     },
-    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
+    [deleteNode]
   );
 
   return (
@@ -140,60 +166,17 @@ const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorial
       <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
         {thisElement?.name || 'Interactable'}
       </CardTitle>
-      {thisElement?.children.map((element, index) => (
-        <div key={element.id}>
-          <CardHeader className={cn(`relative pt-7`)}>
-            <DeleteButton
-              first={index === 0}
-              handleDelete={() => handleDelete(element.id)}
-              item={element.name || 'this Secret'}
-              message="Delete Secret"
-            />
-            <CardTitle className={cn(`relative`)}>
-              <div
-                className={cn(`absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`)}
-              >
-                <span className={cn(`sr-only`)}>Secret</span>
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-            <Label
-              className={cn(`sr-only`)}
-              htmlFor={`name-${element.id}`}
-            >
-              Secret Name
-            </Label>
-            <Input
-              className={cn(`w-full`)}
-              id={`name-${element.id}`}
-              onChange={(event) => handleChange(element.id, event, 'name')}
-              placeholder={`Name`}
-              value={element.name}
-            />
-            <Label
-              className={cn(`sr-only`)}
-              htmlFor={`description-${element.id}`}
-            >
-              Secret Description
-            </Label>
-            <Textarea
-              className={cn(`no-scrollbar`)}
-              id={`description-${element.id}`}
-              onChange={(event) => handleChange(element.id, event, 'description')}
-              placeholder={`Description`}
-              value={element.description}
-            />
-            <div className={cn(`max-sm:mx-[-0.5rem]`)}>
-              <Rollable
-                elementId={element.id}
-                outlineId={thisOutline.id}
-                tutorialMode={tutorialMode}
-              />
-            </div>
-          </CardContent>
-          <Separator className={cn(`my-2 mb-0`)} />
-        </div>
+      {secretIds.map((secretId, index) => (
+        <SecretItem
+          key={secretId}
+          nodeId={secretId}
+          mode={mode}
+          outlineId={outlineId}
+          tutorialMode={tutorialMode}
+          first={index === 0}
+          onDelete={handleDelete}
+          onChange={handleChange}
+        />
       ))}
       <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
         <Card

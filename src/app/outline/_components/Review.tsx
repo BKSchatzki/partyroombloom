@@ -2,13 +2,14 @@
 
 import React from 'react';
 
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { Lock, MousePointerClick, Pyramid, Theater, ThumbsDown, ThumbsUp } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
+import { outlineTreeAtomFamily } from '@/lib/atoms';
+import { getOutlineMode } from '@/lib/outlineState';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -200,9 +201,8 @@ const InfoReview = React.memo(InfoReviewComponent);
 InfoReview.displayName = 'InfoReview';
 
 const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode, embla }) => {
-  const [tutorialOutline] = useAtom(tutorialOutlineAtom);
-  const [newOutline] = useAtom(newOutlineAtom);
-  const [outline] = useAtom(existingOutlineAtom);
+  const mode = getOutlineMode(tutorialMode, outlineId);
+  const outline = useAtomValue(outlineTreeAtomFamily(mode));
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -213,10 +213,10 @@ const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode, em
         />
       )}
       <InfoReview
-        outline={tutorialMode ? tutorialOutline : outlineId ? outline : newOutline}
+        outline={outline}
       ></InfoReview>
       <LandmarksReview
-        outline={tutorialMode ? tutorialOutline : outlineId ? outline : newOutline}
+        outline={outline}
       ></LandmarksReview>
     </ScrollArea>
   );

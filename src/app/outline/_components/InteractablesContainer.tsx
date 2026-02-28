@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { MousePointerClick } from 'lucide-react';
 
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { existingOutlineAtom, newOutlineAtom, tutorialOutlineAtom } from '@/lib/atoms';
+import { rootLandmarkIdsAtomFamily } from '@/lib/atoms';
+import { getOutlineMode } from '@/lib/outlineState';
 import { cn } from '@/lib/utils';
 
 import TutorialCardComponent from '../tutorial/_components/TutorialCard';
@@ -24,15 +25,8 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
   tutorialMode,
   embla,
 }) => {
-  const [tutorialOutline] = useAtom(tutorialOutlineAtom);
-  const [newOutline] = useAtom(newOutlineAtom);
-  const [existingOutline] = useAtom(existingOutlineAtom);
-
-  const thisOutline = useMemo(
-    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
-    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
-  );
-  const landmarks = useMemo(() => thisOutline.elements, [thisOutline.elements]);
+  const mode = getOutlineMode(tutorialMode, outlineId);
+  const landmarkIds = useAtomValue(rootLandmarkIdsAtomFamily(mode));
 
   return (
     <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -62,7 +56,7 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
           </p>
         </section>
       )}
-      {landmarks.length === 0 ? (
+      {landmarkIds.length === 0 ? (
         <Card
           className={cn(
             `mb-8 flex h-[7.5rem] w-full flex-col items-center justify-center bg-info/5 shadow-lg shadow-base-300`
@@ -74,10 +68,10 @@ const InteractablesContainerComponent: React.FC<InteractablesContainerProps> = (
           </CardDescription>
         </Card>
       ) : (
-        landmarks.map((element) => (
+        landmarkIds.map((landmarkId) => (
           <Interactables
-            key={element.id}
-            elementId={element.id}
+            key={landmarkId}
+            elementId={landmarkId}
             outlineId={outlineId}
             tutorialMode={tutorialMode}
           />
