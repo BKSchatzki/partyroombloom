@@ -3,17 +3,12 @@
 import React, { useCallback } from 'react';
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import { Plus, Pyramid } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { addLandmarkAtomFamily, rootLandmarkIdsAtomFamily } from '@/lib/atoms';
 import { getOutlineMode } from '@/lib/outlineState';
-import { cn } from '@/lib/utils';
 
-import TutorialCardComponent from '../tutorial/_components/TutorialCard';
 import Landmarks from './Landmark';
+import OutlineNodeSection from './OutlineNodeSection';
+import { LANDMARKS_SECTION_CONFIG } from './outlineNodeConfig';
 
 interface LandmarksProps {
   outlineId: number | null;
@@ -35,63 +30,21 @@ const LandmarksContainerComponent: React.FC<LandmarksProps> = ({
   }, [addLandmark]);
 
   return (
-    <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
-      {tutorialMode && (
-        <TutorialCardComponent
-          builderPage={'landmarks'}
-          embla={embla}
-        />
-      )}
-      {!tutorialMode && (
-        <section
-          className={cn(
-            `my-8 flex items-center justify-center gap-4 text-primary max-sm:flex-col sm:gap-2`
-          )}
-        >
-          <h2
-            className={cn(
-              `flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center`
-            )}
-          >
-            {' '}
-            <Pyramid
-              aria-hidden={true}
-              className={cn(`size-9`)}
-            />
-            Landmarks
-          </h2>
-          <p className={cn(`px-2 text-sm text-base-content/75`)}>
-            Landmarks are points of interest in the scene. They can be places, people, objects,
-            etc., and are immediately available to the player characters upon entering the scene.
-          </p>
-        </section>
-      )}
-      {landmarkIds.map((landmarkId) => (
+    <OutlineNodeSection
+      tutorialMode={tutorialMode}
+      embla={embla}
+      itemIds={landmarkIds}
+      sectionConfig={LANDMARKS_SECTION_CONFIG}
+      onAdd={handleAddLandmark}
+      renderItem={(landmarkId) => (
         <Landmarks
           key={landmarkId}
           elementId={landmarkId}
           outlineId={outlineId}
           tutorialMode={tutorialMode}
         />
-      ))}
-      <Card
-        className={cn(
-          `mx-auto mb-4 w-[99%] rounded-full bg-primary/10 shadow-xl shadow-base-300 max-sm:w-11/12`
-        )}
-      >
-        <Button
-          color={`ghost`}
-          onClick={handleAddLandmark}
-          size={`block`}
-        >
-          <Plus
-            aria-hidden={true}
-            className={cn(`size-5`)}
-          />{' '}
-          Landmark
-        </Button>
-      </Card>
-    </ScrollArea>
+      )}
+    />
   );
 };
 const LandmarksContainer = React.memo(LandmarksContainerComponent);

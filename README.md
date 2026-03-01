@@ -8,11 +8,11 @@ PartyRoomBloom is an app for game masters of tabletop roleplaying games to devel
 
 ## Todo
 
-[ ] - buildTree and flattenTree at the API boundary to make frontend intuitive
-[ ] - atomize state to eliminate unnecessary renders
+[x] - buildTree and flattenTree at the API boundary to make frontend intuitive
+[x] - atomize state to eliminate unnecessary renders
 [ ] - React 19 update to remove memoization hooks/HOFs with the compiler
 [ ] - authentication update to handle breaking changes from Next.js 15
-[ ] - Remove unnecessary UUID dependency
+[x] - Remove unnecessary UUID dependency
 
 ## Current Status
 

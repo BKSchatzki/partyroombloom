@@ -5,13 +5,8 @@ import React, { useCallback } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 
-import DeleteButton from '@/components/DeleteButton';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
+import { Card, CardFooter, CardTitle } from '@/components/ui/card';
 import {
   addChildNodeAtomFamily,
   deleteOutlineNodeAtomFamily,
@@ -19,92 +14,16 @@ import {
   outlineNodeAtomFamily,
   updateOutlineNodeFieldAtomFamily,
 } from '@/lib/atoms';
-import { getOutlineMode, OutlineMode, OutlineNodeField } from '@/lib/outlineState';
+import { getOutlineMode, OutlineNodeField } from '@/lib/outlineState';
 import { cn } from '@/lib/utils';
+import OutlineNodeItem from './OutlineNodeItem';
+import { INTERACTABLE_GROUP_CONFIG, INTERACTABLE_ITEM_CONFIG } from './outlineNodeConfig';
 
 interface InteractableProps {
   elementId: string;
   outlineId: number | null;
   tutorialMode: boolean;
 }
-
-interface InteractableItemProps {
-  nodeId: string;
-  mode: OutlineMode;
-  first: boolean;
-  onDelete: (id: string) => void;
-  onChange: (
-    id: string,
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: OutlineNodeField
-  ) => void;
-}
-
-const InteractableItemComponent: React.FC<InteractableItemProps> = ({
-  nodeId,
-  mode,
-  first,
-  onDelete,
-  onChange,
-}) => {
-  const node = useAtomValue(outlineNodeAtomFamily(`${mode}:${nodeId}`));
-
-  if (!node) {
-    return null;
-  }
-
-  return (
-    <div>
-      <CardHeader className={cn(`relative pt-7`)}>
-        <DeleteButton
-          first={first}
-          handleDelete={() => onDelete(nodeId)}
-          item={node.name || 'this Interactable'}
-          message="Delete Interactable"
-        />
-        <CardTitle className={cn(`relative`)}>
-          <div
-            className={cn(`absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-2`)}
-          >
-            <span className={cn(`sr-only`)}>Interactable</span>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
-        <Label
-          className={cn(`sr-only`)}
-          htmlFor={`name-${nodeId}`}
-        >
-          Interactable Name
-        </Label>
-        <Input
-          className={cn(`w-full`)}
-          id={`name-${nodeId}`}
-          onChange={(event) => onChange(nodeId, event, 'name')}
-          placeholder={`Name`}
-          value={node.name}
-        />
-        <Label
-          className={cn(`sr-only`)}
-          htmlFor={`description-${nodeId}`}
-        >
-          Interactable Description
-        </Label>
-        <Textarea
-          className={cn(`no-scrollbar`)}
-          id={`description-${nodeId}`}
-          onChange={(event) => onChange(nodeId, event, 'description')}
-          placeholder={`Description`}
-          value={node.description}
-        />
-      </CardContent>
-      <Separator className={cn(`my-2 mb-0`)} />
-    </div>
-  );
-};
-
-const InteractableItem = React.memo(InteractableItemComponent);
-InteractableItem.displayName = 'InteractableItem';
 
 const InteractableComponent: React.FC<InteractableProps> = ({
   elementId,
@@ -149,28 +68,25 @@ const InteractableComponent: React.FC<InteractableProps> = ({
   );
 
   return (
-    <Card
-      className={cn(
-        `relative mb-8 w-full bg-info/10 shadow-lg shadow-base-300 max-sm:rounded-none`
-      )}
-    >
-      <CardTitle className={cn(`absolute left-4 top-2.5 line-clamp-1 sm:left-8`)}>
-        {thisElement?.name || 'Landmark'}
+    <Card className={cn(INTERACTABLE_GROUP_CONFIG.cardClassName)}>
+      <CardTitle className={cn(INTERACTABLE_GROUP_CONFIG.titleClassName)}>
+        {thisElement?.name || INTERACTABLE_GROUP_CONFIG.parentTitleFallback}
       </CardTitle>
       {interactableIds.map((interactableId, index) => (
-        <InteractableItem
+        <OutlineNodeItem
           key={interactableId}
           nodeId={interactableId}
           mode={mode}
           first={index === 0}
+          itemConfig={INTERACTABLE_ITEM_CONFIG}
           onDelete={handleDelete}
           onChange={handleChange}
         />
       ))}
-      <CardFooter className={cn(`mt-5 flex flex-col items-start gap-4`)}>
+      <CardFooter className={cn(INTERACTABLE_GROUP_CONFIG.footerClassName)}>
         <Card
           className={cn(
-            `mx-auto mb-2 w-[99%] rounded-full bg-info/10 shadow-xl shadow-base-300`,
+            INTERACTABLE_GROUP_CONFIG.addCardClassName,
             !hasElements && `mt-6`
           )}
         >
@@ -181,9 +97,9 @@ const InteractableComponent: React.FC<InteractableProps> = ({
           >
             <Plus
               aria-hidden={true}
-              className={cn(`size-5`)}
+              className={cn(INTERACTABLE_GROUP_CONFIG.addIconClassName)}
             />{' '}
-            Interactable
+            {INTERACTABLE_GROUP_CONFIG.addLabel}
           </Button>
         </Card>
       </CardFooter>
