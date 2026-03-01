@@ -10,10 +10,14 @@ export type TutorialStep = {
   setStateToStep: () => void;
 };
 
-export type Element = {
+export const OUTLINE_NODE_TYPES = ['landmark', 'interactable', 'secret'] as const;
+
+export type OutlineNodeType = (typeof OUTLINE_NODE_TYPES)[number];
+
+type OutlineNodeBase<TType extends OutlineNodeType, TParentId extends string | null> = {
   id: string;
-  parentId: string | null;
-  type: 'landmark' | 'interactable' | 'secret';
+  parentId: TParentId;
+  type: TType;
   name?: string;
   description?: string;
   rollableSuccess?: string;
@@ -21,13 +25,30 @@ export type Element = {
   userCreatedAt: string;
 };
 
+export type FlatOutlineElement = OutlineNodeBase<OutlineNodeType, string | null>;
+export type Element = FlatOutlineElement;
+
+export type SecretNode = OutlineNodeBase<'secret', string> & {
+  children: never[];
+};
+
+export type InteractableNode = OutlineNodeBase<'interactable', string> & {
+  children: SecretNode[];
+};
+
+export type LandmarkNode = OutlineNodeBase<'landmark', null> & {
+  children: InteractableNode[];
+};
+
+export type OutlineTreeNode = LandmarkNode | InteractableNode | SecretNode;
+
 export type Outline = {
   id: number | null;
   title?: string;
   description?: string;
   goal?: string;
   comments?: string;
-  elements: Array<Element>;
+  elements: LandmarkNode[];
   conversations: Array<ConversationRel>;
 };
 

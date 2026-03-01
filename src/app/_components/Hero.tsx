@@ -1,8 +1,5 @@
 import { User } from 'lucia';
-import {
-  ArrowRight,
-  GraduationCap,
-} from 'lucide-react';
+import { ArrowRight, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 
 import { SignIn } from '@/components/SignIn';

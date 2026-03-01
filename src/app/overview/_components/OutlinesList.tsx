@@ -1,17 +1,10 @@
 'use client';
 
-import React, {
-  useCallback,
-  useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { User } from 'lucia';
-import {
-  ChevronDown,
-  Leaf,
-  Pencil,
-} from 'lucide-react';
+import { ChevronDown, Leaf, Pencil } from 'lucide-react';
 import Link from 'next/link';
 
 import DeleteButton from '@/components/DeleteButton';
@@ -65,12 +58,14 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
-        setOutlinesList(outlinesList.filter((outline) => outline.id !== outlineId));
+        setOutlinesList((prevOutlines) =>
+          prevOutlines.filter((outline) => outline.id !== outlineId)
+        );
       } catch (error) {
         console.error('Error deleting outline:', error);
       }
     },
-    [outlinesList, setOutlinesList]
+    [setOutlinesList]
   );
 
   if (error) {

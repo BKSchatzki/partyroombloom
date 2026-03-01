@@ -6,6 +6,14 @@
 
 PartyRoomBloom is an app for game masters of tabletop roleplaying games to develop their sessions through scene creation and iteration using generative AI.
 
+## Todo
+
+[x] - buildTree and flattenTree at the API boundary to make frontend intuitive
+[x] - atomize state to eliminate unnecessary renders
+[ ] - React 19 update to remove memoization hooks/HOFs with the compiler
+[ ] - authentication update to handle breaking changes from Next.js 15
+[x] - Remove unnecessary UUID dependency
+
 ## Current Status
 
 PartyRoomBloom's core featureset is complete: The Outline Builder, Overview Page, Simulate Assistant, and PDF & JSON backups are all functional.

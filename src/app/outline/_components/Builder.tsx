@@ -1,13 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { useAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { User } from 'lucia';
-import {
-  ChevronUp,
-  Save,
-} from 'lucide-react';
+import { ChevronUp, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import GenericError from '@/components/GenericError';
@@ -25,10 +22,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   existingOutlineAtom,
   newOutlineAtom,
+  outlineTreeAtomFamily,
   outlineInit,
   outlinesListAtom,
-  tutorialOutlineAtom,
+  updateOutlineMetaFieldAtomFamily,
 } from '@/lib/atoms';
+import { getOutlineMode, OutlineMetaField } from '@/lib/outlineState';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
@@ -45,38 +44,45 @@ interface BuilderProps {
   user?: User | null;
 }
 
+const OUTLINE_META_FIELDS: Record<OutlineMetaField, true> = {
+  title: true,
+  description: true,
+  goal: true,
+  comments: true,
+};
+
+const isOutlineMetaField = (value: string): value is OutlineMetaField => {
+  return Object.prototype.hasOwnProperty.call(OUTLINE_META_FIELDS, value);
+};
+
 const BuilderComponent: React.FC<BuilderProps> = ({
   outlineId = null,
   tutorialMode = false,
   user = null,
 }) => {
-  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
-  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
-  const [outlinesList] = useAtom(outlinesListAtom);
   const [isSaving, setIsSaving] = useState(false);
   const [embla, setEmbla] = useState<CarouselApi>();
-
-  const thisOutline = tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline;
-  const setThisOutline = tutorialMode
-    ? setTutorialOutline
-    : outlineId
-      ? setExistingOutline
-      : setNewOutline;
+  const mode = getOutlineMode(tutorialMode, outlineId);
+  const thisOutline = useAtomValue(outlineTreeAtomFamily(mode));
+  const setThisOutline = useSetAtom(outlineTreeAtomFamily(mode));
+  const updateMetaField = useSetAtom(updateOutlineMetaFieldAtomFamily(mode));
+  const outlinesList = useAtomValue(outlinesListAtom);
+  const setExistingOutline = useSetAtom(existingOutlineAtom);
+  const setNewOutline = useSetAtom(newOutlineAtom);
 
   const router = useRouter();
 
-  const { isLoading, error } = useQuery({
-    queryKey: ['outline'],
+  const { error } = useQuery({
+    queryKey: ['outline', outlineId, tutorialMode],
     queryFn: async () => {
       if (tutorialMode) {
-        return tutorialOutline;
+        return thisOutline;
       }
       if (!outlineId) {
-        return newOutline;
+        return thisOutline;
       }
       const preloadedOutline = outlinesList.find((outline) => outline.id === outlineId);
-      if (isLoading && preloadedOutline) {
+      if (preloadedOutline) {
         setExistingOutline(preloadedOutline);
         return preloadedOutline;
       }
@@ -90,7 +96,17 @@ const BuilderComponent: React.FC<BuilderProps> = ({
     },
   });
 
-  const handleSave = async () => {
+  const handleInfoChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
+      if (!isOutlineMetaField(property)) {
+        return;
+      }
+      updateMetaField({ field: property, value: event.target.value });
+    },
+    [updateMetaField]
+  );
+
+  const handleSave = useCallback(async () => {
     setIsSaving(true);
     const payload = thisOutline;
     if (outlineId) {
@@ -131,7 +147,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
         setIsSaving(false);
       }
     }
-  };
+  }, [outlineId, router, setNewOutline, thisOutline]);
 
   if (error) {
     return (
@@ -160,7 +176,11 @@ const BuilderComponent: React.FC<BuilderProps> = ({
                 />
               )}
               <Info
-                outlineId={outlineId}
+                title={thisOutline.title}
+                description={thisOutline.description}
+                goal={thisOutline.goal}
+                comments={thisOutline.comments}
+                handleChange={handleInfoChange}
                 tutorialMode={tutorialMode}
               />
             </ScrollArea>

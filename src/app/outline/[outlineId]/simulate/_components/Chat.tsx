@@ -1,18 +1,10 @@
 'use client';
 
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useAtom } from 'jotai';
 import { User } from 'lucia';
-import {
-  Check,
-  Coins,
-  Sparkles,
-} from 'lucide-react';
+import { Check, Coins, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import GenericError from '@/components/GenericError';
@@ -27,12 +19,7 @@ import {
 } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import {
-  conversationAtom,
-  outlinesListAtom,
-  userMessageAtom,
-  userMessageInit,
-} from '@/lib/atoms';
+import { conversationAtom, outlinesListAtom, userMessageAtom, userMessageInit } from '@/lib/atoms';
 import type { UserMessage } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';

@@ -1,12 +1,7 @@
 import React from 'react';
 
 import dayjs from 'dayjs';
-import {
-  ArrowRight,
-  ChevronDown,
-  Coins,
-  Sparkle,
-} from 'lucide-react';
+import { ArrowRight, ChevronDown, Coins, Sparkle } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';

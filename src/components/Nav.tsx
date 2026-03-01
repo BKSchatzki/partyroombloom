@@ -2,12 +2,7 @@
 import React from 'react';
 
 import { User } from 'lucia';
-import {
-  Flower,
-  Grid2X2,
-  Leaf,
-  Menu,
-} from 'lucide-react';
+import { Grid2X2, Leaf, Menu } from 'lucide-react';
 import Link from 'next/link';
 
 import { SignIn, SignOut } from '@/components/SignIn';

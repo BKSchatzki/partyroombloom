@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import type {
-  Conversation,
-  Outline,
-} from '@/lib/types';
+import type { Conversation, Outline } from '@/lib/types';
 
 // Create type for only id field in Outline
 type ExistingOutline = Omit<Outline, 'id'> & {

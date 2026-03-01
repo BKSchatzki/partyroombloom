@@ -1,56 +1,58 @@
 'use client';
 
-import React, {
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useMemo } from 'react';
 
-import { useAtom } from 'jotai';
 import { Theater } from 'lucide-react';
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  existingOutlineAtom,
-  newOutlineAtom,
-  tutorialOutlineAtom,
-} from '@/lib/atoms';
-import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface InfoProps {
-  outlineId: number | null;
+  title?: string;
+  description?: string;
+  goal?: string;
+  comments?: string;
+  handleChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    property: string
+  ) => void;
   tutorialMode: boolean;
 }
 
-const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
-  const [tutorialOutline, setTutorialOutline] = useAtom(tutorialOutlineAtom);
-  const [newOutline, setNewOutline] = useAtom(newOutlineAtom);
-  const [existingOutline, setExistingOutline] = useAtom(existingOutlineAtom);
-
-  const thisOutline = useMemo(
-    () => (tutorialMode ? tutorialOutline : outlineId ? existingOutline : newOutline),
-    [existingOutline, newOutline, outlineId, tutorialMode, tutorialOutline]
+const InfoComponent: React.FC<InfoProps> = ({
+  title,
+  description,
+  goal,
+  comments,
+  handleChange,
+  tutorialMode,
+}) => {
+  const infoTextareas = useMemo(
+    () => [
+      {
+        id: 'description',
+        label: 'Description',
+        placeholder: 'Description',
+        value: description,
+      },
+      {
+        id: 'goal',
+        label: 'Goal',
+        placeholder: 'Goal',
+        value: goal,
+      },
+      {
+        id: 'comments',
+        label: 'Comments',
+        placeholder: 'Comments',
+        value: comments,
+      },
+    ],
+    [description, goal, comments]
   );
-
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: string) => {
-      const updateInfo = (outline: Outline) => ({
-        ...outline,
-        [property]: event.target.value,
-      });
-      tutorialMode
-        ? setTutorialOutline(updateInfo)
-        : outlineId
-          ? setExistingOutline(updateInfo)
-          : setNewOutline(updateInfo);
-    },
-    [outlineId, setNewOutline, setExistingOutline, setTutorialOutline, tutorialMode]
-  );
-
-  const infoTextareas = ['description', 'goal', 'comments'] as const;
 
   return (
     <div className={cn(`pb-4`)}>
@@ -92,22 +94,22 @@ const InfoComponent: React.FC<InfoProps> = ({ outlineId, tutorialMode }) => {
             id={`title`}
             onChange={(event) => handleChange(event, 'title')}
             placeholder={`Title`}
-            value={thisOutline.title}
+            value={title}
           />
           {infoTextareas.map((item) => (
-            <React.Fragment key={item}>
+            <React.Fragment key={item.id}>
               <Label
                 className={cn(`sr-only`)}
-                htmlFor={item}
+                htmlFor={item.id}
               >
-                {item}
+                {item.label}
               </Label>
               <Textarea
                 className={cn(`no-scrollbar`)}
-                id={item}
-                onChange={(event) => handleChange(event, item)}
-                placeholder={item.charAt(0).toUpperCase() + item.slice(1)}
-                value={thisOutline[item]}
+                id={item.id}
+                onChange={(event) => handleChange(event, item.id)}
+                placeholder={item.placeholder}
+                value={item.value}
               />
             </React.Fragment>
           ))}
