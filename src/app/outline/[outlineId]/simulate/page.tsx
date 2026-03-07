@@ -7,17 +7,19 @@ import { validateRequest } from '@/lib/auth';
 
 import Chat from './_components/Chat';
 
-const Simulate = async ({ params }: { params: { outlineId: string } }) => {
+const Simulate = async ({ params }: { params: Promise<{ outlineId: string }> }) => {
   const { user } = await validateRequest();
 
   if (!user) {
     redirect('/');
   }
 
+  const { outlineId } = await params;
+
   return (
     <Container>
       <Chat
-        outlineId={params.outlineId}
+        outlineId={outlineId}
         simulateId={null}
         user={user}
       />

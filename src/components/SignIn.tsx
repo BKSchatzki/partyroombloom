@@ -1,12 +1,11 @@
 import '@/styles/google.css';
 
 import { LogOut } from 'lucide-react';
-import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-import { lucia, validateRequest } from '@/lib/auth';
+import { deleteSessionCookie, invalidateSession, validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
 export const SignIn = async ({ className }: { className?: string }) => {
@@ -62,24 +61,16 @@ export const SignIn = async ({ className }: { className?: string }) => {
   );
 };
 
-async function logout(): Promise<ActionResult> {
+async function logout() {
   'use server';
   const { session } = await validateRequest();
   if (!session) {
-    return {
-      error: 'Unauthorized',
-    };
+    return;
   }
 
-  await lucia.invalidateSession(session.id);
-
-  const sessionCookie = lucia.createBlankSessionCookie();
-  cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-  return redirect('/');
-}
-
-interface ActionResult {
-  error: string | null;
+  await invalidateSession(session.id);
+  await deleteSessionCookie();
+  redirect('/');
 }
 
 export const SignOut = async ({ classProps }: { classProps?: string }) => {

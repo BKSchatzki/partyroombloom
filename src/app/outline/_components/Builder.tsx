@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import { User } from 'lucia';
+import type { User } from '@/lib/auth';
 import { ChevronUp, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 

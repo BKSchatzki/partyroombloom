@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { useAtom } from 'jotai';
-import { User } from 'lucia';
+import type { User } from '@/lib/auth';
 import { ChevronDown, Leaf, Pencil } from 'lucide-react';
 import Link from 'next/link';
 
@@ -123,7 +123,7 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                 <AccordionTrigger
                   iconSize={7}
                   className={cn(
-                    `rounded-2xl outline-none ring-inset ring-secondary focus:ring-2 max-sm:rounded-none [&[data-state=open]]:rounded-b-none`
+                    `rounded-2xl outline-none ring-inset ring-secondary focus:ring-2 max-sm:rounded-none data-[state=open]:rounded-b-none`
                   )}
                 >
                   <span

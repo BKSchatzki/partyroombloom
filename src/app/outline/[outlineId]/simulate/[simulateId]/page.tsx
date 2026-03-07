@@ -6,14 +6,15 @@ import { prisma } from '@/lib/prisma';
 
 import Chat from '../_components/Chat';
 
-const ViewSimulation = async ({ params }: { params: { simulateId: string } }) => {
+const ViewSimulation = async ({ params }: { params: Promise<{ simulateId: string }> }) => {
   const { user } = await validateRequest();
 
   if (!user) {
     redirect('/');
   }
 
-  const simulateId = parseInt(params.simulateId);
+  const { simulateId: simulateIdParam } = await params;
+  const simulateId = parseInt(simulateIdParam);
   if (isNaN(simulateId)) {
     redirect('/outline');
   }

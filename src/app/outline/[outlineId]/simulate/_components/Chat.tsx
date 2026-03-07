@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useAtom } from 'jotai';
-import { User } from 'lucia';
+import type { User } from '@/lib/auth';
 import { Check, Coins, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
