@@ -13,6 +13,7 @@ PartyRoomBloom is an app for game masters of tabletop roleplaying games to devel
 [ ] - React 19 update to remove memoization hooks/HOFs with the compiler
 [ ] - authentication update to handle breaking changes from Next.js 15
 [x] - Remove unnecessary UUID dependency
+[ ] - Migrate from ESLint + Prettier to Biome (formatting is ready; blocked on Next.js-specific lint rules and nursery-status Tailwind class sorting with no tailwind.config.js support)
 
 ## Current Status
 
