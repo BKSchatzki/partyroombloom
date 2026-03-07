@@ -1,4 +1,4 @@
-import { User } from 'lucia';
+import type { User } from '@/lib/auth';
 import { ArrowRight, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 
@@ -14,14 +14,14 @@ const Hero: React.FC<HeroProps> = ({ user }) => {
   return (
     <div
       className={cn(
-        `flex w-full flex-col items-center text-balance bg-gradient-to-b from-base-300/75 to-transparent px-4 pt-16 text-center`
+        `flex w-full flex-col items-center text-balance bg-linear-to-b from-base-300/75 to-transparent px-4 pt-16 text-center`
       )}
     >
       <div className={cn(`max-w-xl`)}>
         <h1 className={cn(`text-5xl font-black`)}>
           The game master's inspirational{' '}
           <span
-            className={cn(`bg-gradient-to-br from-error to-warning bg-clip-text text-transparent`)}
+            className={cn(`bg-linear-to-br from-error to-warning bg-clip-text text-transparent`)}
           >
             session planning toolkit
           </span>

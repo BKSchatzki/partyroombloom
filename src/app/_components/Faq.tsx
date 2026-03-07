@@ -164,7 +164,7 @@ const Faq = () => {
   ];
 
   return (
-    <div className={cn(`bg-gradient-to-b from-indigo-950 to-neutral px-4 pb-16 pt-16 sm:px-16`)}>
+    <div className={cn(`bg-linear-to-b from-indigo-950 to-neutral px-4 pb-16 pt-16 sm:px-16`)}>
       <Card className={cn(`bg-base-100/50 shadow-xl shadow-base-300`)}>
         <Accordion
           type="single"
@@ -180,7 +180,7 @@ const Faq = () => {
                 className={cn(
                   `outline-none ring-inset ring-secondary focus:ring-2 max-sm:rounded-none`,
                   index === 0 && `rounded-t-2xl`,
-                  index === questions.length - 1 && `[&[data-state=closed]]:rounded-b-2xl`
+                  index === questions.length - 1 && `data-[state=closed]:rounded-b-2xl`
                 )}
               >
                 <span

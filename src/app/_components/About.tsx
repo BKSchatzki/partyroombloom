@@ -80,7 +80,7 @@ const About = () => {
   return (
     <div
       className={cn(
-        `item-center grid grid-cols-2 gap-16 text-balance bg-gradient-to-b from-transparent to-indigo-950 px-4 pt-16 sm:px-16`
+        `item-center grid grid-cols-2 gap-16 text-balance bg-linear-to-b from-transparent to-indigo-950 px-4 pt-16 sm:px-16`
       )}
     >
       {features.map((feature, index) => (

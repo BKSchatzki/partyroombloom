@@ -6,14 +6,15 @@ import { prisma } from '@/lib/prisma';
 
 import Builder from '../_components/Builder';
 
-const ViewOutline = async ({ params }: { params: { outlineId: string } }) => {
+const ViewOutline = async ({ params }: { params: Promise<{ outlineId: string }> }) => {
   const { user } = await validateRequest();
 
   if (!user) {
     redirect('/');
   }
 
-  const outlineId = parseInt(params.outlineId);
+  const { outlineId: outlineIdParam } = await params;
+  const outlineId = parseInt(outlineIdParam);
   if (isNaN(outlineId)) {
     redirect('/outline');
   }

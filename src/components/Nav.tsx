@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 
-import { User } from 'lucia';
+import type { User } from '@/lib/auth';
 import { Grid2X2, Leaf, Menu } from 'lucide-react';
 import Link from 'next/link';
 
