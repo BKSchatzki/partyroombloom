@@ -2,7 +2,7 @@
 @import 'tailwind-animate';
 
 @plugin 'daisyui' {
-  themes: forest;
+  themes: forest --default;
 }
 
 @plugin 'tailwind-scrollbar';
