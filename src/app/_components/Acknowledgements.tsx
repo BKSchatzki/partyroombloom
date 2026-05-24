@@ -7,7 +7,6 @@ import AutoScroll from 'embla-carousel-auto-scroll';
 import { Globe } from 'lucide-react';
 import Link from 'next/link';
 
-import { Card } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
 
@@ -208,7 +207,7 @@ const Acknowledgements = () => {
     <footer className={cn(``)}>
       <div
         className={cn(
-          `flex flex-col items-center border-t-2 border-[#302a2a] bg-base-300 p-4 py-8 sm:px-16`
+          `bg-base-300 flex flex-col items-center border-t-2 border-[#302a2a] p-4 py-8 sm:px-16`
         )}
       >
         <div
@@ -243,7 +242,7 @@ const Acknowledgements = () => {
               that brought the three-layered framework into the spotlight and inspired the
               development of this application.
             </p>
-            <p className={cn(`text-sm text-base-content/50`)}>
+            <p className={cn(`text-base-content/50 text-sm`)}>
               Acknowledgements are needed for the tools found below; without them, this application
               wouldn't have been possible. Or rather, it would have been possible, but much more
               annoying to build.
@@ -264,7 +263,7 @@ const Acknowledgements = () => {
                 </li>
               ))}
             </ul>
-            <p className={cn(`text-balance text-center text-xs text-base-content/50`)}>
+            <p className={cn(`text-base-content/50 text-center text-xs text-balance`)}>
               To learn more about the developer, visit the links above.
             </p>
           </div>
@@ -277,23 +276,27 @@ const Acknowledgements = () => {
           skipSnaps: true,
         }}
         plugins={[AutoScroll({ startDelay: 0, speed: 1, stopOnInteraction: false })]}
-        className={cn(`border-y-2 border-[#302a2a] py-0.5`)}
+        className={cn(`bg-base-300/80 overflow-hidden border-y-2 border-[#302a2a] py-0.5`)}
       >
-        <CarouselContent>
+        <CarouselContent className={cn(`h-14`)}>
           {logos.map((logo) => (
             <CarouselItem
               key={logo.name}
               className={cn(
-                `flex min-w-0 basis-1/3 items-center justify-center pl-0 sm:basis-1/4 md:basis-1/5 lg:basis-1/6`
+                `flex min-w-0 basis-1/3 items-stretch justify-center pl-0 sm:basis-1/4 md:basis-1/5 lg:basis-1/6`
               )}
             >
-              <Card className={cn(`bg-base-100 basis-full rounded-2xl border-l-2 py-4`)}>
+              <div
+                className={cn(
+                  `bg-base-100/60 flex min-w-0 basis-full items-center justify-center border-r border-[#302a2a] px-6`
+                )}
+              >
                 <img
                   src={logo.src}
                   alt={`${logo.name} Logo`}
                   className={cn(`h-6`)}
                 />
-              </Card>
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>

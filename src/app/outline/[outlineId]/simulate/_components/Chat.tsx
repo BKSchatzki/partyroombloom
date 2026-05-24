@@ -196,7 +196,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
       setApi={setEmbla}
       className={cn(`h-full max-w-full`)}
     >
-      <div className={cn(`flex max-h-full select-none flex-col pb-4`)}>
+      <div className={cn(`flex max-h-full min-h-0 flex-col pb-4 select-none`)}>
         <CarouselContent>
           {conversation.map((message, index) =>
             message.role === 'assistant' ? (
@@ -214,7 +214,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
                           <p key={narration}>{narration}</p>
                         ))}
                       </div>
-                      <Separator className={cn(`my-2 border-base-300`)} />
+                      <Separator className={cn(`border-base-300 my-2`)} />
                       <p className={cn(`text-lg font-bold`)}>{message.content.prompt || ''}</p>
                       <ChatOptions
                         options={message.content.options || []}
@@ -225,7 +225,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
                         disabled={isSaving || index !== conversation.length - 1 || tokenCount <= 0}
                         onClick={() => handleSubmit(userMessage)}
                         className={cn(
-                          `bg-indigo-600 outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 max-sm:mx-1`
+                          `ring-offset-base-300 bg-indigo-600 ring-indigo-500 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 max-sm:mx-1`
                         )}
                       >
                         {isSaving ? (
@@ -253,7 +253,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
                             Send
                             <span
                               className={cn(
-                                `flex items-center gap-1 rounded-md bg-base-200/50 px-2 py-1 text-xs`,
+                                `bg-base-200/50 flex items-center gap-1 rounded-md px-2 py-1 text-xs`,
                                 tokenCount > 10 ? 'text-success' : 'text-error'
                               )}
                             >
@@ -278,7 +278,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
             ) : null
           )}
         </CarouselContent>
-        <div className={cn(`relative h-16 border-t-2 border-[#302a2a]`)}>
+        <div className={cn(`relative h-16 shrink-0 border-t-2 border-[#302a2a]`)}>
           <CarouselPrevious
             color={`default`}
             className={cn(

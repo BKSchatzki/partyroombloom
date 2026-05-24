@@ -62,11 +62,11 @@ export default async function RootLayout({
     <html lang="en">
       <body className={cn(inter.className)}>
         <Providers>
-          <div className={cn(`grid h-screen grid-rows-[auto,1fr] text-base-content`)}>
+          <div className={cn(`text-base-content grid h-dvh min-h-0 grid-rows-[auto_1fr]`)}>
             <Nav user={user} />
             <main
               className={cn(
-                `no-scrollbar bg-flowers flex flex-col items-center justify-start overflow-y-scroll`
+                `no-scrollbar bg-flowers flex min-h-0 flex-col items-center justify-start overflow-y-auto`
               )}
             >
               {children}

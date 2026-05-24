@@ -165,7 +165,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
       setApi={setEmbla}
       className={cn(`h-full max-w-full`)}
     >
-      <div className={cn(`flex max-h-full select-none flex-col pb-4`)}>
+      <div className={cn(`flex max-h-full min-h-0 flex-col pb-4 select-none`)}>
         <CarouselContent>
           <CarouselItem className={cn(`basis-full pb-4`)}>
             <ScrollArea className={cn(`flex h-[calc(100vh-9rem)] flex-col gap-4 sm:px-4`)}>
@@ -214,10 +214,10 @@ const BuilderComponent: React.FC<BuilderProps> = ({
             />
           </CarouselItem>
         </CarouselContent>
-        <div className={cn(`relative h-16 border-t-2 border-[#302a2a]`)}>
+        <div className={cn(`relative h-16 shrink-0 border-t-2 border-[#302a2a]`)}>
           <CarouselPrevious />
           <CarouselNext />
-          <div className={cn(`absolute bottom-0 right-20 flex items-center gap-4`)}>
+          <div className={cn(`absolute top-1/2 right-20 flex -translate-y-1/2 items-center gap-4`)}>
             <ManageDropdown
               outline={thisOutline}
               setOutline={setThisOutline}

@@ -11,7 +11,7 @@ const Container: React.FC<ContainerProps> = ({ children, className }) => {
   return (
     <div
       className={cn(
-        `bg-base-100 flex h-full w-full max-w-[48rem] flex-col items-center justify-start border-[#302a2a] md:border-x-2`,
+        `bg-base-100 flex h-full min-h-0 w-full max-w-[48rem] flex-col items-center justify-start border-[#302a2a] md:border-x-2`,
         className
       )}
     >
