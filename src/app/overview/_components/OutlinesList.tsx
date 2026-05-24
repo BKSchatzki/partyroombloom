@@ -83,12 +83,12 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
     <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 sm:px-4`)}>
       <Link
         href={`/outline/new`}
-        className={cn(`mb-4 mt-4 block h-full w-full px-4 outline-none`)}
+        className={cn(`mt-4 mb-4 block w-full px-4 outline-none`)}
         tabIndex={-1}
       >
         <button
           className={cn(
-            `flex h-[136px] w-full flex-row items-center justify-center gap-2 text-balance rounded-2xl border-2 border-dashed border-[#64d8b4] bg-secondary/10 text-2xl text-[#64d8b4] outline-none ring-secondary ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-secondary/20 hover:brightness-125 focus:ring-2`
+            `bg-secondary/10 ring-secondary ring-offset-base-300 hover:bg-secondary/20 flex h-[136px] w-full flex-row items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#64d8b4] text-2xl text-balance text-[#64d8b4] ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:brightness-125 focus:ring-2`
           )}
         >
           <Leaf
@@ -110,25 +110,25 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
         <Accordion
           type={`single`}
           collapsible={true}
-          className={cn(`border-t-2 border-base-300 pt-4`)}
+          className={cn(`border-base-300 border-t-2 pt-4`)}
         >
           {outlinesList.map((outline) => (
             <Card
               key={outline.id}
               className={cn(
-                `relative mb-6 w-full bg-neutral/50 p-0 shadow-xl shadow-base-300 transition-all duration-100 ease-in-out max-sm:rounded-none`
+                `bg-neutral/50 shadow-base-300 relative mb-6 w-full p-0 shadow-xl transition-all duration-100 ease-in-out max-sm:rounded-none`
               )}
             >
               <AccordionItem value={`${outline.id}`}>
                 <AccordionTrigger
                   iconSize={7}
                   className={cn(
-                    `rounded-2xl outline-none ring-inset ring-secondary focus:ring-2 max-sm:rounded-none data-[state=open]:rounded-b-none`
+                    `ring-secondary rounded-2xl outline-none ring-inset focus:ring-2 data-[state=open]:rounded-b-none max-sm:rounded-none`
                   )}
                 >
                   <span
                     className={cn(
-                      `flex w-full shrink-0 gap-2 text-balance p-4 pe-12 text-2xl text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:basis-1/3 sm:gap-4`,
+                      `flex w-full shrink-0 gap-2 p-4 pe-12 text-2xl text-balance text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:basis-1/3 sm:gap-4`,
                       !outline.title && `italic opacity-30`
                     )}
                   >
@@ -136,7 +136,7 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                   </span>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className={cn(`flex flex-col gap-2 border-t-2 border-base-300 p-4`)}>
+                  <div className={cn(`border-base-300 flex flex-col gap-2 border-t-2 p-4`)}>
                     <span className={cn(!outline.description && `italic opacity-30`)}>
                       <span className={cn(`font-semibold text-[#64d8b4]`)}>Description: </span>
                       {outline.description || 'A short description to set the scene.'}
@@ -150,7 +150,7 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                       {outline.comments || 'Extra information to help the Simulator or Future You.'}
                     </span>
                   </div>
-                  <div className={cn(`grid grid-cols-12 gap-4 border-t-2 border-base-300/30 p-4`)}>
+                  <div className={cn(`border-base-300/30 grid grid-cols-12 gap-4 border-t-2 p-4`)}>
                     <div className={cn(`col-span-12 sm:col-span-3`)}>
                       <DeleteButton
                         block={true}
