@@ -80,31 +80,33 @@ const About = () => {
   return (
     <div
       className={cn(
-        `item-center grid grid-cols-2 gap-16 text-balance bg-linear-to-b from-transparent to-indigo-950 px-4 pt-16 sm:px-16`
+        `grid w-full min-w-0 grid-cols-1 items-center gap-16 bg-linear-to-b from-transparent to-indigo-950 px-4 pt-16 text-balance sm:px-16 lg:grid-cols-2`
       )}
     >
       {features.map((feature, index) => (
         <Card
           key={index}
           className={cn(
-            `col-span-2 items-center justify-end bg-base-100/75 text-center shadow-xl shadow-base-300 lg:col-span-1`
+            `bg-base-100/75 shadow-base-300 w-full min-w-0 items-center justify-end overflow-hidden text-center shadow-xl`
           )}
         >
-          <CardContent className={cn(`flex h-full flex-col-reverse justify-end gap-4`)}>
-            <div className={cn(`flex max-w-96 flex-col gap-4 py-4`)}>
+          <CardContent
+            className={cn(`flex h-full w-full min-w-0 flex-col-reverse justify-end gap-4`)}
+          >
+            <div className={cn(`flex w-full max-w-96 flex-col gap-4 py-4`)}>
               <h2 className={cn(`text-3xl font-bold`)}>{feature.title}</h2>
               {feature.description}
             </div>
             <AspectRatio
               ratio={4 / 3}
-              className={`h-full`}
+              className={cn(`w-full overflow-hidden`)}
             >
               <Image
                 src={feature.imgSrc}
                 alt={feature.imgAlt}
                 width={800}
                 height={600}
-                className={cn(`mt-4 h-full rounded-xl object-cover pt-4`)}
+                className={cn(`mt-4 h-full w-full rounded-xl object-cover`)}
               />
             </AspectRatio>
           </CardContent>

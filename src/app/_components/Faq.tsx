@@ -164,11 +164,18 @@ const Faq = () => {
   ];
 
   return (
-    <div className={cn(`bg-linear-to-b from-indigo-950 to-neutral px-4 pb-16 pt-16 sm:px-16`)}>
-      <Card className={cn(`bg-base-100/50 shadow-xl shadow-base-300`)}>
+    <div
+      className={cn(
+        `to-neutral w-full min-w-0 bg-linear-to-b from-indigo-950 px-4 pt-16 pb-16 sm:px-16`
+      )}
+    >
+      <Card
+        className={cn(`bg-base-100/50 shadow-base-300 w-full min-w-0 overflow-hidden shadow-xl`)}
+      >
         <Accordion
           type="single"
           collapsible
+          className={cn(`w-full min-w-0`)}
         >
           {questions.map((question, index) => (
             <AccordionItem
@@ -178,14 +185,14 @@ const Faq = () => {
               <AccordionTrigger
                 iconSize={7}
                 className={cn(
-                  `outline-none ring-inset ring-secondary focus:ring-2 max-sm:rounded-none`,
+                  `ring-secondary outline-none ring-inset focus:ring-2 max-sm:rounded-none`,
                   index === 0 && `rounded-t-2xl`,
                   index === questions.length - 1 && `data-[state=closed]:rounded-b-2xl`
                 )}
               >
                 <span
                   className={cn(
-                    `flex w-full shrink-0 gap-2 p-4 pe-12 text-2xl text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:basis-1/3 sm:gap-4`
+                    `flex w-full min-w-0 gap-2 p-4 pe-12 text-2xl text-balance text-[#64d8b4] hover:brightness-125 max-sm:flex-col sm:gap-4`
                   )}
                 >
                   {question.question}
