@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { isPrismaRecordNotFoundError, parsePositiveInteger, readJsonBody } from '@/lib/api';
+import {
+  isPrismaRecordNotFoundError,
+  parsePositiveInteger,
+  readJsonBody,
+  validateSameOriginRequest,
+} from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
 import { toElementWriteData, toFlatOutlineElement } from '@/lib/outlinePersistence';
@@ -70,6 +75,11 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
   - Updating outline of id matching URL param and matching current user with data from body
 */
 export const PUT = async (req: NextRequest, { params }: RouteContext) => {
+  const originResponse = validateSameOriginRequest(req);
+  if (originResponse) {
+    return originResponse;
+  }
+
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
@@ -183,6 +193,11 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   - Deleting outline of id matching URL param matching current user
 */
 export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
+  const originResponse = validateSameOriginRequest(req);
+  if (originResponse) {
+    return originResponse;
+  }
+
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {

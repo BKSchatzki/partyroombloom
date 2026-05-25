@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { readJsonBody } from '@/lib/api';
+import { readJsonBody, validateSameOriginRequest } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { getStructuredResponse } from '@/lib/openaiClient';
 import { prisma } from '@/lib/prisma';
@@ -15,6 +15,11 @@ export const runtime = 'nodejs';
   - Persisting the updated conversation thread after a successful AI response
 */
 export const POST = async (req: NextRequest) => {
+  const originResponse = validateSameOriginRequest(req);
+  if (originResponse) {
+    return originResponse;
+  }
+
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user || user.chatTokens <= 0) {

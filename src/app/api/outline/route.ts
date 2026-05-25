@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { readJsonBody } from '@/lib/api';
+import { readJsonBody, validateSameOriginRequest } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
 import { toElementWriteData, toFlatOutlineElement } from '@/lib/outlinePersistence';
@@ -68,6 +68,11 @@ export const GET = async (req: NextRequest) => {
   - Ensuring that element relations are preserved in database by inserting in hierarchical order
 */
 export const POST = async (req: NextRequest) => {
+  const originResponse = validateSameOriginRequest(req);
+  if (originResponse) {
+    return originResponse;
+  }
+
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {

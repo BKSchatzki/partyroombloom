@@ -29,6 +29,49 @@ const parseContentLength = (contentLength: string | null) => {
   return Number.isSafeInteger(parsedValue) && parsedValue >= 0 ? parsedValue : null;
 };
 
+const parseHeaderOrigin = (origin: string | null) => {
+  if (!origin) {
+    return null;
+  }
+
+  try {
+    return new URL(origin).origin;
+  } catch {
+    return null;
+  }
+};
+
+const firstHeaderValue = (value: string | null) => {
+  return value?.split(',')[0].trim() || null;
+};
+
+const getRequestOrigins = (request: NextRequest) => {
+  const origins = new Set<string>([request.nextUrl.origin]);
+  const forwardedProto = firstHeaderValue(request.headers.get('x-forwarded-proto'));
+  const protocol = forwardedProto ?? request.nextUrl.protocol.replace(/:$/, '');
+  const hostCandidates = [
+    firstHeaderValue(request.headers.get('host')),
+    firstHeaderValue(request.headers.get('x-forwarded-host')),
+  ];
+
+  hostCandidates.forEach((host) => {
+    if (host) {
+      origins.add(`${protocol}://${host}`);
+    }
+  });
+
+  return origins;
+};
+
+export const validateSameOriginRequest = (request: NextRequest) => {
+  const origin = parseHeaderOrigin(request.headers.get('origin'));
+  if (!origin || !getRequestOrigins(request).has(origin)) {
+    return NextResponse.json({ message: 'Invalid request origin' }, { status: 403 });
+  }
+
+  return null;
+};
+
 export const readJsonBody = async (request: NextRequest): Promise<JsonBodyResult> => {
   if (!hasJsonContentType(request.headers.get('content-type'))) {
     return {
