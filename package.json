@@ -8,14 +8,17 @@
   },
   "scripts": {
     "dev": "next dev -H 0.0.0.0",
-    "build": "prisma generate && next build",
+    "build": "npm run db:generate && next build",
     "start": "node .next/standalone/server.js",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run build",
+    "db:generate": "prisma generate",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:status": "prisma migrate status",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "node scripts/prepare.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
@@ -35,6 +38,7 @@
     "motion": "^12.0.6",
     "next": "^16.2.6",
     "openai": "^4.56.0",
+    "prisma": "^6.19.3",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -61,7 +65,6 @@
     "husky": "^9.1.7",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "prisma": "^6.19.3",
     "typescript": "^5"
   },
   "overrides": {

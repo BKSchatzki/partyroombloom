@@ -114,6 +114,14 @@ To build the project for production:
 npm run build
 ```
 
+Apply pending database migrations in a staging or production release step:
+
+```bash
+npm run db:migrate:deploy
+```
+
+Use `npm run db:migrate:status` to inspect pending migrations before a release. Do not use `prisma migrate dev` or `prisma db push` against production data.
+
 Build a production Docker image:
 
 ```bash
@@ -136,6 +144,10 @@ The Docker image uses Next.js standalone output, runs `node server.js` in produc
   - Your PostgreSQL database URL
   - Your OpenAI API key
   - The Client ID and secret in your created application on GCP, found on the same page as the authorized origins and URIs (below)
+- Database migrations:
+  - Run `npm run db:migrate:deploy` from a release pipeline, deployment job, or controlled shell with the production `DATABASE_URL` set.
+  - Run migrations before routing traffic to a build that depends on the new schema.
+  - Do not run development-only migration commands against production data.
 - Application created in GCP, with OAuth 2.0 Client ID:
   - Authorized JavaScript origins:
     - <http://localhost:3000>
