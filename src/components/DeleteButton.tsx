@@ -35,13 +35,15 @@ const DeleteButtonComponent: React.FC<DeleteButtonProps> = ({
 }) => {
   return block ? (
     <Dialog>
-      <div className={cn(`rounded-3xl bg-error/25`)}>
-        <DialogTrigger className={cn(`btn btn-outline btn-error btn-block`)}>
+      <div className={cn(`bg-error/25 rounded-3xl`)}>
+        <DialogTrigger
+          className={cn(`btn btn-outline btn-error btn-block h-10 min-h-10 px-4 text-sm`)}
+        >
           <Trash2 className={cn(`size-5`)} />
           {message}
         </DialogTrigger>
       </div>
-      <DialogContent className={cn(`bg-base-200 border-none text-base-content`)}>
+      <DialogContent className={cn(`bg-base-200 text-base-content border-none`)}>
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription className={cn(`text-base-content/75`)}>
@@ -66,20 +68,20 @@ const DeleteButtonComponent: React.FC<DeleteButtonProps> = ({
   ) : (
     <div
       className={cn(
-        `absolute right-[1px] top-[1px] rounded-b-none rounded-bl-xl rounded-tl-none bg-error/25`,
+        `bg-error/25 absolute top-[1px] right-[1px] rounded-tl-none rounded-b-none rounded-bl-xl`,
         first ? 'sm:rounded-tr-xl' : 'rounded-tr-none'
       )}
     >
       <Dialog>
         <DialogTrigger
           className={cn(
-            `rounded-bl-xl outline-none ring-inset ring-error ring-offset-2 ring-offset-base-300 focus:ring-1`,
+            `ring-error ring-offset-base-300 rounded-bl-xl ring-offset-2 outline-none ring-inset focus:ring-1`,
             first ? `rounded-tr-xl max-sm:rounded-tr-none` : `rounded-tr-none`
           )}
         >
           <div
             className={cn(
-              `btn btn-outline btn-error btn-sm rounded-bl-xl rounded-br-none rounded-tl-none`,
+              `btn btn-outline btn-error btn-sm rounded-tl-none rounded-br-none rounded-bl-xl`,
               first ? `rounded-tr-xl max-sm:rounded-tr-none` : `rounded-tr-none`
             )}
           >
@@ -87,7 +89,7 @@ const DeleteButtonComponent: React.FC<DeleteButtonProps> = ({
             <span className={cn(`sr-only`)}>{message}</span>
           </div>
         </DialogTrigger>
-        <DialogContent className={cn(`bg-base-200 border-none text-base-content`)}>
+        <DialogContent className={cn(`bg-base-200 text-base-content border-none`)}>
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription className={cn(`text-base-content/75`)}>

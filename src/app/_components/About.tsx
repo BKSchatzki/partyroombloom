@@ -80,21 +80,23 @@ const About = () => {
   return (
     <div
       className={cn(
-        `grid w-full min-w-0 grid-cols-1 items-center gap-16 bg-linear-to-b from-transparent to-indigo-950 px-4 pt-16 text-balance sm:px-16 lg:grid-cols-2`
+        `grid w-full min-w-0 grid-cols-1 items-stretch gap-16 bg-linear-to-b from-transparent to-indigo-950 px-4 pt-16 sm:auto-rows-fr sm:px-16 lg:grid-cols-2`
       )}
     >
       {features.map((feature, index) => (
         <Card
           key={index}
           className={cn(
-            `bg-base-100/75 shadow-base-300 w-full min-w-0 items-center justify-end overflow-hidden text-center shadow-xl`
+            `bg-base-100/75 shadow-base-300 h-full w-full min-w-0 justify-end overflow-hidden text-center shadow-xl`
           )}
         >
           <CardContent
-            className={cn(`flex h-full w-full min-w-0 flex-col-reverse justify-end gap-4`)}
+            className={cn(
+              `flex h-full w-full min-w-0 flex-col-reverse items-center justify-end gap-4`
+            )}
           >
-            <div className={cn(`flex w-full max-w-96 flex-col gap-4 py-4`)}>
-              <h2 className={cn(`text-3xl font-bold`)}>{feature.title}</h2>
+            <div className={cn(`mx-auto flex w-full max-w-96 flex-col gap-4 py-4 text-pretty`)}>
+              <h2 className={cn(`text-3xl font-bold text-balance`)}>{feature.title}</h2>
               {feature.description}
             </div>
             <AspectRatio

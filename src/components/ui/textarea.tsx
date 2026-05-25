@@ -13,7 +13,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <TextareaAutosize
         minRows={3}
-        className={cn('textarea w-full resize-none text-base', className)}
+        className={cn('textarea w-full resize-none px-4 py-3 text-base leading-relaxed', className)}
         ref={ref}
         {...props}
       />

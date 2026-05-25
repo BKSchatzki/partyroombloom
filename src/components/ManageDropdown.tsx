@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Dispatch, SetStateAction, useCallback, useMemo, useRef } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useMemo, useRef, useState } from 'react';
 
 import dayjs from 'dayjs';
 import saveAs from 'file-saver';
@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { OutlineTreeSchema } from '@/lib/schemas';
 import { InteractableNode, LandmarkNode, Outline, SecretNode } from '@/lib/types';
@@ -32,6 +33,7 @@ const ManageDropdownComponent: React.FC<ManageDropdownProps> = ({
   className,
   children,
 }) => {
+  const [open, setOpen] = useState(false);
   const handleDownload = useCallback(async () => {
     try {
       if (typeof window !== 'undefined') {
@@ -54,6 +56,18 @@ const ManageDropdownComponent: React.FC<ManageDropdownProps> = ({
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleTriggerPointerDown = useCallback(
+    (event: React.PointerEvent<HTMLButtonElement>) => {
+      if (!open) {
+        return;
+      }
+
+      event.preventDefault();
+      setOpen(false);
+    },
+    [open]
+  );
+
   const handleUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
@@ -125,20 +139,29 @@ const ManageDropdownComponent: React.FC<ManageDropdownProps> = ({
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          className={cn(
-            `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-orange-800 bg-orange-700 font-semibold text-base-300 outline-none ring-orange-600 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-orange-700 hover:brightness-90 focus:ring-2 disabled:bg-orange-700/30 sm:col-span-2`,
-            className
-          )}
-        >
-          {children}
+      <DropdownMenu
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <DropdownMenuTrigger asChild>
+          <Button
+            type={`button`}
+            color={`ghost`}
+            size={`block`}
+            onPointerDown={handleTriggerPointerDown}
+            className={cn(
+              `text-base-300 ring-offset-base-300 col-span-12 h-10 min-h-10 max-w-full rounded-3xl border border-orange-800 bg-orange-700 px-4 text-sm font-semibold ring-orange-600 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:bg-orange-700 hover:brightness-90 focus:ring-2 disabled:bg-orange-700/30 sm:col-span-3`,
+              className
+            )}
+          >
+            {children}
+          </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}>
+        <DropdownMenuContent className={cn(`bg-base-300 flex flex-col gap-2 rounded-2xl`)}>
           <DropdownMenuItem
             asChild
             className={cn(
-              `cursor-pointer rounded-xl bg-warning/10 p-0 font-semibold hover:bg-warning hover:text-base-300 focus:bg-warning focus:text-base-300`
+              `bg-warning/10 hover:bg-warning hover:text-base-300 focus:bg-warning focus:text-base-300 cursor-pointer rounded-xl p-0 font-semibold`
             )}
           >
             <button
@@ -155,7 +178,7 @@ const ManageDropdownComponent: React.FC<ManageDropdownProps> = ({
           <DropdownMenuItem
             asChild
             className={cn(
-              `cursor-pointer rounded-xl bg-fuchsia-500/10 p-0 font-semibold hover:bg-fuchsia-500 hover:text-base-300 focus:bg-fuchsia-500 focus:text-base-300`
+              `hover:text-base-300 focus:text-base-300 cursor-pointer rounded-xl bg-fuchsia-500/10 p-0 font-semibold hover:bg-fuchsia-500 focus:bg-fuchsia-500`
             )}
           >
             <button
@@ -175,7 +198,7 @@ const ManageDropdownComponent: React.FC<ManageDropdownProps> = ({
             <DropdownMenuItem
               asChild
               className={cn(
-                `cursor-pointer rounded-xl bg-info/10 p-0 font-semibold hover:bg-info hover:text-base-300 focus:bg-info focus:text-base-300`
+                `bg-info/10 hover:bg-info hover:text-base-300 focus:bg-info focus:text-base-300 cursor-pointer rounded-xl p-0 font-semibold`
               )}
             >
               <button
