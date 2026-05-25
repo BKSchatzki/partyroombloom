@@ -4,7 +4,7 @@ import { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mj
 
 import { getRequiredEnv } from './env';
 import { simulateOutlinePrompt } from './prompts';
-import { DungeonMasterResponseSchema } from './schemas';
+import { DungeonMasterResponseSchema, StoredDungeonMasterResponseSchema } from './schemas';
 import { Conversation, Outline, OutlineUserMessage, SystemMessage, UserMessage } from './types';
 
 let openaiClient: OpenAI | null = null;
@@ -71,10 +71,14 @@ export const getStructuredResponse = async (
   if (!assistantMessage) {
     throw new Error('OpenAI response did not match the expected assistant schema.');
   }
+  const storedAssistantMessage = StoredDungeonMasterResponseSchema.safeParse(assistantMessage);
+  if (!storedAssistantMessage.success) {
+    throw new Error('OpenAI response exceeded the stored assistant message limits.');
+  }
 
   const nextConversation = conversation.length
     ? [...conversation, userMessage]
     : [initialSystemPrompt, userMessage];
 
-  return [...nextConversation, { role: 'assistant', content: assistantMessage }];
+  return [...nextConversation, { role: 'assistant', content: storedAssistantMessage.data }];
 };
