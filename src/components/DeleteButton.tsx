@@ -37,7 +37,9 @@ const DeleteButtonComponent: React.FC<DeleteButtonProps> = ({
     <Dialog>
       <div className={cn(`bg-error/25 rounded-3xl`)}>
         <DialogTrigger
-          className={cn(`btn btn-outline btn-error btn-block h-10 min-h-10 px-4 text-sm`)}
+          className={cn(
+            `btn btn-outline btn-error btn-block hover:border-error active:border-error h-10 min-h-10 px-4 text-sm`
+          )}
         >
           <Trash2 className={cn(`size-5`)} />
           {message}

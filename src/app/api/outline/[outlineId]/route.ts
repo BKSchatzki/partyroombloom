@@ -10,7 +10,11 @@ import { Element, Outline } from '@/lib/types';
   - Getting outline from URL param and its associated user
   - Formatting outline to match frontend types
 */
-export const GET = async (req: NextRequest, { params }: { params: { outlineId: string } }) => {
+type RouteContext = {
+  params: Promise<{ outlineId: string }>;
+};
+
+export const GET = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
@@ -18,7 +22,8 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
   }
   try {
     // Convert outlineId string from params into number
-    const outlineId = parseInt(params.outlineId);
+    const { outlineId: outlineIdParam } = await params;
+    const outlineId = parseInt(outlineIdParam);
     if (isNaN(outlineId)) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
@@ -71,7 +76,7 @@ export const GET = async (req: NextRequest, { params }: { params: { outlineId: s
 /* Service for:
   - Updating outline of id matching URL param and matching current user with data from body
 */
-export const PUT = async (req: NextRequest, { params }: { params: { outlineId: string } }) => {
+export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
@@ -79,7 +84,8 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
   }
   try {
     // Convert outlineId string from params into number
-    const outlineId = parseInt(params.outlineId);
+    const { outlineId: outlineIdParam } = await params;
+    const outlineId = parseInt(outlineIdParam);
     if (isNaN(outlineId)) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
@@ -165,7 +171,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { outlineId: s
 /* Service for:
   - Deleting outline of id matching URL param matching current user
 */
-export const DELETE = async (req: NextRequest, { params }: { params: { outlineId: string } }) => {
+export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
@@ -173,7 +179,8 @@ export const DELETE = async (req: NextRequest, { params }: { params: { outlineId
   }
   try {
     // Convert outlineId string from params into number
-    const outlineId = parseInt(params.outlineId);
+    const { outlineId: outlineIdParam } = await params;
+    const outlineId = parseInt(outlineIdParam);
     if (isNaN(outlineId)) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }

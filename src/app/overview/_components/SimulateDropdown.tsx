@@ -47,7 +47,7 @@ const SimulateDropdownComponent: React.FC<SimulateDropdownProps> = ({ outline, t
         role={`link`}
         size={`block`}
         className={cn(
-          `text-base-content ring-offset-base-300 h-10 min-h-10 max-w-full rounded-3xl border border-indigo-700 bg-indigo-600 px-4 text-sm font-semibold ring-indigo-500 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30`
+          `text-base-content ring-offset-base-300 h-10 min-h-10 max-w-full rounded-3xl border border-indigo-700 bg-indigo-600 px-4 text-sm font-semibold ring-indigo-500 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:border-indigo-700 hover:bg-indigo-600 hover:brightness-90 focus:ring-2 active:border-indigo-700 active:bg-indigo-600 disabled:bg-indigo-600/30`
         )}
       >
         <Sparkle
@@ -81,7 +81,7 @@ const SimulateDropdownComponent: React.FC<SimulateDropdownProps> = ({ outline, t
           size={`block`}
           onPointerDown={handleTriggerPointerDown}
           className={cn(
-            `text-base-content ring-offset-base-300 col-span-12 h-10 min-h-10 max-w-full rounded-3xl border border-indigo-700 bg-indigo-600 px-4 text-sm font-semibold ring-indigo-500 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 sm:col-span-3`
+            `text-base-content ring-offset-base-300 col-span-12 h-10 min-h-10 max-w-full rounded-3xl border border-indigo-700 bg-indigo-600 px-4 text-sm font-semibold ring-indigo-500 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:border-indigo-700 hover:bg-indigo-600 hover:brightness-90 focus:ring-2 active:border-indigo-700 active:bg-indigo-600 disabled:bg-indigo-600/30 sm:col-span-3`
           )}
         >
           <ChevronDown
