@@ -66,33 +66,32 @@ export async function GET(request: Request): Promise<Response> {
     const googleUser = parsedGoogleUser.data;
     const existingUser = await db.user.findUnique({
       where: { googleId: googleUser.sub },
+      select: { id: true },
     });
 
-    if (existingUser) {
-      const session = await createSession(existingUser.id);
-      await setSessionCookie(session.id, session.expiresAt);
-      return new Response(null, {
-        status: 302,
-        headers: { Location: '/overview' },
-      });
-    }
-
-    const newUser = await db.user.create({
-      data: {
+    const user = await db.user.upsert({
+      where: { googleId: googleUser.sub },
+      update: {
+        email: googleUser.email,
+        name: googleUser.name ?? null,
+        picture: googleUser.picture ?? null,
+      },
+      create: {
         googleId: googleUser.sub,
         email: googleUser.email,
         name: googleUser.name ?? null,
         picture: googleUser.picture ?? null,
         chatTokens: 50,
       },
+      select: { id: true },
     });
 
-    const session = await createSession(newUser.id);
+    const session = await createSession(user.id);
     await setSessionCookie(session.id, session.expiresAt);
 
     return new Response(null, {
       status: 302,
-      headers: { Location: '/outline/tutorial' },
+      headers: { Location: existingUser ? '/overview' : '/outline/tutorial' },
     });
   } catch (e) {
     if (e instanceof OAuth2RequestError) {
