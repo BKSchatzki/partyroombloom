@@ -3,6 +3,7 @@
 import React, { useCallback } from 'react';
 
 import { useAtomValue, useSetAtom } from 'jotai';
+import type { CarouselApi } from '@/components/ui/carousel';
 import { addLandmarkAtomFamily, rootLandmarkIdsAtomFamily } from '@/lib/atoms';
 import { getOutlineMode } from '@/lib/outlineState';
 
@@ -13,7 +14,7 @@ import { LANDMARKS_SECTION_CONFIG } from './outlineNodeConfig';
 interface LandmarksProps {
   outlineId: number | null;
   tutorialMode: boolean;
-  embla: any;
+  embla?: CarouselApi;
 }
 
 const LandmarksContainerComponent: React.FC<LandmarksProps> = ({

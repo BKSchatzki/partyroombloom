@@ -6,6 +6,7 @@ import { useAtomValue } from 'jotai';
 import { Lock, MousePointerClick, Pyramid, Theater, ThumbsDown, ThumbsUp } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
+import type { CarouselApi } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { outlineTreeAtomFamily } from '@/lib/atoms';
@@ -22,7 +23,7 @@ interface OutlineProps {
 interface OutlineIdProps {
   outlineId: number | null;
   tutorialMode: boolean;
-  embla: any;
+  embla?: CarouselApi;
 }
 
 const SecretsReviewComponent: React.FC<{
@@ -34,13 +35,13 @@ const SecretsReviewComponent: React.FC<{
         <Card
           key={secret.id}
           className={cn(
-            `relative -m-3 flex flex-col gap-7 bg-error/10 p-4 shadow-md shadow-base-100 max-sm:rounded-none`
+            `bg-error/10 shadow-base-100 relative -m-3 flex flex-col gap-7 p-4 shadow-md max-sm:rounded-none`
           )}
         >
           <div className={cn(`flex flex-col gap-2`)}>
             <span
               className={cn(
-                `flex items-center gap-2 text-lg text-error`,
+                `text-error flex items-center gap-2 text-lg`,
                 !secret.name && `italic opacity-30`
               )}
             >
@@ -53,12 +54,12 @@ const SecretsReviewComponent: React.FC<{
           </div>
           <Card
             className={cn(
-              `relative -m-3 flex flex-col gap-2 bg-warning/10 p-4 shadow-sm shadow-base-100 max-sm:rounded-none`
+              `bg-warning/10 shadow-base-100 relative -m-3 flex flex-col gap-2 p-4 shadow-sm max-sm:rounded-none`
             )}
           >
             <span
               className={cn(
-                `flex items-center gap-2 text-warning`,
+                `text-warning flex items-center gap-2`,
                 !secret.rollableSuccess && `italic opacity-30`
               )}
             >
@@ -70,7 +71,7 @@ const SecretsReviewComponent: React.FC<{
             </span>
             <span
               className={cn(
-                `flex items-center gap-2 text-warning`,
+                `text-warning flex items-center gap-2`,
                 !secret.rollableFailure && `italic opacity-30`
               )}
             >
@@ -100,13 +101,13 @@ const InteractablesReviewComponent: React.FC<{
         <Card
           key={interactable.id}
           className={cn(
-            `relative -m-3 flex flex-col gap-7 bg-info/10 p-4 shadow-lg shadow-base-200 max-sm:rounded-none`
+            `bg-info/10 shadow-base-200 relative -m-3 flex flex-col gap-7 p-4 shadow-lg max-sm:rounded-none`
           )}
         >
           <div className={cn(`flex flex-col gap-2`)}>
             <span
               className={cn(
-                `flex items-center gap-2 text-xl text-info`,
+                `text-info flex items-center gap-2 text-xl`,
                 !interactable.name && `italic opacity-30`
               )}
             >
@@ -134,14 +135,14 @@ const LandmarksReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline
       {outline.elements.map((landmark) => (
         <Card
           className={cn(
-            `relative flex flex-col gap-7 bg-primary/10 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
+            `bg-primary/10 shadow-base-300 relative flex flex-col gap-7 p-4 shadow-xl max-sm:rounded-none`
           )}
           key={landmark.id}
         >
           <div className={cn(`flex flex-col gap-2`)}>
             <span
               className={cn(
-                `flex items-center gap-2 text-2xl text-primary`,
+                `text-primary flex items-center gap-2 text-2xl`,
                 !landmark.name && `italic opacity-30`
               )}
             >
@@ -167,7 +168,7 @@ const InfoReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Out
   return (
     <Card
       className={cn(
-        `mb-4 mt-4 flex flex-col gap-2 bg-neutral/50 p-4 shadow-xl shadow-base-300 max-sm:rounded-none`
+        `bg-neutral/50 shadow-base-300 mt-4 mb-4 flex flex-col gap-2 p-4 shadow-xl max-sm:rounded-none`
       )}
     >
       <span
@@ -179,7 +180,7 @@ const InfoReviewComponent: React.FC<OutlineProps> = ({ outline }: { outline: Out
         <Theater className={cn(`size-9`)} />
         {outline.title || 'Untitled Scene'}
       </span>
-      <Separator className={cn(`my-0 border-base-300`)} />
+      <Separator className={cn(`border-base-300 my-0`)} />
       <span className={cn(!outline.description && `italic opacity-30`)}>
         <span className={cn(`font-semibold text-[#64d8b4]`)}>Description: </span>
         {outline.description || 'A short description to set the scene.'}
@@ -212,12 +213,8 @@ const ReviewComponent: React.FC<OutlineIdProps> = ({ outlineId, tutorialMode, em
           embla={embla}
         />
       )}
-      <InfoReview
-        outline={outline}
-      ></InfoReview>
-      <LandmarksReview
-        outline={outline}
-      ></LandmarksReview>
+      <InfoReview outline={outline}></InfoReview>
+      <LandmarksReview outline={outline}></LandmarksReview>
     </ScrollArea>
   );
 };

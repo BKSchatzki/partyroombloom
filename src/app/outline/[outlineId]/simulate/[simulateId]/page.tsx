@@ -14,7 +14,7 @@ const ViewSimulation = async ({ params }: { params: Promise<{ simulateId: string
   }
 
   const { simulateId: simulateIdParam } = await params;
-  const simulateId = parseInt(simulateIdParam);
+  const simulateId = parseInt(simulateIdParam, 10);
   if (isNaN(simulateId)) {
     redirect('/outline');
   }

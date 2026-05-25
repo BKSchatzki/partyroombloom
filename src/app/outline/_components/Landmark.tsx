@@ -46,7 +46,7 @@ const LandmarkComponent: React.FC<LandmarkProps> = ({ elementId, outlineId, tuto
   );
 
   return (
-    <Card className={cn(`mb-8 w-full bg-primary/10 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
+    <Card className={cn(`bg-primary/10 shadow-base-300 mb-8 w-full shadow-xl max-sm:rounded-none`)}>
       <OutlineNodeItem
         mode={mode}
         nodeId={elementId}

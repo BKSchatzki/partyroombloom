@@ -1,10 +1,4 @@
-import {
-  InteractableNode,
-  LandmarkNode,
-  Outline,
-  OutlineNodeType,
-  SecretNode,
-} from './types';
+import { InteractableNode, LandmarkNode, Outline, OutlineNodeType, SecretNode } from './types';
 
 type OutlineNodeMeta = {
   id: string;
@@ -125,7 +119,10 @@ const buildSecretNode = (graph: OutlineGraph, secretId: string): SecretNode | nu
   };
 };
 
-const buildInteractableNode = (graph: OutlineGraph, interactableId: string): InteractableNode | null => {
+const buildInteractableNode = (
+  graph: OutlineGraph,
+  interactableId: string
+): InteractableNode | null => {
   const node = graph.nodesById[interactableId];
   if (!node || node.type !== 'interactable' || typeof node.parentId !== 'string') {
     return null;

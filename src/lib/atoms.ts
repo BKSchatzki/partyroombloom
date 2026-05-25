@@ -87,7 +87,11 @@ const createOutlineGraphStorage = () => {
       }
       window.localStorage.removeItem(key);
     },
-    subscribe: (key: string, callback: (value: OutlineGraph) => void, initialValue: OutlineGraph) => {
+    subscribe: (
+      key: string,
+      callback: (value: OutlineGraph) => void,
+      initialValue: OutlineGraph
+    ) => {
       if (typeof window === 'undefined') {
         return () => {
           return;
@@ -193,7 +197,9 @@ export const allInteractableIdsAtomFamily = atomFamily((mode: OutlineMode) =>
 
 export const updateOutlineMetaFieldAtomFamily = atomFamily((mode: OutlineMode) =>
   atom(null, (_get, set, payload: { field: OutlineMetaField; value: string }) => {
-    set(outlineGraphAtomByMode[mode], (prev) => setOutlineMetaField(prev, payload.field, payload.value));
+    set(outlineGraphAtomByMode[mode], (prev) =>
+      setOutlineMetaField(prev, payload.field, payload.value)
+    );
   })
 );
 
@@ -204,25 +210,19 @@ export const addLandmarkAtomFamily = atomFamily((mode: OutlineMode) =>
 );
 
 export const addChildNodeAtomFamily = atomFamily((mode: OutlineMode) =>
-  atom(
-    null,
-    (_get, set, payload: { parentId: string; childType: 'interactable' | 'secret' }) => {
-      set(outlineGraphAtomByMode[mode], (prev) =>
-        addChildNode(prev, payload.parentId, payload.childType)
-      );
-    }
-  )
+  atom(null, (_get, set, payload: { parentId: string; childType: 'interactable' | 'secret' }) => {
+    set(outlineGraphAtomByMode[mode], (prev) =>
+      addChildNode(prev, payload.parentId, payload.childType)
+    );
+  })
 );
 
 export const updateOutlineNodeFieldAtomFamily = atomFamily((mode: OutlineMode) =>
-  atom(
-    null,
-    (_get, set, payload: { nodeId: string; field: OutlineNodeField; value: string }) => {
-      set(outlineGraphAtomByMode[mode], (prev) =>
-        updateNodeField(prev, payload.nodeId, payload.field, payload.value)
-      );
-    }
-  )
+  atom(null, (_get, set, payload: { nodeId: string; field: OutlineNodeField; value: string }) => {
+    set(outlineGraphAtomByMode[mode], (prev) =>
+      updateNodeField(prev, payload.nodeId, payload.field, payload.value)
+    );
+  })
 );
 
 export const deleteOutlineNodeAtomFamily = atomFamily((mode: OutlineMode) =>

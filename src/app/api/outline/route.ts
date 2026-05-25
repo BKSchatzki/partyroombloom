@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
+import { toElementWriteData, toFlatOutlineElement } from '@/lib/outlinePersistence';
 import { prisma } from '@/lib/prisma';
 import { OutlineTreeSchema } from '@/lib/schemas';
-import { Element, Outline } from '@/lib/types';
+import type { Outline } from '@/lib/types';
 
 /* Service for:
   - Getting all outlines associated with current user
@@ -45,18 +46,7 @@ export const GET = async (req: NextRequest) => {
       description: outline.description ?? '',
       goal: outline.goal ?? '',
       comments: outline.comments ?? '',
-      elements: buildTreeFromFlat(
-        outline.elements.map((element) => ({
-          id: element.id,
-          parentId: element.parentId,
-          type: element.type as Element['type'],
-          name: element.name ?? '',
-          description: element.description ?? '',
-          rollableSuccess: element.rollableSuccess ?? '',
-          rollableFailure: element.rollableFailure ?? '',
-          userCreatedAt: element.userCreatedAt.toISOString(),
-        }))
-      ),
+      elements: buildTreeFromFlat(outline.elements.map((element) => toFlatOutlineElement(element))),
       conversations: outline.conversations.map((conversation) => ({
         id: conversation.id,
         createdAt: conversation.createdAt.toISOString(),
@@ -91,33 +81,32 @@ export const POST = async (req: NextRequest) => {
       );
     }
     const outline: Outline = parsedOutline.data;
-    const createdOutline = await prisma.outline.create({
-      data: {
-        userId: user.id,
-        title: outline.title ?? '',
-        description: outline.description ?? '',
-        goal: outline.goal ?? '',
-        comments: outline.comments ?? '',
-      },
-    });
     const flattenedElements = flattenTreeForPersistence(outline.elements);
 
-    for (const element of flattenedElements) {
-      await prisma.element.create({
+    const createdOutline = await prisma.$transaction(async (tx) => {
+      const outlineRecord = await tx.outline.create({
         data: {
-          id: element.id,
-          outlineId: createdOutline.id,
           userId: user.id,
-          parentId: element.parentId,
-          type: element.type,
-          name: element.name ?? '',
-          description: element.description ?? '',
-          rollableSuccess: element.rollableSuccess ?? '',
-          rollableFailure: element.rollableFailure ?? '',
-          userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
+          title: outline.title ?? '',
+          description: outline.description ?? '',
+          goal: outline.goal ?? '',
+          comments: outline.comments ?? '',
         },
       });
-    }
+
+      for (const element of flattenedElements) {
+        await tx.element.create({
+          data: {
+            id: element.id,
+            outlineId: outlineRecord.id,
+            userId: user.id,
+            ...toElementWriteData(element),
+          },
+        });
+      }
+
+      return outlineRecord;
+    });
     // Return id of created outline
     return NextResponse.json({ id: createdOutline.id }, { status: 201 });
   } catch (error) {

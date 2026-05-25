@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
+import { toElementWriteData, toFlatOutlineElement } from '@/lib/outlinePersistence';
 import { prisma } from '@/lib/prisma';
 import { OutlineTreeSchema } from '@/lib/schemas';
-import { Element, Outline } from '@/lib/types';
+import type { Outline } from '@/lib/types';
 
 /* Service for:
   - Getting outline from URL param and its associated user
@@ -23,7 +24,7 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
-    const outlineId = parseInt(outlineIdParam);
+    const outlineId = parseInt(outlineIdParam, 10);
     if (isNaN(outlineId)) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
@@ -51,18 +52,7 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
       description: outline.description ?? '',
       goal: outline.goal ?? '',
       comments: outline.comments ?? '',
-      elements: buildTreeFromFlat(
-        outline.elements.map((element) => ({
-          id: element.id,
-          parentId: element.parentId,
-          type: element.type as Element['type'],
-          name: element.name ?? '',
-          description: element.description ?? '',
-          rollableSuccess: element.rollableSuccess ?? '',
-          rollableFailure: element.rollableFailure ?? '',
-          userCreatedAt: element.userCreatedAt.toISOString(),
-        }))
-      ),
+      elements: buildTreeFromFlat(outline.elements.map((element) => toFlatOutlineElement(element))),
       conversations: [],
     };
     // Return formatted outline
@@ -85,7 +75,7 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
-    const outlineId = parseInt(outlineIdParam);
+    const outlineId = parseInt(outlineIdParam, 10);
     if (isNaN(outlineId)) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
@@ -99,67 +89,77 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
       );
     }
     const outline: Outline = parsedOutline.data;
-    const updatedOutline = await prisma.outline.update({
-      where: {
-        id: outlineId,
-        userId: user.id,
-      },
-      data: {
-        title: outline.title ?? '',
-        description: outline.description ?? '',
-        goal: outline.goal ?? '',
-        comments: outline.comments ?? '',
-      },
-    });
-    // Delete elements in database for this outline not included in elements from request body
-    const databaseElements = await prisma.element.findMany({
-      where: {
-        outlineId: outlineId,
-        userId: user.id,
-      },
-    });
     const flattenedElements = flattenTreeForPersistence(outline.elements);
-    const outlineElementIds = flattenedElements.map((element) => element.id);
-    const idsOfElementsToDelete = databaseElements
-      .filter((element) => !outlineElementIds.includes(element.id))
-      .map((element) => element.id);
-    await prisma.element.deleteMany({
-      where: {
-        id: {
-          in: idsOfElementsToDelete,
-        },
-      },
-    });
-    for (const element of flattenedElements) {
-      await prisma.element.upsert({
+
+    const updatedOutline = await prisma.$transaction(async (tx) => {
+      const outlineRecord = await tx.outline.update({
         where: {
-          id: element.id,
-        },
-        update: {
-          outlineId: outlineId,
+          id: outlineId,
           userId: user.id,
-          parentId: element.parentId,
-          type: element.type,
-          name: element.name ?? '',
-          description: element.description ?? '',
-          rollableSuccess: element.rollableSuccess ?? '',
-          rollableFailure: element.rollableFailure ?? '',
-          userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
         },
-        create: {
-          id: element.id,
-          outlineId: outlineId,
-          userId: user.id,
-          parentId: element.parentId,
-          type: element.type,
-          name: element.name ?? '',
-          description: element.description ?? '',
-          rollableSuccess: element.rollableSuccess ?? '',
-          rollableFailure: element.rollableFailure ?? '',
-          userCreatedAt: element.userCreatedAt ? new Date(element.userCreatedAt) : undefined,
+        data: {
+          title: outline.title ?? '',
+          description: outline.description ?? '',
+          goal: outline.goal ?? '',
+          comments: outline.comments ?? '',
         },
       });
-    }
+
+      // Delete elements in database for this outline not included in elements from request body.
+      const databaseElements = await tx.element.findMany({
+        where: {
+          outlineId: outlineId,
+          userId: user.id,
+        },
+        select: {
+          id: true,
+        },
+      });
+      const existingElementIds = new Set(databaseElements.map((element) => element.id));
+      const outlineElementIds = new Set(flattenedElements.map((element) => element.id));
+      const idsOfElementsToDelete = databaseElements
+        .filter((element) => !outlineElementIds.has(element.id))
+        .map((element) => element.id);
+
+      for (const element of flattenedElements) {
+        const data = toElementWriteData(element);
+
+        if (existingElementIds.has(element.id)) {
+          await tx.element.update({
+            where: {
+              id: element.id,
+              outlineId: outlineId,
+              userId: user.id,
+            },
+            data,
+          });
+          continue;
+        }
+
+        await tx.element.create({
+          data: {
+            id: element.id,
+            outlineId: outlineId,
+            userId: user.id,
+            ...data,
+          },
+        });
+      }
+
+      if (idsOfElementsToDelete.length > 0) {
+        await tx.element.deleteMany({
+          where: {
+            outlineId: outlineId,
+            userId: user.id,
+            id: {
+              in: idsOfElementsToDelete,
+            },
+          },
+        });
+      }
+
+      return outlineRecord;
+    });
     // Return id of updated outline
     return NextResponse.json({ id: updatedOutline.id }, { status: 200 });
   } catch (error) {
@@ -180,7 +180,7 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
-    const outlineId = parseInt(outlineIdParam);
+    const outlineId = parseInt(outlineIdParam, 10);
     if (isNaN(outlineId)) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }

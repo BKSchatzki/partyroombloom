@@ -84,12 +84,7 @@ const InteractableComponent: React.FC<InteractableProps> = ({
         />
       ))}
       <CardFooter className={cn(INTERACTABLE_GROUP_CONFIG.footerClassName)}>
-        <Card
-          className={cn(
-            INTERACTABLE_GROUP_CONFIG.addCardClassName,
-            !hasElements && `mt-6`
-          )}
-        >
+        <Card className={cn(INTERACTABLE_GROUP_CONFIG.addCardClassName, !hasElements && `mt-6`)}>
           <Button
             color={`ghost`}
             onClick={handleAddInteractable}

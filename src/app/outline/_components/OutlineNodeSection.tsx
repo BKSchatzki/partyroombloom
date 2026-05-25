@@ -4,6 +4,7 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import type { CarouselApi } from '@/components/ui/carousel';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
@@ -12,7 +13,7 @@ import { OutlineSectionConfig } from './outlineNodeConfig';
 
 interface OutlineNodeSectionProps {
   tutorialMode: boolean;
-  embla: any;
+  embla?: CarouselApi;
   itemIds: string[];
   sectionConfig: OutlineSectionConfig;
   renderItem: (itemId: string) => React.ReactNode;

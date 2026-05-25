@@ -34,14 +34,19 @@ export const LandmarkNodeSchema = TreeNodeBaseSchema.extend({
   children: z.array(InteractableNodeSchema),
 });
 
-const ensureParentReferences = <T extends { id: string; parentId: string | null }>(
-  nodes: T[],
-  rootParentId: string | null
-) => {
-  const stack: Array<{ node: any; expectedParentId: string | null }> = nodes.map((node) => ({
-    node,
-    expectedParentId: rootParentId,
-  }));
+type TreeNodeWithChildren = {
+  id: string;
+  parentId: string | null;
+  children?: TreeNodeWithChildren[];
+};
+
+const ensureParentReferences = (nodes: TreeNodeWithChildren[], rootParentId: string | null) => {
+  const stack: Array<{ node: TreeNodeWithChildren; expectedParentId: string | null }> = nodes.map(
+    (node) => ({
+      node,
+      expectedParentId: rootParentId,
+    })
+  );
 
   while (stack.length > 0) {
     const item = stack.pop();
@@ -53,8 +58,8 @@ const ensureParentReferences = <T extends { id: string; parentId: string | null 
       return false;
     }
 
-    if (Array.isArray(item.node.children)) {
-      item.node.children.forEach((child: any) =>
+    if (item.node.children) {
+      item.node.children.forEach((child) =>
         stack.push({ node: child, expectedParentId: item.node.id })
       );
     }
@@ -63,7 +68,7 @@ const ensureParentReferences = <T extends { id: string; parentId: string | null 
   return true;
 };
 
-const ensureUniqueIds = (nodes: Array<{ id: string; children?: any[] }>) => {
+const ensureUniqueIds = (nodes: TreeNodeWithChildren[]) => {
   const seen = new Set<string>();
   const stack = [...nodes];
   while (stack.length > 0) {

@@ -2,10 +2,7 @@
   "arrowParens": "always",
   "bracketSameLine": false,
   "jsxSingleQuote": false,
-  "plugins": [
-    "prettier-plugin-tailwindcss"
-  ],
-  "pluginSearchDirs": false,
+  "plugins": ["prettier-plugin-tailwindcss"],
   "printWidth": 100,
   "semi": true,
   "singleAttributePerLine": true,

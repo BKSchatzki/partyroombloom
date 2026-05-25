@@ -74,13 +74,13 @@ const InfoComponent: React.FC<InfoProps> = ({
             />
             Outline
           </h2>
-          <p className={cn(`px-2 text-sm text-base-content/75`)}>
+          <p className={cn(`text-base-content/75 px-2 text-sm`)}>
             To set the scene, give it a meaningful title and description, engaging the senses and
             including some flavor and movement. Include a goal and any relevant comments.
           </p>
         </section>
       )}
-      <Card className={cn(`bg-neutral/50 shadow-xl shadow-base-300 max-sm:rounded-none`)}>
+      <Card className={cn(`bg-neutral/50 shadow-base-300 shadow-xl max-sm:rounded-none`)}>
         <CardHeader></CardHeader>
         <CardContent className={cn(`flex flex-col gap-4 max-sm:px-2`)}>
           <Label

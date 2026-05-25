@@ -28,7 +28,7 @@ const NavComponent: React.FC<NavProps> = ({ user }) => {
   return (
     <nav
       className={cn(
-        'navbar flex items-center justify-between border-b-2 border-[#302a2a] bg-base-300 px-4'
+        'navbar bg-base-300 flex items-center justify-between border-b-2 border-[#302a2a] px-4'
       )}
     >
       <Link
@@ -134,7 +134,7 @@ const NavComponent: React.FC<NavProps> = ({ user }) => {
                     </DrawerClose>
                   </Link>
                 </li>
-                <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} />
+                <Separator className={cn(`border-base-300 mx-auto my-2 w-5/6`)} />
                 <li>
                   <Link
                     href={`/outline/new`}
@@ -155,7 +155,7 @@ const NavComponent: React.FC<NavProps> = ({ user }) => {
                     </DrawerClose>
                   </Link>
                 </li>
-                <Separator className={cn(`mx-auto my-2 w-5/6 border-base-300`)} />
+                <Separator className={cn(`border-base-300 mx-auto my-2 w-5/6`)} />
                 <li>
                   <SignOut classProps={'btn-wide'} />
                 </li>

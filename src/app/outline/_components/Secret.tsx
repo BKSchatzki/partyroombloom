@@ -91,12 +91,7 @@ const SecretComponent: React.FC<SecretProps> = ({ elementId, outlineId, tutorial
         />
       ))}
       <CardFooter className={cn(SECRET_GROUP_CONFIG.footerClassName)}>
-        <Card
-          className={cn(
-            SECRET_GROUP_CONFIG.addCardClassName,
-            !hasElements && `mt-6`
-          )}
-        >
+        <Card className={cn(SECRET_GROUP_CONFIG.addCardClassName, !hasElements && `mt-6`)}>
           <Button
             color={`ghost`}
             onClick={handleAddSecret}

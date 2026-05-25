@@ -25,13 +25,13 @@ const SecretsPreview = ({
         <Card
           key={secret.id}
           className={cn(
-            `relative -m-3 flex flex-col gap-7 bg-error/10 p-4 shadow-md shadow-base-100 max-sm:rounded-none`
+            `bg-error/10 shadow-base-100 relative -m-3 flex flex-col gap-7 p-4 shadow-md max-sm:rounded-none`
           )}
         >
           <div className={cn(`flex flex-col gap-2`)}>
             <span
               className={cn(
-                `flex items-center gap-2 text-base text-error`,
+                `text-error flex items-center gap-2 text-base`,
                 !secret.name && `italic opacity-30`
               )}
             >
@@ -47,12 +47,12 @@ const SecretsPreview = ({
           </div>
           <Card
             className={cn(
-              `relative -m-3 flex flex-col gap-2 bg-warning/10 p-4 shadow-sm shadow-base-100 max-sm:rounded-none`
+              `bg-warning/10 shadow-base-100 relative -m-3 flex flex-col gap-2 p-4 shadow-sm max-sm:rounded-none`
             )}
           >
             <span
               className={cn(
-                `flex items-center gap-2 text-warning`,
+                `text-warning flex items-center gap-2`,
                 !secret.rollableSuccess && `italic opacity-30`
               )}
             >
@@ -67,7 +67,7 @@ const SecretsPreview = ({
             </span>
             <span
               className={cn(
-                `flex items-center gap-2 text-warning`,
+                `text-warning flex items-center gap-2`,
                 !secret.rollableFailure && `italic opacity-30`
               )}
             >
@@ -97,20 +97,20 @@ const InteractablesPreview = ({
   return (
     <div
       className={cn(
-        `-mb-7 flex flex-col gap-10 border-t-2 border-base-300 p-4 pb-0 pt-7 has-[div]:mb-0`
+        `border-base-300 -mb-7 flex flex-col gap-10 border-t-2 p-4 pt-7 pb-0 has-[div]:mb-0`
       )}
     >
       {interactables.map((interactable) => (
         <Card
           key={interactable.id}
           className={cn(
-            `relative -m-3 flex flex-col gap-7 bg-info/10 p-4 shadow-lg shadow-base-200 max-sm:rounded-none`
+            `bg-info/10 shadow-base-200 relative -m-3 flex flex-col gap-7 p-4 shadow-lg max-sm:rounded-none`
           )}
         >
           <div className={cn(`flex flex-col gap-2`)}>
             <span
               className={cn(
-                `flex items-center gap-2 text-lg text-info`,
+                `text-info flex items-center gap-2 text-lg`,
                 !interactable.name && `italic opacity-30`
               )}
             >
@@ -138,26 +138,26 @@ const LandmarksPreview = ({ outline }: { outline: Outline }) => {
     <Accordion
       type={`single`}
       collapsible={true}
-      className={cn(`flex flex-col gap-4 border-t-2 border-base-300/30 pt-4 sm:px-4`)}
+      className={cn(`border-base-300/30 flex flex-col gap-4 border-t-2 pt-4 sm:px-4`)}
     >
       {outline.elements.map((landmark) => (
         <Card
           key={landmark.id}
           className={cn(
-            `relative flex flex-col gap-7 bg-primary/10 p-0 shadow-lg shadow-base-300 max-sm:rounded-none`
+            `bg-primary/10 shadow-base-300 relative flex flex-col gap-7 p-0 shadow-lg max-sm:rounded-none`
           )}
         >
           <AccordionItem value={`${landmark.id}`}>
             <AccordionTrigger
               iconSize={6}
               className={cn(
-                `rounded-2xl outline-none ring-inset ring-primary focus:ring-2 max-sm:rounded-none data-[state=open]:rounded-b-none`
+                `ring-primary rounded-2xl outline-none ring-inset focus:ring-2 data-[state=open]:rounded-b-none max-sm:rounded-none`
               )}
             >
               <div className={cn(`flex flex-col gap-2 p-4 hover:brightness-125`)}>
                 <span
                   className={cn(
-                    `flex items-center gap-2 text-xl text-primary`,
+                    `text-primary flex items-center gap-2 text-xl`,
                     !landmark.name && `italic opacity-30`
                   )}
                 >

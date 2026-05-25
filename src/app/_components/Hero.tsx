@@ -14,19 +14,19 @@ const Hero: React.FC<HeroProps> = ({ user }) => {
   return (
     <div
       className={cn(
-        `flex w-full flex-col items-center text-balance bg-linear-to-b from-base-300/75 to-transparent px-4 pt-16 text-center`
+        `from-base-300/75 flex w-full flex-col items-center bg-linear-to-b to-transparent px-4 pt-16 text-center text-balance`
       )}
     >
       <div className={cn(`max-w-xl`)}>
         <h1 className={cn(`text-5xl font-black`)}>
           The game master's inspirational{' '}
           <span
-            className={cn(`bg-linear-to-br from-error to-warning bg-clip-text text-transparent`)}
+            className={cn(`from-error to-warning bg-linear-to-br bg-clip-text text-transparent`)}
           >
             session planning toolkit
           </span>
         </h1>
-        <p className={cn(`py-6 text-base-content/75`)}>
+        <p className={cn(`text-base-content/75 py-6`)}>
           PartyRoomBloom scaffolds your exploration scenes to help you plan engaging game nights
           better than ever.
         </p>

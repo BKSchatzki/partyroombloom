@@ -93,7 +93,7 @@ export type AssistantMessage = BaseMessage & {
     narration?: string[];
     prompt?: string;
     options: Array<{
-      description?: string;
+      description: string;
       roll: boolean;
     }>;
   };

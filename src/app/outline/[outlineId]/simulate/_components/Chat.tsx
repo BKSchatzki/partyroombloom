@@ -42,7 +42,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
   const [embla, setEmbla] = useState<CarouselApi>();
   let outline = null;
   if (outlineId) {
-    outline = outlinesList.find((outline) => outline.id === parseInt(outlineId));
+    outline = outlinesList.find((outline) => outline.id === parseInt(outlineId, 10));
   }
 
   const router = useRouter();
@@ -169,13 +169,19 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
     if (!embla) {
       return;
     }
-    embla.on('init', () => {
-      embla.scrollTo(conversation.length - 1);
-    });
-    embla.on('slidesChanged', () => {
-      embla.scrollTo(conversation.length - 1);
-    });
-    embla.scrollTo(conversation.length - 1);
+
+    const scrollToLatestMessage = () => {
+      embla.scrollTo(Math.max(conversation.length - 1, 0));
+    };
+
+    embla.on('init', scrollToLatestMessage);
+    embla.on('slidesChanged', scrollToLatestMessage);
+    scrollToLatestMessage();
+
+    return () => {
+      embla.off('init', scrollToLatestMessage);
+      embla.off('slidesChanged', scrollToLatestMessage);
+    };
   }, [embla, conversation.length]);
 
   if (isLoading || isLocalLoading) {

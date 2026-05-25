@@ -6,9 +6,19 @@ import { simulateOutlinePrompt } from './prompts';
 import { DungeonMasterResponseSchema } from './schemas';
 import { Conversation, Outline, SystemMessage, UserMessage } from './types';
 
-const openaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openaiClient: OpenAI | null = null;
+
+const getOpenAIClient = () => {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY is not configured.');
+  }
+
+  openaiClient ??= new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  return openaiClient;
+};
 
 export const getStructuredResponse = async (
   input: Outline | UserMessage['content'],
@@ -34,7 +44,7 @@ export const getStructuredResponse = async (
     ? [...formattedConversation, userMessage]
     : [initialSystemPrompt, userMessage];
 
-  const completion = await openaiClient.beta.chat.completions.parse({
+  const completion = await getOpenAIClient().beta.chat.completions.parse({
     model: 'gpt-4o-mini',
     messages: messages as ChatCompletionMessageParam[],
     response_format: zodResponseFormat(DungeonMasterResponseSchema, 'assistant_response'),

@@ -23,7 +23,10 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
   const updateNodeField = useSetAtom(updateOutlineNodeFieldAtomFamily(mode));
 
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>, field: 'rollableSuccess' | 'rollableFailure') => {
+    (
+      event: React.ChangeEvent<HTMLTextAreaElement>,
+      field: 'rollableSuccess' | 'rollableFailure'
+    ) => {
       updateNodeField({
         nodeId: elementId,
         field,
@@ -34,7 +37,7 @@ const RollableComponent: React.FC<RollableProps> = ({ elementId, outlineId, tuto
   );
 
   return (
-    <Card className={cn(`w-full bg-warning/10 shadow-lg shadow-base-200 max-sm:rounded-none`)}>
+    <Card className={cn(`bg-warning/10 shadow-base-200 w-full shadow-lg max-sm:rounded-none`)}>
       <CardContent className={cn(`flex flex-col gap-4 pt-4 max-sm:px-2`)}>
         <Label
           className={cn(`sr-only`)}

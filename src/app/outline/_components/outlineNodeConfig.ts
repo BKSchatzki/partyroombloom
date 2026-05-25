@@ -62,7 +62,8 @@ export const LANDMARKS_SECTION_CONFIG: OutlineSectionConfig = {
   title: 'Landmarks',
   description:
     'Landmarks are points of interest in the scene. They can be places, people, objects, etc., and are immediately available to the player characters upon entering the scene.',
-  textClassName: 'my-8 flex items-center justify-center gap-4 text-primary max-sm:flex-col sm:gap-2',
+  textClassName:
+    'my-8 flex items-center justify-center gap-4 text-primary max-sm:flex-col sm:gap-2',
   headingClassName:
     'flex w-full shrink-0 items-center gap-2 px-2 text-3xl sm:basis-1/3 sm:justify-center',
   titleClassName: '',

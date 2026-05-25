@@ -1,7 +1,14 @@
-// ScrollContext.tsx
 'use client';
 
-import { createContext, useContext, useEffect, useRef } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 
 import { ScrollArea } from './ui/scroll-area';
 
@@ -12,7 +19,7 @@ interface ScrollContextType {
 
 const ScrollContext = createContext<ScrollContextType | null>(null);
 
-export const ScrollProvider = ({ children }: { children: React.ReactNode }) => {
+export const ScrollProvider = ({ children }: { children: ReactNode }) => {
   const scrollableElementsRef = useRef<Set<HTMLElement>>(new Set());
 
   useEffect(() => {
@@ -43,20 +50,23 @@ export const ScrollProvider = ({ children }: { children: React.ReactNode }) => {
     return () => window.removeEventListener('wheel', handleWheel);
   }, []);
 
-  const value = {
-    registerScrollable: (element: HTMLElement) => {
-      scrollableElementsRef.current.add(element);
-    },
-    unregisterScrollable: (element: HTMLElement) => {
-      scrollableElementsRef.current.delete(element);
-    },
-  };
+  const value = useMemo(
+    () => ({
+      registerScrollable: (element: HTMLElement) => {
+        scrollableElementsRef.current.add(element);
+      },
+      unregisterScrollable: (element: HTMLElement) => {
+        scrollableElementsRef.current.delete(element);
+      },
+    }),
+    []
+  );
 
   return <ScrollContext.Provider value={value}>{children}</ScrollContext.Provider>;
 };
 
 // Hook to use in scrollable components
-export const useScrollRegister = (ref: React.RefObject<HTMLElement>) => {
+export const useScrollRegister = (ref: RefObject<HTMLElement | null>) => {
   const context = useContext(ScrollContext);
   if (!context) {
     throw new Error('useScrollRegister must be used within a ScrollProvider');

@@ -16,11 +16,15 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { conversationAtom, userMessageAtom } from '@/lib/atoms';
-import { UserMessage } from '@/lib/types';
+import { isUserMessage, type AssistantMessage, type UserMessage } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
+type AssistantOption = AssistantMessage['content']['options'][number];
+type UserMessageField = keyof UserMessage['content'];
+type RollResult = NonNullable<UserMessage['content']['rollResult']>;
+
 interface ChatOptionsProps {
-  options: Array<any>;
+  options: AssistantOption[];
   index: number;
   disabled: boolean;
 }
@@ -30,13 +34,12 @@ const ChatOptionsComponent: React.FC<ChatOptionsProps> = ({ options, index, disa
   const [conversation] = useAtom(conversationAtom);
 
   const handleChange = useCallback(
-    (property: string, value: string) => {
+    (property: UserMessageField, value: string) => {
+      const selectedOption = options.find((option) => option.description === value);
       if (
         // Check if changed property is choice and whether it has roll
         property === 'choice' &&
-        options.find(
-          (option: { description: string; roll: boolean }) => option.description === value
-        ).roll === false
+        selectedOption?.roll === false
       ) {
         // If true, update value of current property and reset rollResult value to null
         setUserMessage((prev) => ({
@@ -63,18 +66,16 @@ const ChatOptionsComponent: React.FC<ChatOptionsProps> = ({ options, index, disa
     [options, setUserMessage]
   );
 
-  const prevUserMessage = useMemo(
-    () => conversation[index + 1] as UserMessage,
-    [conversation, index]
-  );
+  const prevUserMessage = useMemo(() => {
+    const message = conversation[index + 1];
+    return message && isUserMessage(message) ? message : null;
+  }, [conversation, index]);
 
   return (
     <div className={cn(`flex flex-col gap-4 max-sm:px-1`)}>
       <RadioGroup
         value={
-          disabled
-            ? (prevUserMessage?.content as { choice: string }).choice
-            : userMessage.content.choice || ''
+          disabled ? (prevUserMessage?.content.choice ?? '') : userMessage.content.choice || ''
         }
         onValueChange={(value) => handleChange('choice', value)}
         className={cn(`flex flex-col gap-4 rounded-2xl`)}
@@ -90,10 +91,10 @@ const ChatOptionsComponent: React.FC<ChatOptionsProps> = ({ options, index, disa
             <Label
               htmlFor={option.description}
               className={cn(
-                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 text-balance border-2 border-indigo-600/30 bg-indigo-600/20 p-4 text-center leading-normal text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/50`,
+                `card card-bordered card-compact min-h-16 w-full cursor-pointer items-center justify-center gap-2 border-2 border-indigo-600/30 bg-indigo-600/20 p-4 text-center leading-normal text-balance text-indigo-300 transition-all duration-100 ease-in-out peer-aria-checked:border-indigo-600 peer-aria-checked:bg-indigo-600/50`,
                 disabled
                   ? `opacity-50`
-                  : `ring-indigo-500 ring-offset-2 ring-offset-base-100 peer-focus:peer-aria-checked:ring-2 hover:bg-indigo-600/20`
+                  : `ring-offset-base-100 ring-indigo-500 ring-offset-2 peer-focus:peer-aria-checked:ring-2 hover:bg-indigo-600/20`
               )}
             >
               {option.description}
@@ -101,7 +102,9 @@ const ChatOptionsComponent: React.FC<ChatOptionsProps> = ({ options, index, disa
                 prevUserMessage?.content.choice === option.description ? (
                 <RollSelect
                   rollResult={
-                    disabled ? prevUserMessage?.content.rollResult : userMessage.content.rollResult
+                    disabled
+                      ? (prevUserMessage?.content.rollResult ?? null)
+                      : userMessage.content.rollResult
                   }
                   handleChange={handleChange}
                   index={index}
@@ -118,9 +121,7 @@ const ChatOptionsComponent: React.FC<ChatOptionsProps> = ({ options, index, disa
         disabled={disabled}
         placeholder={`Type your thoughts here...`}
         value={
-          disabled
-            ? (prevUserMessage?.content as { comments: string }).comments
-            : userMessage.content.comments || ''
+          disabled ? (prevUserMessage?.content.comments ?? '') : userMessage.content.comments || ''
         }
         onChange={(event) => handleChange('comments', event.target.value)}
       />
@@ -132,8 +133,8 @@ ChatOptions.displayName = 'ChatOptions';
 export default ChatOptions;
 
 interface RollSelectProps {
-  rollResult: string | null;
-  handleChange: any;
+  rollResult: UserMessage['content']['rollResult'];
+  handleChange: (property: UserMessageField, value: string) => void;
   index: number;
   prevUserMessage: UserMessage | null;
   disabled: boolean;
@@ -148,7 +149,7 @@ const RollSelectComponent: React.FC<RollSelectProps> = ({
 }) => {
   const [conversation] = useAtom(conversationAtom);
 
-  const rolls = useMemo(
+  const rolls = useMemo<RollResult[]>(
     () => [
       'Critical Success',
       'Normal Success',
@@ -163,7 +164,7 @@ const RollSelectComponent: React.FC<RollSelectProps> = ({
   return (
     <div
       className={cn(
-        `flex items-center justify-end gap-2 rounded-full bg-warning/50 p-0.5 ps-2 ring-warning/75 ring-offset-2 ring-offset-base-300 has-[:focus]:ring-2`
+        `bg-warning/50 ring-warning/75 ring-offset-base-300 flex items-center justify-end gap-2 rounded-full p-0.5 ps-2 ring-offset-2 has-[:focus]:ring-2`
       )}
     >
       <Dices
@@ -174,22 +175,22 @@ const RollSelectComponent: React.FC<RollSelectProps> = ({
         disabled={disabled}
         value={
           index !== conversation.length - 1
-            ? (prevUserMessage?.content as { rollResult: string | null }).rollResult || ''
+            ? prevUserMessage?.content.rollResult || ''
             : rollResult || ''
         }
         onValueChange={(value) => handleChange('rollResult', value)}
       >
         <SelectTrigger
           className={cn(
-            `w-40 rounded-full bg-base-300 text-center text-base-content scrollbar-thin scrollbar-track-warning/25 scrollbar-thumb-warning`
+            `bg-base-300 text-base-content scrollbar-thin scrollbar-track-warning/25 scrollbar-thumb-warning w-40 rounded-full text-center`
           )}
         >
           <SelectValue placeholder={`-`} />
         </SelectTrigger>
         <SelectContent>
-          {rolls.map((roll: string, index: number) => (
+          {rolls.map((roll) => (
             <SelectItem
-              key={index}
+              key={roll}
               value={roll}
               className={cn(`bg-base-300`)}
             >

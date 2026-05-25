@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 
 import Container from '@/components/Container';
 import GenericError from '@/components/GenericError';
@@ -25,23 +25,24 @@ type Npc = {
 };
 
 const Npc = () => {
-  const [npc, setNpc] = useState<Npc | null>(null);
-
-  const { data, isLoading, error } = useQuery({
+  const {
+    data: npc,
+    isLoading,
+    error,
+  } = useQuery<Npc>({
     queryKey: ['npcApi'],
     queryFn: async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_NPC_SERVICE_URL}/npc`);
-        if (!response.ok) {
-          throw new Error(`Error fetching NPC: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log(data);
-        setNpc(data);
-        return npc;
-      } catch (error) {
-        console.error('Failed to fetch NPC:', error);
+      const serviceUrl = process.env.NEXT_PUBLIC_NPC_SERVICE_URL;
+      if (!serviceUrl) {
+        throw new Error('NPC service URL is not configured.');
       }
+
+      const response = await fetch(`${serviceUrl}/npc`);
+      if (!response.ok) {
+        throw new Error(`Error fetching NPC: ${response.status}`);
+      }
+
+      return (await response.json()) as Npc;
     },
   });
 
@@ -53,6 +54,18 @@ const Npc = () => {
           return;
         }}
       />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Container>
+        <ScrollArea className={cn(`flex h-full w-full flex-col gap-4 sm:px-4`)}>
+          <div className={cn(`mx-auto flex flex-col gap-6 px-4 py-8 max-sm:px-0`)}>
+            Loading NPC...
+          </div>
+        </ScrollArea>
+      </Container>
     );
   }
 

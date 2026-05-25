@@ -20,7 +20,7 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Convert simulateId string from params into number
     const { simulateId: simulateIdParam } = await params;
-    const simulateId = parseInt(simulateIdParam);
+    const simulateId = parseInt(simulateIdParam, 10);
     if (isNaN(simulateId)) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }
@@ -55,7 +55,7 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Find specific simulation matching param and userId, aborting if no conversation found
     const { simulateId: simulateIdParam } = await params;
-    const simulateId = parseInt(simulateIdParam);
+    const simulateId = parseInt(simulateIdParam, 10);
     if (isNaN(simulateId)) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }
@@ -91,7 +91,7 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Find specific simulation matching param and userId, aborting if no conversation found
     const { simulateId: simulateIdParam } = await params;
-    const simulateId = parseInt(simulateIdParam);
+    const simulateId = parseInt(simulateIdParam, 10);
     if (isNaN(simulateId)) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }

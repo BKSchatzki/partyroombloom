@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { useAtomValue } from 'jotai';
+import type { CarouselApi } from '@/components/ui/carousel';
 import { allInteractableIdsAtomFamily } from '@/lib/atoms';
 import { getOutlineMode } from '@/lib/outlineState';
 
@@ -13,7 +14,7 @@ import { SECRETS_SECTION_CONFIG } from './outlineNodeConfig';
 interface SecretsContainerProps {
   outlineId: number | null;
   tutorialMode: boolean;
-  embla: any;
+  embla?: CarouselApi;
 }
 
 const SecretsContainerComponent: React.FC<SecretsContainerProps> = ({

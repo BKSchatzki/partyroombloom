@@ -21,7 +21,7 @@ import {
 interface DeleteButtonProps {
   block?: boolean;
   first?: boolean;
-  handleDelete: any;
+  handleDelete: () => void | Promise<void>;
   item: string;
   message: string;
 }

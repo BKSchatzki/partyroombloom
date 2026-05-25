@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { useAtom } from 'jotai';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import type { CarouselApi } from '@/components/ui/carousel';
 import { outlineInit, tutorialOutlineAtom, tutorialStepAtom } from '@/lib/atoms';
 import { buildTreeFromFlat } from '@/lib/outlineTransformers';
 import { tutorialOutlineElementsFlat, tutorialOutlineFinal } from '@/lib/tutorial';
@@ -20,7 +21,7 @@ interface ActionPromptProps {
 const ActionPromptComponent: React.FC<ActionPromptProps> = ({ children }) => {
   return (
     <div className={cn(`pt-2`)}>
-      <div className={cn(`flex gap-2 rounded-md bg-secondary/25 p-2`)}>
+      <div className={cn(`bg-secondary/25 flex gap-2 rounded-md p-2`)}>
         <ArrowRight
           aria-hidden={true}
           className={cn(`size-5 shrink-0`)}
@@ -35,12 +36,13 @@ ActionPrompt.displayName = 'ActionPrompt';
 
 interface TutorialProps {
   builderPage: string;
-  embla: any;
+  embla?: CarouselApi;
 }
 
 const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) => {
   const [step, setStep] = useAtom(tutorialStepAtom);
   const [_, setTutorialOutline] = useAtom(tutorialOutlineAtom);
+  const hasInitializedEmbla = useRef(false);
 
   const treeFromCount = useCallback(
     (count: number) => buildTreeFromFlat(tutorialOutlineElementsFlat.slice(0, count)),
@@ -85,7 +87,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
         ),
         setStateToStep: () => {
           setTutorialOutline(outlineInit);
-          embla.scrollTo(0);
+          embla?.scrollTo(0);
         },
       },
       {
@@ -112,7 +114,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             ...outlineInit,
             title: tutorialOutlineFinal.title,
           });
-          embla.scrollTo(0);
+          embla?.scrollTo(0);
         },
       },
       {
@@ -142,7 +144,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             title: tutorialOutlineFinal.title,
             description: tutorialOutlineFinal.description,
           });
-          embla.scrollTo(0);
+          embla?.scrollTo(0);
         },
       },
       {
@@ -174,7 +176,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             description: tutorialOutlineFinal.description,
             goal: tutorialOutlineFinal.goal,
           });
-          embla.scrollTo(0);
+          embla?.scrollTo(0);
         },
       },
       {
@@ -215,7 +217,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             goal: tutorialOutlineFinal.goal,
             comments: tutorialOutlineFinal.comments,
           });
-          embla.scrollTo(0);
+          embla?.scrollTo(0);
         },
       },
       {
@@ -251,7 +253,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             goal: tutorialOutlineFinal.goal,
             comments: tutorialOutlineFinal.comments,
           });
-          embla.scrollTo(1);
+          embla?.scrollTo(1);
         },
       },
       {
@@ -285,7 +287,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             goal: tutorialOutlineFinal.goal,
             comments: tutorialOutlineFinal.comments,
           });
-          embla.scrollTo(2);
+          embla?.scrollTo(2);
         },
       },
       {
@@ -321,7 +323,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             goal: tutorialOutlineFinal.goal,
             comments: tutorialOutlineFinal.comments,
           });
-          embla.scrollTo(3);
+          embla?.scrollTo(3);
         },
       },
       {
@@ -353,7 +355,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(1),
           });
-          embla.scrollTo(1);
+          embla?.scrollTo(1);
         },
       },
       {
@@ -381,7 +383,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(1),
           });
-          embla.scrollTo(2);
+          embla?.scrollTo(2);
         },
       },
       {
@@ -414,7 +416,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(2),
           });
-          embla.scrollTo(2);
+          embla?.scrollTo(2);
         },
       },
       {
@@ -451,7 +453,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCountWithBlankFirstSecretRollables(),
           });
-          embla.scrollTo(3);
+          embla?.scrollTo(3);
         },
       },
       {
@@ -487,7 +489,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(3),
           });
-          embla.scrollTo(3);
+          embla?.scrollTo(3);
         },
       },
       {
@@ -544,7 +546,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(4),
           });
-          embla.scrollTo(3);
+          embla?.scrollTo(3);
         },
       },
       {
@@ -587,7 +589,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(5),
           });
-          embla.scrollTo(2);
+          embla?.scrollTo(2);
         },
       },
       {
@@ -622,7 +624,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(6),
           });
-          embla.scrollTo(1);
+          embla?.scrollTo(1);
         },
       },
       {
@@ -658,7 +660,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(7),
           });
-          embla.scrollTo(2);
+          embla?.scrollTo(2);
         },
       },
       {
@@ -691,7 +693,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(8),
           });
-          embla.scrollTo(3);
+          embla?.scrollTo(3);
         },
       },
       {
@@ -738,7 +740,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             comments: tutorialOutlineFinal.comments,
             elements: treeFromCount(8),
           });
-          embla.scrollTo(4);
+          embla?.scrollTo(4);
         },
       },
     ],
@@ -749,19 +751,19 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
     (page: string) => {
       switch (page) {
         case 'info':
-          embla.scrollTo(0);
+          embla?.scrollTo(0);
           break;
         case 'landmarks':
-          embla.scrollTo(1);
+          embla?.scrollTo(1);
           break;
         case 'interactables':
-          embla.scrollTo(2);
+          embla?.scrollTo(2);
           break;
         case 'secrets':
-          embla.scrollTo(3);
+          embla?.scrollTo(3);
           break;
         case 'review':
-          embla.scrollTo(4);
+          embla?.scrollTo(4);
           break;
         default:
           break;
@@ -779,16 +781,17 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
   }, [setStep, step, steps]);
 
   useEffect(() => {
-    if (!embla) {
+    if (!embla || hasInitializedEmbla.current) {
       return;
     }
-    steps[step].setStateToStep();
-    handleGoToStepPage(steps[step].page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embla]);
+    hasInitializedEmbla.current = true;
+    const currentStep = steps[step];
+    currentStep.setStateToStep();
+    handleGoToStepPage(currentStep.page);
+  }, [embla, handleGoToStepPage, step, steps]);
 
   return (
-    <Card className={cn(`bg-base-200 my-4 shadow-md shadow-base-300 max-sm:rounded-none`)}>
+    <Card className={cn(`bg-base-200 shadow-base-300 my-4 shadow-md max-sm:rounded-none`)}>
       {steps[step].page === builderPage ? (
         <CardHeader>
           <div className={cn(`flex items-center justify-between`)}>
@@ -802,7 +805,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
               <ArrowLeft />
               <span className={cn(`sr-only`)}>Previous Step</span>
             </Button>
-            <span className={cn(`text-center text-sm text-base-content/50`)}>
+            <span className={cn(`text-base-content/50 text-center text-sm`)}>
               {`Step ${step + 1}/${steps.length}`}
             </span>
             <Button
@@ -824,7 +827,7 @@ const TutorialCardComponent: React.FC<TutorialProps> = ({ builderPage, embla }) 
             <button
               onClick={() => handleGoToStepPage(steps[step].page)}
               className={cn(
-                `rounded-md bg-base-300 px-1 py-0.5 outline-none ring-base-content transition-all hover:bg-base-200 focus:bg-base-200 hover:text-base-content focus:text-base-content focus:ring-1`
+                `bg-base-300 ring-base-content hover:bg-base-200 focus:bg-base-200 hover:text-base-content focus:text-base-content rounded-md px-1 py-0.5 transition-all outline-none focus:ring-1`
               )}
             >
               {steps[step].page.charAt(0).toUpperCase() + steps[step].page.slice(1)} Page

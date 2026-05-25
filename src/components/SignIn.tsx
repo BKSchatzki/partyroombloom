@@ -18,7 +18,7 @@ export const SignIn = async ({ className }: { className?: string }) => {
       <button
         role={`link`}
         className={cn(
-          'gsi-material-button btn block hover:bg-base-content focus:bg-base-content',
+          'gsi-material-button btn hover:bg-base-content focus:bg-base-content block',
           className
         )}
       >
