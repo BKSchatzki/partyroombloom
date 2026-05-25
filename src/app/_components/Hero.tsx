@@ -1,16 +1,17 @@
-import type { ClientUser } from '@/lib/auth';
+'use client';
+
 import { ArrowRight, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 
 import { SignIn } from '@/components/SignIn';
 import { Button } from '@/components/ui/button';
+import { useSession } from '@/hooks/useSession';
 import { cn } from '@/lib/utils';
 
-interface HeroProps {
-  user: ClientUser | null;
-}
+const Hero: React.FC = () => {
+  const { data } = useSession();
+  const user = data?.user ?? null;
 
-const Hero: React.FC<HeroProps> = ({ user }) => {
   return (
     <div
       className={cn(

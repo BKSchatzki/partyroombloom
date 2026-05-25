@@ -14,27 +14,22 @@ import { UpdateConversationPayloadSchema } from '@/lib/schemas';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/* Service for:
-  - Getting conversation from URL param and its associated user
-*/
 type RouteContext = {
   params: Promise<{ simulateId: string }>;
 };
 
 export const GET = async (req: NextRequest, { params }: RouteContext) => {
-  // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
     return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
-    // Convert simulateId string from params into number
     const { simulateId: simulateIdParam } = await params;
     const simulateId = parsePositiveInteger(simulateIdParam);
     if (simulateId === null) {
       return jsonNoStore({ message: 'Invalid simulate ID' }, { status: 400 });
     }
-    // Find specific simulation matching param and userId, aborting if no conversation found
+
     const conversation = await prisma.conversation.findUnique({
       where: {
         id: simulateId,
@@ -44,7 +39,7 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
     if (!conversation) {
       return jsonNoStore({ message: 'Conversation not found' }, { status: 404 });
     }
-    // Return found conversation and its owner
+
     const response = {
       id: conversation.id,
       conversation: conversation.thread,
@@ -57,28 +52,23 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
   }
 };
 
-/* Service for:
-  - Updating conversation of id matching URL param and matching current user with data from body
-*/
 export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   const originResponse = validateSameOriginRequest(req);
   if (originResponse) {
     return originResponse;
   }
 
-  // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
     return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
-    // Find specific simulation matching param and userId, aborting if no conversation found
     const { simulateId: simulateIdParam } = await params;
     const simulateId = parsePositiveInteger(simulateIdParam);
     if (simulateId === null) {
       return jsonNoStore({ message: 'Invalid simulate ID' }, { status: 400 });
     }
-    // Update existing conversation matching current user with data from body
+
     const body = await readJsonBody(req);
     if (body.response) {
       return body.response;
@@ -100,7 +90,7 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
         thread: parsedPayload.data.conversation,
       },
     });
-    // Return id of updated conversation
+
     return jsonNoStore({ id: updatedConversation.id }, { status: 200 });
   } catch (error) {
     if (isPrismaRecordNotFoundError(error)) {
@@ -112,35 +102,30 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   }
 };
 
-/* Service for:
-  - Deleting conversation of id matching URL param matching current user
-*/
 export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   const originResponse = validateSameOriginRequest(req);
   if (originResponse) {
     return originResponse;
   }
 
-  // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
     return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
-    // Find specific simulation matching param and userId, aborting if no conversation found
     const { simulateId: simulateIdParam } = await params;
     const simulateId = parsePositiveInteger(simulateIdParam);
     if (simulateId === null) {
       return jsonNoStore({ message: 'Invalid simulate ID' }, { status: 400 });
     }
-    // Delete conversation matching current user
+
     const deletedConversation = await prisma.conversation.delete({
       where: {
         id: simulateId,
         userId: user.id,
       },
     });
-    // Return id of deleted conversation
+
     return jsonNoStore({ id: deletedConversation.id }, { status: 200 });
   } catch (error) {
     if (isPrismaRecordNotFoundError(error)) {

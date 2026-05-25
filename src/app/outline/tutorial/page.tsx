@@ -1,19 +1,13 @@
 import React from 'react';
 
 import Container from '@/components/Container';
-import { toClientUser, validateRequest } from '@/lib/auth';
 
 import Builder from '../_components/Builder';
 
-const Tutorial = async () => {
-  const { user } = await validateRequest();
-
+const Tutorial = () => {
   return (
     <Container>
-      <Builder
-        tutorialMode={true}
-        user={user ? toClientUser(user) : null}
-      />
+      <Builder tutorialMode={true} />
     </Container>
   );
 };

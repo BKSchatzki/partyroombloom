@@ -1,6 +1,7 @@
+'use client';
+
 import React from 'react';
 
-import type { ClientUser } from '@/lib/auth';
 import { Grid2X2, Leaf, Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,13 +19,13 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
+import { useSession } from '@/hooks/useSession';
 import { cn } from '@/lib/utils';
 
-interface NavProps {
-  user: ClientUser | null;
-}
+const NavComponent: React.FC = () => {
+  const { data } = useSession();
+  const user = data?.user ?? null;
 
-const NavComponent: React.FC<NavProps> = ({ user }) => {
   return (
     <nav
       className={cn(
@@ -37,10 +38,6 @@ const NavComponent: React.FC<NavProps> = ({ user }) => {
         tabIndex={-1}
       >
         <Button role={`link`}>
-          {/* <Flower
-            aria-hidden={true}
-            className={cn(`size-8`)}
-          /> */}
           <Image
             src={`/assets/prb-logo.png`}
             alt={`PartyRoomBloom Logo`}

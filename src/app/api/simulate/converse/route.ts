@@ -10,19 +10,14 @@ import type { Outline } from '@/lib/types';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
-/* Service for:
-  - Passing user inputs to completions API
-  - Decrementing user chatToken column upon use of completions API
-  - Persisting the updated conversation thread after a successful AI response
-*/
 export const POST = async (req: NextRequest) => {
   const originResponse = validateSameOriginRequest(req);
   if (originResponse) {
     return originResponse;
   }
 
-  // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
     return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
@@ -31,7 +26,6 @@ export const POST = async (req: NextRequest) => {
     return jsonNoStore({ message: 'Insufficient chat tokens' }, { status: 402 });
   }
   try {
-    // Get user response and existing conversation, throwing error if input not found
     const body = await readJsonBody(req);
     if (body.response) {
       return body.response;
@@ -59,7 +53,6 @@ export const POST = async (req: NextRequest) => {
       return persistenceTarget.response;
     }
 
-    // Calculate tokenCost as 1 per 10 exchanges
     const tokenCost = Math.max(1, Math.ceil(validatedConversation.length / 20));
     if (tokenCost > user.chatTokens) {
       return jsonNoStore({ message: 'Insufficient chat tokens' }, { status: 402 });
@@ -84,7 +77,6 @@ export const POST = async (req: NextRequest) => {
     }
 
     try {
-      // Call completions helper function after atomically reserving the token cost.
       const updatedConversation = await getStructuredResponse(input, validatedConversation);
       const { conversationId, updatedUser } = await prisma.$transaction(async (tx) => {
         const persistedConversation =
@@ -131,7 +123,6 @@ export const POST = async (req: NextRequest) => {
         throw new Error('Authenticated user could not be found after token update.');
       }
 
-      // Return updated conversation and user with new token count
       const response = { id: conversationId, conversation: updatedConversation, user: updatedUser };
       return jsonNoStore(response, { status: 200 });
     } catch (error) {

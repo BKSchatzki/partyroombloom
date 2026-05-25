@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 
 import { getRequiredEnv } from '@/lib/env';
 import { prisma } from '@/lib/prisma';
+import type { ClientUser } from '@/lib/session';
 
 let googleClient: Google | null = null;
 
@@ -20,6 +21,7 @@ export const getGoogleClient = () => {
 
 const SESSION_COOKIE_NAME = 'auth_session';
 const SESSION_EXPIRY_SECONDS = 60 * 60 * 24 * 30; // 30 days
+const SESSION_VALIDATION_TIMEOUT_MS = 2500;
 
 export interface Session {
   id: string;
@@ -36,8 +38,6 @@ export interface User {
   picture: string | null;
   chatTokens: number;
 }
-
-export type ClientUser = Pick<User, 'chatTokens'>;
 
 export const toClientUser = (user: User): ClientUser => ({
   chatTokens: user.chatTokens,
@@ -149,28 +149,17 @@ export async function deleteSessionCookie(): Promise<void> {
   });
 }
 
-const retryOperation = async <T>(
-  operation: () => Promise<T>,
-  key: string,
-  retryLimit = 3,
-  retryInterval = 1000
-): Promise<T> => {
-  let lastError: unknown;
-  for (let attempt = 1; attempt <= retryLimit; attempt++) {
-    try {
-      return await operation();
-    } catch (error) {
-      lastError = error;
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number, message: string) => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<never>((_resolve, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(message)), timeoutMs);
+  });
 
-      if (attempt === retryLimit) {
-        break;
-      }
-
-      console.warn(`Retry ${key} operation: Attempt ${attempt} of ${retryLimit}`);
-      await new Promise((resolve) => setTimeout(resolve, retryInterval));
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
     }
-  }
-  throw lastError;
+  });
 };
 
 export const validateRequest = async (): Promise<
@@ -181,12 +170,17 @@ export const validateRequest = async (): Promise<
     return { user: null, session: null };
   }
 
-  const result = await retryOperation(
-    () => validateSessionFromDb(sessionId),
-    'Validate Session',
-    3,
-    1000
-  );
+  let result: Awaited<ReturnType<typeof validateSessionFromDb>>;
+  try {
+    result = await withTimeout(
+      validateSessionFromDb(sessionId),
+      SESSION_VALIDATION_TIMEOUT_MS,
+      'Session validation timed out.'
+    );
+  } catch (error) {
+    console.error('Session validation failed:', error);
+    return { user: null, session: null };
+  }
 
   if (!result) {
     try {

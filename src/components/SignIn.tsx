@@ -1,14 +1,16 @@
+'use client';
+
 import '@/styles/google.css';
 
 import { LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-import { deleteSessionCookie, invalidateSession, validateRequest } from '@/lib/auth';
+import { useSignOut } from '@/hooks/useSession';
 import { cn } from '@/lib/utils';
 
-export const SignIn = async ({ className }: { className?: string }) => {
+export const SignIn = ({ className }: { className?: string }) => {
   return (
     <Link
       href={`/login/google`}
@@ -61,29 +63,26 @@ export const SignIn = async ({ className }: { className?: string }) => {
   );
 };
 
-async function logout() {
-  'use server';
-  const { session } = await validateRequest();
-  if (!session) {
-    return;
-  }
+export const SignOut = ({ classProps }: { classProps?: string }) => {
+  const router = useRouter();
+  const signOut = useSignOut({
+    onSuccess: () => {
+      router.push('/');
+      router.refresh();
+    },
+  });
 
-  await invalidateSession(session.id);
-  await deleteSessionCookie();
-  redirect('/');
-}
-
-export const SignOut = async ({ classProps }: { classProps?: string }) => {
   return (
-    <form action={logout}>
-      <Button
-        role={`link`}
-        color={'ghost'}
-        className={cn(`flex items-center gap-2 text-lg`, classProps)}
-      >
-        <LogOut className={cn(`size-5 rotate-180`)} />
-        Sign out
-      </Button>
-    </form>
+    <Button
+      type="button"
+      disabled={signOut.isPending}
+      aria-busy={signOut.isPending}
+      color={'ghost'}
+      className={cn(`flex items-center gap-2 text-lg`, classProps)}
+      onClick={() => signOut.mutate()}
+    >
+      <LogOut className={cn(`size-5 rotate-180`)} />
+      Sign out
+    </Button>
   );
 };

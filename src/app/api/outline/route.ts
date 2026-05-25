@@ -11,18 +11,12 @@ import type { Outline } from '@/lib/types';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/* Service for:
-  - Getting all outlines associated with current user
-  - Formatting outlines to match frontend types
-*/
 export const GET = async (req: NextRequest) => {
-  // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
     return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
-    // Find all outlines matching current user ordered by update time, ordering each's elements and conversations by creation time
     const outlines = await prisma.outline.findMany({
       where: {
         userId: user.id,
@@ -43,7 +37,7 @@ export const GET = async (req: NextRequest) => {
         updatedAt: 'desc',
       },
     });
-    // Format outlines to match frontend types
+
     const formattedOutlinesList = outlines.map((outline) => ({
       id: outline.id,
       title: outline.title ?? '',
@@ -56,31 +50,24 @@ export const GET = async (req: NextRequest) => {
         createdAt: conversation.createdAt.toISOString(),
       })),
     }));
-    // Return formatted outlines
+
     return jsonNoStore(formattedOutlinesList, { status: 200 });
   } catch (error) {
     return jsonNoStore({ message: 'Error fetching outlines' }, { status: 500 });
   }
 };
 
-/* Service for:
-  - Creating new outline entries
-  - Creating new element entries
-  - Ensuring that element relations are preserved in database by inserting in hierarchical order
-*/
 export const POST = async (req: NextRequest) => {
   const originResponse = validateSameOriginRequest(req);
   if (originResponse) {
     return originResponse;
   }
 
-  // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
     return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
-    // Insert outline info from body into table and associate with user
     const body = await readJsonBody(req);
     if (body.response) {
       return body.response;
@@ -120,7 +107,7 @@ export const POST = async (req: NextRequest) => {
 
       return outlineRecord;
     });
-    // Return id of created outline
+
     return jsonNoStore({ id: createdOutline.id }, { status: 201 });
   } catch (error) {
     console.error('Error saving outline:', error);
