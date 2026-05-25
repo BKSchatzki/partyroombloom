@@ -106,6 +106,10 @@ Check runtime readiness:
 curl http://localhost:3000/api/health
 ```
 
+The readiness endpoint checks database connectivity and verifies that required server-side
+environment variables are configured. It intentionally reports only counts/statuses, not secret
+values.
+
 ## Build Instructions
 
 To build the project for production:

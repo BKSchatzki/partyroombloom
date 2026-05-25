@@ -2,6 +2,7 @@ import { OpenAI } from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mjs';
 
+import { getRequiredEnv } from './env';
 import { simulateOutlinePrompt } from './prompts';
 import { DungeonMasterResponseSchema } from './schemas';
 import { Conversation, Outline, OutlineUserMessage, SystemMessage, UserMessage } from './types';
@@ -9,12 +10,8 @@ import { Conversation, Outline, OutlineUserMessage, SystemMessage, UserMessage }
 let openaiClient: OpenAI | null = null;
 
 const getOpenAIClient = () => {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error('OPENAI_API_KEY is not configured.');
-  }
-
   openaiClient ??= new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: getRequiredEnv('OPENAI_API_KEY'),
   });
 
   return openaiClient;

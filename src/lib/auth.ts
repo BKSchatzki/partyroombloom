@@ -3,19 +3,10 @@ import { cache } from 'react';
 import { Google } from 'arctic';
 import { cookies } from 'next/headers';
 
+import { getRequiredEnv } from '@/lib/env';
 import { prisma } from '@/lib/prisma';
 
 let googleClient: Google | null = null;
-
-const getRequiredEnv = (
-  key: 'AUTH_GOOGLE_ID' | 'AUTH_GOOGLE_SECRET' | 'AUTH_GOOGLE_REDIRECT_URI'
-) => {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`${key} is not configured.`);
-  }
-  return value;
-};
 
 export const getGoogleClient = () => {
   googleClient ??= new Google(
