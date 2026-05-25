@@ -217,12 +217,12 @@ const BuilderComponent: React.FC<BuilderProps> = ({
         <div className={cn(`relative h-16 shrink-0 border-t-2 border-[#302a2a]`)}>
           <CarouselPrevious />
           <CarouselNext />
-          <div className={cn(`absolute top-1/2 right-20 flex -translate-y-1/2 items-center gap-4`)}>
+          <div className={cn(`absolute inset-y-0 right-20 flex items-center gap-4`)}>
             <ManageDropdown
               outline={thisOutline}
               setOutline={setThisOutline}
               tutorialMode={tutorialMode}
-              className={cn(`px-4 py-2 text-sm`)}
+              className={cn(`w-auto px-4 text-sm sm:col-auto`)}
             >
               <ChevronUp
                 aria-hidden={true}
@@ -236,6 +236,7 @@ const BuilderComponent: React.FC<BuilderProps> = ({
                 color={`secondary`}
                 disabled={isSaving}
                 outlined={true}
+                className={cn(`h-10 min-h-10 px-4 text-sm`)}
               >
                 <Save
                   aria-hidden={true}

@@ -150,7 +150,11 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                       {outline.comments || 'Extra information to help the Simulator or Future You.'}
                     </span>
                   </div>
-                  <div className={cn(`border-base-300/30 grid grid-cols-12 gap-4 border-t-2 p-4`)}>
+                  <div
+                    className={cn(
+                      `border-base-300/30 grid grid-cols-12 items-center gap-4 border-t-2 p-4`
+                    )}
+                  >
                     <div className={cn(`col-span-12 sm:col-span-3`)}>
                       <DeleteButton
                         block={true}
@@ -169,7 +173,7 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                         color={`secondary`}
                         role={`link`}
                         size={`block`}
-                        className={cn(`max-w-full`)}
+                        className={cn(`h-10 min-h-10 max-w-full px-4 text-sm`)}
                       >
                         <Pencil
                           aria-hidden={true}

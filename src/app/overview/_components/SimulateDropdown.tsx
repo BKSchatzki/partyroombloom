@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import dayjs from 'dayjs';
 import { ArrowRight, ChevronDown, Coins, Sparkle } from 'lucide-react';
@@ -21,12 +21,25 @@ interface SimulateDropdownProps {
 }
 
 const SimulateDropdownComponent: React.FC<SimulateDropdownProps> = ({ outline, tokenCount }) => {
+  const [open, setOpen] = useState(false);
+  const handleTriggerPointerDown = useCallback(
+    (event: React.PointerEvent<HTMLButtonElement>) => {
+      if (!open) {
+        return;
+      }
+
+      event.preventDefault();
+      setOpen(false);
+    },
+    [open]
+  );
+
   return outline.conversations.length === 0 ? (
     <Link
       href={`/outline/${outline.id}/simulate`}
       role={`none`}
       tabIndex={-1}
-      className={cn(`col-span-12 sm:col-span-4`)}
+      className={cn(`col-span-12 sm:col-span-3`)}
     >
       <Button
         color={`ghost`}
@@ -34,7 +47,7 @@ const SimulateDropdownComponent: React.FC<SimulateDropdownProps> = ({ outline, t
         role={`link`}
         size={`block`}
         className={cn(
-          `max-w-full border border-indigo-700 bg-indigo-600 font-semibold text-base-content outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30`
+          `text-base-content ring-offset-base-300 h-10 min-h-10 max-w-full rounded-3xl border border-indigo-700 bg-indigo-600 px-4 text-sm font-semibold ring-indigo-500 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30`
         )}
       >
         <Sparkle
@@ -44,7 +57,7 @@ const SimulateDropdownComponent: React.FC<SimulateDropdownProps> = ({ outline, t
         Simulate
         <span
           className={cn(
-            `flex items-center gap-1 rounded-md bg-base-200/50 px-2 py-1 text-xs`,
+            `bg-base-200/50 flex items-center gap-1 rounded-md px-2 py-1 text-xs`,
             tokenCount > 10 ? 'text-success' : 'text-error'
           )}
         >
@@ -57,19 +70,28 @@ const SimulateDropdownComponent: React.FC<SimulateDropdownProps> = ({ outline, t
       </Button>
     </Link>
   ) : (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        className={cn(
-          `col-span-12 flex min-h-12 max-w-full items-center justify-center gap-2 rounded-3xl border border-indigo-700 bg-indigo-600 font-semibold text-base-content outline-none ring-indigo-500 ring-offset-2 ring-offset-base-300 transition-all duration-100 ease-in-out hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 sm:col-span-4`
-        )}
-      >
-        <ChevronDown
-          aria-hidden={true}
-          className={cn(`size-5`)}
-        />
-        Select Simulation
+    <DropdownMenu
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <DropdownMenuTrigger asChild>
+        <Button
+          type={`button`}
+          color={`ghost`}
+          size={`block`}
+          onPointerDown={handleTriggerPointerDown}
+          className={cn(
+            `text-base-content ring-offset-base-300 col-span-12 h-10 min-h-10 max-w-full rounded-3xl border border-indigo-700 bg-indigo-600 px-4 text-sm font-semibold ring-indigo-500 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 sm:col-span-3`
+          )}
+        >
+          <ChevronDown
+            aria-hidden={true}
+            className={cn(`size-5`)}
+          />
+          Select Simulation
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className={cn(`flex flex-col gap-2 rounded-2xl bg-base-300`)}>
+      <DropdownMenuContent className={cn(`bg-base-300 flex flex-col gap-2 rounded-2xl`)}>
         <DropdownMenuItem
           asChild
           disabled={tokenCount <= 0}
@@ -88,7 +110,7 @@ const SimulateDropdownComponent: React.FC<SimulateDropdownProps> = ({ outline, t
             New Simulation
             <span
               className={cn(
-                `flex items-center gap-1 rounded-md bg-base-200/50 px-2 py-1 text-xs`,
+                `bg-base-200/50 flex items-center gap-1 rounded-md px-2 py-1 text-xs`,
                 tokenCount > 10 ? 'text-success' : 'text-error'
               )}
             >
