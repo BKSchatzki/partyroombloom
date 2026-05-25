@@ -37,6 +37,7 @@ model Session {
   userId    Int
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 
+  @@index([userId])
   @@map("PRB_Sessions")
 }
 
@@ -53,6 +54,7 @@ model Outline {
   elements      Element[]
   conversations Conversation[]
 
+  @@index([userId, updatedAt])
   @@map("PRB_Outlines")
 }
 
@@ -74,6 +76,9 @@ model Element {
   updatedAt       DateTime  @default(now()) @updatedAt
   children        Element[] @relation("Element")
 
+  @@index([outlineId, userCreatedAt])
+  @@index([parentId])
+  @@index([userId])
   @@map("PRB_Elements")
 }
 
@@ -87,5 +92,7 @@ model Conversation {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
+  @@index([outlineId, createdAt])
+  @@index([userId])
   @@map("PRB_Conversations")
 }
