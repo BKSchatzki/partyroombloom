@@ -1,18 +1,10 @@
-'use client';
-
-import { useEffect } from 'react';
-
 import { Grid2X2, Home } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) => {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
-
+const NotFound = () => {
   return (
     <div className={cn(`flex h-full flex-col items-center justify-center gap-8`)}>
       <h2 className={cn(`text-xl font-bold`)}>Hmmm. It must be here somewhere.</h2>
@@ -53,4 +45,4 @@ const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: ()
   );
 };
 
-export default Error;
+export default NotFound;
