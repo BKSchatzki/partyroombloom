@@ -1,20 +1,51 @@
-# Step 1: Base image
-FROM node:20.16.0-alpine3.19
+FROM node:20.16.0-alpine3.19 AS base
 
-# Step 2: Set working directory
 WORKDIR /app
 
-# Step 3: Copy package.json and package-lock.json
+ENV NEXT_TELEMETRY_DISABLED=1
+
+FROM base AS deps
+
 COPY package*.json ./
+RUN npm ci
 
-# Step 4: Install dependencies
-RUN npm install
+FROM base AS development
 
-# Step 5: Copy the rest of the application code
+ENV NODE_ENV=development
+
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Step 6: Expose the Next.js default port
 EXPOSE 3000
 
-# Step 7: Start the Next.js app in development mode
 CMD ["npm", "run", "dev"]
+
+FROM base AS builder
+
+ENV NODE_ENV=production
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN npm run build
+
+FROM base AS runner
+
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+
+RUN mkdir .next && chown nextjs:nodejs .next
+
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]
