@@ -52,11 +52,21 @@ export const getRequiredEnv = (key: RequiredEnvKey) => {
   if (!value) {
     throw new Error(`${key} is not configured.`);
   }
+  if (!requiredEnvValidators[key](value).ok) {
+    throw new Error(`${key} is not valid.`);
+  }
   return value;
 };
 
 export const getSiteUrl = () => {
-  return getOptionalEnv('SITE_URL') ?? DEFAULT_SITE_URL;
+  const value = getOptionalEnv('SITE_URL');
+  if (!value) {
+    return DEFAULT_SITE_URL;
+  }
+  if (!optionalEnvValidators.SITE_URL(value).ok) {
+    throw new Error('SITE_URL is not valid.');
+  }
+  return value;
 };
 
 export const getRequiredEnvStatus = () => {
