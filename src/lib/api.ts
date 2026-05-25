@@ -1,7 +1,11 @@
 import 'server-only';
 
 import { Prisma } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, type NextResponse } from 'next/server';
+
+import { jsonNoStore } from '@/lib/responses';
+
+export { jsonNoStore } from '@/lib/responses';
 
 type JsonBodyResult =
   | {
@@ -14,17 +18,6 @@ type JsonBodyResult =
     };
 
 const MAX_JSON_BODY_BYTES = 4 * 1024 * 1024;
-const NO_STORE_CACHE_CONTROL = 'no-store';
-
-export const jsonNoStore = <T>(body: T, init: ResponseInit = {}) => {
-  const headers = new Headers(init.headers);
-  headers.set('Cache-Control', NO_STORE_CACHE_CONTROL);
-
-  return NextResponse.json(body, {
-    ...init,
-    headers,
-  });
-};
 
 const hasJsonContentType = (contentType: string | null) => {
   const mimeType = contentType?.split(';')[0].trim().toLowerCase();

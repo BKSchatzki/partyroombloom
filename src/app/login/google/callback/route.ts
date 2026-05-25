@@ -3,9 +3,11 @@ import { cookies } from 'next/headers';
 
 import { createSession, getGoogleClient, setSessionCookie } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
+import { redirectNoStore, responseNoStore } from '@/lib/responses';
 import { GoogleUserInfoSchema } from '@/lib/schemas';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 const GOOGLE_OAUTH_STATE_COOKIE = 'google_oauth_state';
 const GOOGLE_OAUTH_CODE_VERIFIER_COOKIE = 'code_verifier';
@@ -38,7 +40,7 @@ export async function GET(request: Request): Promise<Response> {
   const storedCodeVerifier = cookieStore.get(GOOGLE_OAUTH_CODE_VERIFIER_COOKIE)?.value ?? null;
   if (!code || !state || !storedState || !storedCodeVerifier || state !== storedState) {
     expireGoogleOAuthCookies(cookieStore);
-    return new Response('Invalid state or missing code', { status: 400 });
+    return responseNoStore('Invalid state or missing code', { status: 400 });
   }
 
   expireGoogleOAuthCookies(cookieStore);
@@ -63,7 +65,7 @@ export async function GET(request: Request): Promise<Response> {
         'Google user info response failed validation:',
         parsedGoogleUser.error.flatten()
       );
-      return new Response('Invalid Google user profile', { status: 502 });
+      return responseNoStore('Invalid Google user profile', { status: 502 });
     }
     const googleUser = parsedGoogleUser.data;
     const existingUser = await db.user.findUnique({
@@ -91,15 +93,12 @@ export async function GET(request: Request): Promise<Response> {
     const session = await createSession(user.id);
     await setSessionCookie(session.id, session.expiresAt);
 
-    return new Response(null, {
-      status: 302,
-      headers: { Location: existingUser ? '/overview' : '/outline/tutorial' },
-    });
+    return redirectNoStore(existingUser ? '/overview' : '/outline/tutorial');
   } catch (e) {
     if (e instanceof OAuth2RequestError) {
-      return new Response('Invalid code or request', { status: 400 });
+      return responseNoStore('Invalid code or request', { status: 400 });
     }
     console.error('Google OAuth callback failed:', e);
-    return new Response('Internal server error', { status: 500 });
+    return responseNoStore('Internal server error', { status: 500 });
   }
 }

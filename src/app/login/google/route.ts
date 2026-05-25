@@ -2,8 +2,10 @@ import { generateCodeVerifier, generateState } from 'arctic';
 import { cookies } from 'next/headers';
 
 import { getGoogleClient } from '@/lib/auth';
+import { redirectNoStore, responseNoStore } from '@/lib/responses';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function GET(): Promise<Response> {
   const state = generateState();
@@ -18,7 +20,7 @@ export async function GET(): Promise<Response> {
     ]);
   } catch (error) {
     console.error('Google OAuth configuration error:', error);
-    return new Response('Google OAuth is not configured', { status: 500 });
+    return responseNoStore('Google OAuth is not configured', { status: 500 });
   }
 
   const cookieStore = await cookies();
@@ -37,5 +39,5 @@ export async function GET(): Promise<Response> {
     sameSite: 'lax',
   });
 
-  return Response.redirect(url);
+  return redirectNoStore(url);
 }

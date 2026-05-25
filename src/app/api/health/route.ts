@@ -1,14 +1,10 @@
-import { NextResponse } from 'next/server';
-
 import { getRequiredEnvStatus } from '@/lib/env';
 import { prisma } from '@/lib/prisma';
+import { jsonNoStore } from '@/lib/responses';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const noStoreHeaders = {
-  'Cache-Control': 'no-store',
-};
 const DATABASE_HEALTHCHECK_TIMEOUT_MS = 2_000;
 
 const withTimeout = <T>(promise: Promise<T>, timeoutMs: number) => {
@@ -37,7 +33,7 @@ export const GET = async () => {
 
   const isReady = databaseCheck === 'ok' && environmentCheck.configured;
 
-  return NextResponse.json(
+  return jsonNoStore(
     {
       status: isReady ? 'ok' : 'error',
       checks: {
@@ -52,7 +48,6 @@ export const GET = async () => {
     },
     {
       status: isReady ? 200 : 503,
-      headers: noStoreHeaders,
     }
   );
 };
