@@ -1,7 +1,5 @@
 'use client';
 
-import '@/styles/google.css';
-
 import { LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,11 +12,7 @@ export const SignIn = ({ className }: { className?: string }) => {
   return (
     <Link
       href={`/login/google`}
-      role={`link`}
-      className={cn(
-        'gsi-material-button btn hover:bg-base-content focus:bg-base-content block',
-        className
-      )}
+      className={cn('gsi-material-button', className)}
     >
       <div className="gsi-material-button-state"></div>
       <div className="gsi-material-button-content-wrapper">
@@ -28,7 +22,6 @@ export const SignIn = ({ className }: { className?: string }) => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"
             xmlnsXlink="http://www.w3.org/1999/xlink"
-            style={{ display: 'block' }}
           >
             <path
               fill="#EA4335"

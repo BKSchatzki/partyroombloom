@@ -1,4 +1,5 @@
 import '@/styles/globals.css';
+import '@/styles/google.css';
 
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';

@@ -32,44 +32,36 @@ const Hero: React.FC = () => {
           better than ever.
         </p>
       </div>
-      <div className={cn(`flex gap-8 max-sm:flex-col`)}>
-        <Link
-          href={`/outline/tutorial`}
-          role={`none`}
-          tabIndex={-1}
+      <div className={cn(`grid w-full max-w-xl grid-cols-2 gap-4 max-sm:grid-cols-1`)}>
+        <Button
+          asChild
+          color={`primary`}
+          className={cn(`h-12 min-h-12 w-full gap-2 whitespace-nowrap`)}
         >
-          <Button
-            color={`primary`}
-            role={`link`}
-            size={`wide`}
-          >
+          <Link href={`/outline/tutorial`}>
             How it works
             <GraduationCap
               aria-hidden={true}
               className={cn(`size-5`)}
             />
-          </Button>
-        </Link>
+          </Link>
+        </Button>
         {user ? (
-          <Link
-            href={`/overview`}
-            role={`none`}
-            tabIndex={-1}
+          <Button
+            asChild
+            color={`neutral`}
+            className={cn(`h-12 min-h-12 w-full gap-2 whitespace-nowrap`)}
           >
-            <Button
-              color={`neutral`}
-              role={`link`}
-              size={`wide`}
-            >
+            <Link href={`/overview`}>
               Go to overview
               <ArrowRight
                 aria-hidden={true}
                 className={cn(`size-5`)}
               />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         ) : (
-          <SignIn className={cn(`btn-wide`)} />
+          <SignIn className={cn(`!h-12 !min-h-12 !w-full !max-w-none`)} />
         )}
       </div>
     </div>

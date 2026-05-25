@@ -3,6 +3,7 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   -webkit-appearance: none;
+  align-items: center;
   background-color: WHITE;
   background-image: none;
   border: 1px solid #747775;
@@ -12,9 +13,12 @@
   box-sizing: border-box;
   color: #1f1f1f;
   cursor: pointer;
+  display: inline-flex;
   font-size: 14px;
   height: 40px;
+  justify-content: center;
   letter-spacing: 0.25px;
+  line-height: 1;
   outline: none;
   overflow: hidden;
   padding: 0 12px;
@@ -35,9 +39,20 @@
 }
 
 .gsi-material-button .gsi-material-button-icon {
+  align-items: center;
+  display: flex;
+  flex: 0 0 20px;
   height: 20px;
-  margin-right: 12px;
+  justify-content: center;
+  margin-right: 0;
   min-width: 20px;
+  overflow: hidden;
+  width: 20px;
+}
+
+.gsi-material-button .gsi-material-button-icon svg {
+  display: block;
+  height: 20px;
   width: 20px;
 }
 
@@ -49,15 +64,16 @@
   flex-direction: row;
   -webkit-flex-wrap: nowrap;
   flex-wrap: nowrap;
+  gap: 12px;
   height: 100%;
-  justify-content: space-between;
+  justify-content: center;
   position: relative;
   width: 100%;
 }
 
 .gsi-material-button .gsi-material-button-contents {
-  -webkit-flex-grow: 1;
-  flex-grow: 1;
+  -webkit-flex-grow: 0;
+  flex-grow: 0;
   font-weight: 500;
   text-overflow: ellipsis;
   vertical-align: top;
