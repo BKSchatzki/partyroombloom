@@ -1,7 +1,7 @@
 import '@/styles/globals.css';
 
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import Nav from '@/components/Nav';
 import Providers from '@/components/Providers';
@@ -9,7 +9,12 @@ import { validateRequest } from '@/lib/auth';
 import { getSiteUrl } from '@/lib/env';
 import { cn } from '@/lib/utils';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = localFont({
+  src: './fonts/inter-latin.woff2',
+  display: 'swap',
+  fallback: ['system-ui', 'arial'],
+  weight: '100 900',
+});
 
 export const runtime = 'nodejs';
 
