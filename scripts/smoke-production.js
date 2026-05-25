@@ -80,6 +80,7 @@ const assertHealthPayload = async (response, url) => {
     payload?.status !== 'ok' ||
     checks?.database !== 'ok' ||
     checks?.environment !== 'ok' ||
+    payload?.invalidEnvironmentVariableCount !== 0 ||
     payload?.missingEnvironmentVariableCount !== 0
   ) {
     throw new Error(`Health endpoint returned an unhealthy payload: ${JSON.stringify(payload)}`);

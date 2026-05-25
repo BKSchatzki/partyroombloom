@@ -30,6 +30,7 @@ export const GET = async () => {
         database: databaseCheck,
         environment: environmentCheck.configured ? 'ok' : 'error',
       },
+      invalidEnvironmentVariableCount: environmentCheck.invalidCount,
       missingEnvironmentVariableCount: environmentCheck.missingCount,
       uptimeSeconds: Math.round(process.uptime()),
       latencyMs: Date.now() - startedAt,

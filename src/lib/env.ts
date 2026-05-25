@@ -10,6 +10,30 @@ export const REQUIRED_ENV_KEYS = [
 
 export type RequiredEnvKey = (typeof REQUIRED_ENV_KEYS)[number];
 
+type EnvValidationResult = {
+  ok: boolean;
+};
+
+const validateUrlEnv = (
+  value: string,
+  allowedProtocols: readonly string[]
+): EnvValidationResult => {
+  try {
+    const url = new URL(value);
+    return { ok: allowedProtocols.includes(url.protocol) };
+  } catch {
+    return { ok: false };
+  }
+};
+
+const requiredEnvValidators: Record<RequiredEnvKey, (value: string) => EnvValidationResult> = {
+  DATABASE_URL: (value) => validateUrlEnv(value, ['postgres:', 'postgresql:']),
+  OPENAI_API_KEY: () => ({ ok: true }),
+  AUTH_GOOGLE_ID: () => ({ ok: true }),
+  AUTH_GOOGLE_SECRET: () => ({ ok: true }),
+  AUTH_GOOGLE_REDIRECT_URI: (value) => validateUrlEnv(value, ['http:', 'https:']),
+};
+
 export const getOptionalEnv = (key: string) => {
   const value = process.env[key]?.trim();
   return value && value.length > 0 ? value : null;
@@ -24,12 +48,24 @@ export const getRequiredEnv = (key: RequiredEnvKey) => {
 };
 
 export const getRequiredEnvStatus = () => {
-  const missing = REQUIRED_ENV_KEYS.filter((key) => {
-    return !getOptionalEnv(key);
+  const missing: RequiredEnvKey[] = [];
+  const invalid: RequiredEnvKey[] = [];
+
+  REQUIRED_ENV_KEYS.forEach((key) => {
+    const value = getOptionalEnv(key);
+    if (!value) {
+      missing.push(key);
+      return;
+    }
+
+    if (!requiredEnvValidators[key](value).ok) {
+      invalid.push(key);
+    }
   });
 
   return {
-    configured: missing.length === 0,
+    configured: missing.length === 0 && invalid.length === 0,
+    invalidCount: invalid.length,
     missingCount: missing.length,
   };
 };
