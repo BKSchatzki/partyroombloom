@@ -4,12 +4,14 @@ import { OpenAI } from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mjs';
 
-import { getRequiredEnv } from './env';
+import { getOptionalEnv, getRequiredEnv } from './env';
 import { simulateOutlinePrompt } from './prompts';
 import { DungeonMasterResponseSchema, StoredDungeonMasterResponseSchema } from './schemas';
 import { Conversation, Outline, OutlineUserMessage, SystemMessage, UserMessage } from './types';
 
 let openaiClient: OpenAI | null = null;
+
+const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini';
 
 const getOpenAIClient = () => {
   openaiClient ??= new OpenAI({
@@ -64,7 +66,7 @@ export const getStructuredResponse = async (
       ];
 
   const completion = await getOpenAIClient().beta.chat.completions.parse({
-    model: 'gpt-4o-mini',
+    model: getOptionalEnv('OPENAI_MODEL') ?? DEFAULT_OPENAI_MODEL,
     messages,
     response_format: zodResponseFormat(DungeonMasterResponseSchema, 'assistant_response'),
   });

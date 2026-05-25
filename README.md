@@ -80,6 +80,7 @@ Featureset expanding to include the use of a (currently public) Express service 
    ```env
    DATABASE_URL="Link to your PostgreSQL instance"
    OPENAI_API_KEY="Your OpenAI API key"
+   OPENAI_MODEL="Optional model override, defaults to gpt-4o-mini"
    AUTH_GOOGLE_ID="Your Google Client ID"
    AUTH_GOOGLE_SECRET="Your Google Client secret"
    AUTH_GOOGLE_REDIRECT_URI="http://localhost:3000/login/google/callback"
