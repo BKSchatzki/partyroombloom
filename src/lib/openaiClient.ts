@@ -6,7 +6,7 @@ import { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mj
 
 import { getOptionalEnv, getRequiredEnv } from './env';
 import { simulateOutlinePrompt } from './prompts';
-import { DungeonMasterResponseSchema, StoredDungeonMasterResponseSchema } from './schemas';
+import { StoredDungeonMasterResponseSchema } from './schemas';
 import { Conversation, Outline, OutlineUserMessage, SystemMessage, UserMessage } from './types';
 
 let openaiClient: OpenAI | null = null;
@@ -68,7 +68,7 @@ export const getStructuredResponse = async (
   const completion = await getOpenAIClient().beta.chat.completions.parse({
     model: getOptionalEnv('OPENAI_MODEL') ?? DEFAULT_OPENAI_MODEL,
     messages,
-    response_format: zodResponseFormat(DungeonMasterResponseSchema, 'assistant_response'),
+    response_format: zodResponseFormat(StoredDungeonMasterResponseSchema, 'assistant_response'),
   });
 
   const assistantMessage = completion.choices[0].message.parsed;

@@ -23,13 +23,6 @@ export const GoogleUserInfoSchema = z.object({
   picture: z.string().url().nullable().optional(),
 });
 
-export const DungeonMasterResponseSchema = z.object({
-  headline: z.string(),
-  narration: z.array(z.string()),
-  prompt: z.string(),
-  options: z.array(z.object({ description: z.string(), roll: z.boolean() })),
-});
-
 export const StoredDungeonMasterResponseSchema = z.object({
   headline: z.string().max(ASSISTANT_TEXT_MAX_LENGTH),
   narration: z.array(z.string().max(ASSISTANT_TEXT_MAX_LENGTH)).max(ASSISTANT_NARRATION_LIMIT),
