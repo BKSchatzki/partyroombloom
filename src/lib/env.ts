@@ -7,8 +7,10 @@ export const REQUIRED_ENV_KEYS = [
   'AUTH_GOOGLE_SECRET',
   'AUTH_GOOGLE_REDIRECT_URI',
 ] as const;
+export const OPTIONAL_ENV_KEYS = ['SITE_URL'] as const;
 
 export type RequiredEnvKey = (typeof REQUIRED_ENV_KEYS)[number];
+export type OptionalEnvKey = (typeof OPTIONAL_ENV_KEYS)[number];
 
 type EnvValidationResult = {
   ok: boolean;
@@ -34,6 +36,12 @@ const requiredEnvValidators: Record<RequiredEnvKey, (value: string) => EnvValida
   AUTH_GOOGLE_REDIRECT_URI: (value) => validateUrlEnv(value, ['http:', 'https:']),
 };
 
+const optionalEnvValidators: Record<OptionalEnvKey, (value: string) => EnvValidationResult> = {
+  SITE_URL: (value) => validateUrlEnv(value, ['http:', 'https:']),
+};
+
+const DEFAULT_SITE_URL = 'https://partyroombloom.vercel.app';
+
 export const getOptionalEnv = (key: string) => {
   const value = process.env[key]?.trim();
   return value && value.length > 0 ? value : null;
@@ -47,9 +55,13 @@ export const getRequiredEnv = (key: RequiredEnvKey) => {
   return value;
 };
 
+export const getSiteUrl = () => {
+  return getOptionalEnv('SITE_URL') ?? DEFAULT_SITE_URL;
+};
+
 export const getRequiredEnvStatus = () => {
   const missing: RequiredEnvKey[] = [];
-  const invalid: RequiredEnvKey[] = [];
+  const invalid: Array<RequiredEnvKey | OptionalEnvKey> = [];
 
   REQUIRED_ENV_KEYS.forEach((key) => {
     const value = getOptionalEnv(key);
@@ -59,6 +71,13 @@ export const getRequiredEnvStatus = () => {
     }
 
     if (!requiredEnvValidators[key](value).ok) {
+      invalid.push(key);
+    }
+  });
+
+  OPTIONAL_ENV_KEYS.forEach((key) => {
+    const value = getOptionalEnv(key);
+    if (value && !optionalEnvValidators[key](value).ok) {
       invalid.push(key);
     }
   });

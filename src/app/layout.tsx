@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google';
 import Nav from '@/components/Nav';
 import Providers from '@/components/Providers';
 import { validateRequest } from '@/lib/auth';
+import { getSiteUrl } from '@/lib/env';
 import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -15,7 +16,7 @@ export const runtime = 'nodejs';
 export const metadata: Metadata = {
   title: 'PartyRoomBloom',
   description: "The game master's inspirational session planning toolkit",
-  metadataBase: new URL('https://partyroombloom.vercel.app'),
+  metadataBase: new URL(getSiteUrl()),
   applicationName: 'PartyRoomBloom',
   authors: [{ name: 'Brendan K. Schatzki' }],
   generator: 'Next.js',
