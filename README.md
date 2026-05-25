@@ -100,6 +100,12 @@ npm start
 
 The application will be available at `http://localhost:3000`
 
+Check runtime readiness:
+
+```bash
+curl http://localhost:3000/api/health
+```
+
 ## Build Instructions
 
 To build the project for production:
@@ -114,7 +120,7 @@ Build a production Docker image:
 docker build -t partyroombloom .
 ```
 
-The Docker image uses Next.js standalone output and runs `node server.js` in production. `docker-compose.yaml` targets the development stage for local container development.
+The Docker image uses Next.js standalone output, runs `node server.js` in production, and uses `/api/health` as its readiness health check. `docker-compose.yaml` targets the development stage for local container development.
 
 ## Deployment Checklist
 
