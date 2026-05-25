@@ -1,5 +1,12 @@
 import { z } from 'zod';
 
+export const GoogleUserInfoSchema = z.object({
+  sub: z.string().min(1),
+  email: z.string().email(),
+  name: z.string().nullable().optional(),
+  picture: z.string().url().nullable().optional(),
+});
+
 export const DungeonMasterResponseSchema = z.object({
   headline: z.string(),
   narration: z.array(z.string()),

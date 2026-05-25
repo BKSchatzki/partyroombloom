@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 
 import { createSession, getGoogleClient, setSessionCookie } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
+import { GoogleUserInfoSchema } from '@/lib/schemas';
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
@@ -24,11 +25,18 @@ export async function GET(request: Request): Promise<Response> {
     });
 
     if (!googleUserResponse.ok) {
-      const errorDetails = await googleUserResponse.json();
-      throw new Error(`Google user info fetch failed: ${errorDetails.error}`);
+      throw new Error(`Google user info fetch failed with status ${googleUserResponse.status}.`);
     }
 
-    const googleUser: GoogleUser = await googleUserResponse.json();
+    const parsedGoogleUser = GoogleUserInfoSchema.safeParse(await googleUserResponse.json());
+    if (!parsedGoogleUser.success) {
+      console.error(
+        'Google user info response failed validation:',
+        parsedGoogleUser.error.flatten()
+      );
+      return new Response('Invalid Google user profile', { status: 502 });
+    }
+    const googleUser = parsedGoogleUser.data;
     const existingUser = await db.user.findUnique({
       where: { googleId: googleUser.sub },
     });
@@ -46,8 +54,8 @@ export async function GET(request: Request): Promise<Response> {
       data: {
         googleId: googleUser.sub,
         email: googleUser.email,
-        name: googleUser.name,
-        picture: googleUser.picture,
+        name: googleUser.name ?? null,
+        picture: googleUser.picture ?? null,
         chatTokens: 50,
       },
     });
@@ -63,13 +71,7 @@ export async function GET(request: Request): Promise<Response> {
     if (e instanceof OAuth2RequestError) {
       return new Response('Invalid code or request', { status: 400 });
     }
+    console.error('Google OAuth callback failed:', e);
     return new Response('Internal server error', { status: 500 });
   }
-}
-
-interface GoogleUser {
-  sub: string;
-  email: string;
-  name: string;
-  picture: string;
 }
