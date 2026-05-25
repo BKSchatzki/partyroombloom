@@ -12,10 +12,14 @@ import { Conversation, Outline, OutlineUserMessage, SystemMessage, UserMessage }
 let openaiClient: OpenAI | null = null;
 
 const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini';
+const OPENAI_MAX_RETRIES = 1;
+const OPENAI_REQUEST_TIMEOUT_MS = 45_000;
 
 const getOpenAIClient = () => {
   openaiClient ??= new OpenAI({
     apiKey: getRequiredEnv('OPENAI_API_KEY'),
+    maxRetries: OPENAI_MAX_RETRIES,
+    timeout: OPENAI_REQUEST_TIMEOUT_MS,
   });
 
   return openaiClient;
