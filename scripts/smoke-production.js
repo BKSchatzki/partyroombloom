@@ -69,6 +69,23 @@ const assertHeaders = (response, requiredHeaders, forbiddenHeaders) => {
   }
 };
 
+const assertHealthPayload = async (response, url) => {
+  if (url.pathname !== '/api/health') {
+    return;
+  }
+
+  const payload = await response.json();
+  const checks = payload && typeof payload === 'object' ? payload.checks : null;
+  if (
+    payload?.status !== 'ok' ||
+    checks?.database !== 'ok' ||
+    checks?.environment !== 'ok' ||
+    payload?.missingEnvironmentVariableCount !== 0
+  ) {
+    throw new Error(`Health endpoint returned an unhealthy payload: ${JSON.stringify(payload)}`);
+  }
+};
+
 const main = async () => {
   const port = process.env.PORT || '3000';
   const hostname = process.env.HOSTNAME || '127.0.0.1';
@@ -118,6 +135,7 @@ const main = async () => {
         const response = await fetch(url, { redirect: 'manual' });
         if (response.ok) {
           assertHeaders(response, requiredHeaders, forbiddenHeaders);
+          await assertHealthPayload(response, url);
           console.log(`Production smoke passed: ${url.href} returned ${response.status}`);
           return;
         }
