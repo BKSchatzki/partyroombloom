@@ -19,6 +19,27 @@ jobs:
     name: Verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      AUTH_GOOGLE_ID: ci-google-client-id
+      AUTH_GOOGLE_REDIRECT_URI: http://localhost:3000/login/google/callback
+      AUTH_GOOGLE_SECRET: ci-google-client-secret
+      DATABASE_URL: postgresql://postgres:password@localhost:5432/partyroombloom_ci?schema=public
+      OPENAI_API_KEY: ci-openai-api-key
+
+    services:
+      postgres:
+        image: postgres:16.3
+        env:
+          POSTGRES_DB: partyroombloom_ci
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d partyroombloom_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout
@@ -36,5 +57,30 @@ jobs:
       - name: Check production dependencies
         run: npm audit --omit=dev
 
+      - name: Validate committed migrations
+        run: npm run db:migrate:deploy
+
       - name: Verify project
         run: npm run verify
+
+      - name: Smoke production health endpoint
+        run: |
+          npm start > /tmp/partyroombloom.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:3000/api/health; then
+              exit 0
+            fi
+
+            if ! kill -0 "$server_pid" 2>/dev/null; then
+              cat /tmp/partyroombloom.log
+              exit 1
+            fi
+
+            sleep 1
+          done
+
+          cat /tmp/partyroombloom.log
+          exit 1
