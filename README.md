@@ -112,6 +112,16 @@ The readiness endpoint checks database connectivity and verifies that required s
 environment variables are configured. It intentionally reports only counts/statuses, not secret
 values.
 
+Smoke-test the built standalone production server:
+
+```bash
+npm run smoke:production
+```
+
+The smoke test starts `npm start`, waits for `/api/health`, verifies the configured security
+headers, and stops the server. It expects the required runtime environment variables and database
+connection to be available.
+
 ## Build Instructions
 
 To build the project for production:
