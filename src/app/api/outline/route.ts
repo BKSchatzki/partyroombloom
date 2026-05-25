@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { readJsonBody, validateSameOriginRequest } from '@/lib/api';
+import { jsonNoStore, readJsonBody, validateSameOriginRequest } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
 import { toElementWriteData, toFlatOutlineElement } from '@/lib/outlinePersistence';
@@ -9,6 +9,7 @@ import { OutlinePayloadSchema } from '@/lib/schemas';
 import type { Outline } from '@/lib/types';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 /* Service for:
   - Getting all outlines associated with current user
@@ -18,7 +19,7 @@ export const GET = async (req: NextRequest) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
     // Find all outlines matching current user ordered by update time, ordering each's elements and conversations by creation time
@@ -56,9 +57,9 @@ export const GET = async (req: NextRequest) => {
       })),
     }));
     // Return formatted outlines
-    return NextResponse.json(formattedOutlinesList, { status: 200 });
+    return jsonNoStore(formattedOutlinesList, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: 'Error fetching outlines' }, { status: 500 });
+    return jsonNoStore({ message: 'Error fetching outlines' }, { status: 500 });
   }
 };
 

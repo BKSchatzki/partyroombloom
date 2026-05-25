@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import {
   isPrismaRecordNotFoundError,
+  jsonNoStore,
   parsePositiveInteger,
   readJsonBody,
   validateSameOriginRequest,
@@ -11,6 +12,7 @@ import { prisma } from '@/lib/prisma';
 import { UpdateConversationPayloadSchema } from '@/lib/schemas';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 /* Service for:
   - Getting conversation from URL param and its associated user
@@ -23,14 +25,14 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
     // Convert simulateId string from params into number
     const { simulateId: simulateIdParam } = await params;
     const simulateId = parsePositiveInteger(simulateIdParam);
     if (simulateId === null) {
-      return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
+      return jsonNoStore({ message: 'Invalid simulate ID' }, { status: 400 });
     }
     // Find specific simulation matching param and userId, aborting if no conversation found
     const conversation = await prisma.conversation.findUnique({
@@ -40,7 +42,7 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
       },
     });
     if (!conversation) {
-      return NextResponse.json({ message: 'Conversation not found' }, { status: 404 });
+      return jsonNoStore({ message: 'Conversation not found' }, { status: 404 });
     }
     // Return found conversation and its owner
     const response = {
@@ -48,10 +50,10 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
       conversation: conversation.thread,
       user: toClientUser(user),
     };
-    return NextResponse.json(response, { status: 200 });
+    return jsonNoStore(response, { status: 200 });
   } catch (error) {
     console.error('Error fetching conversation:', error);
-    return NextResponse.json({ message: 'Error fetching conversation' }, { status: 500 });
+    return jsonNoStore({ message: 'Error fetching conversation' }, { status: 500 });
   }
 };
 

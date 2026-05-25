@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import {
   isPrismaRecordNotFoundError,
+  jsonNoStore,
   parsePositiveInteger,
   readJsonBody,
   validateSameOriginRequest,
@@ -14,6 +15,7 @@ import { OutlinePayloadSchema } from '@/lib/schemas';
 import type { Outline } from '@/lib/types';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 /* Service for:
   - Getting outline from URL param and its associated user
@@ -27,14 +29,14 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
     const outlineId = parsePositiveInteger(outlineIdParam);
     if (outlineId === null) {
-      return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
+      return jsonNoStore({ message: 'Invalid outline ID' }, { status: 400 });
     }
     // Find specific outline matching param and userId, ordering elements by creation time, aborting if no outline found
     const outline = await prisma.outline.findUnique({
@@ -51,7 +53,7 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
       },
     });
     if (!outline) {
-      return NextResponse.json({ message: 'Outline not found' }, { status: 404 });
+      return jsonNoStore({ message: 'Outline not found' }, { status: 404 });
     }
     // Format outline to match frontend types, adding empty array for conversation not included in above query
     const formattedOutline: Outline = {
@@ -64,10 +66,10 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
       conversations: [],
     };
     // Return formatted outline
-    return NextResponse.json(formattedOutline, { status: 200 });
+    return jsonNoStore(formattedOutline, { status: 200 });
   } catch (error) {
     console.error('Error fetching outline:', error);
-    return NextResponse.json({ message: 'Error fetching outline' }, { status: 500 });
+    return jsonNoStore({ message: 'Error fetching outline' }, { status: 500 });
   }
 };
 
