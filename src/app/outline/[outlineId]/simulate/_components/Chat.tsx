@@ -40,7 +40,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
   const [isSaving, setIsSaving] = useState(false);
   const [isLocalLoading, setIsLocalLoading] = useState(true);
-  const [currentSimulateId, setCurrentSimulateId] = useState(simulateId);
+  const [createdSimulateId, setCreatedSimulateId] = useState<number | null>(null);
   const [embla, setEmbla] = useState<CarouselApi>();
   let outline: Outline | null = null;
   if (outlineId) {
@@ -97,7 +97,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         const { conversation: updatedConversation, user: updatedUser } =
           parsedConversationResponse.data;
         const newSimulateId = parsedConversationResponse.data.id;
-        setCurrentSimulateId(newSimulateId);
+        setCreatedSimulateId(newSimulateId);
         router.replace(`/outline/${outlineId}/simulate/${newSimulateId}`);
         setConversation(updatedConversation);
         setTokenCount(updatedUser.chatTokens);
@@ -115,7 +115,6 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
           throw new Error('Invalid conversation payload');
         }
         const data = parsedConversationResponse.data;
-        setCurrentSimulateId(data.id);
         setConversation(data.conversation);
         setTokenCount(data.user.chatTokens);
         setIsLocalLoading(false);
@@ -127,6 +126,8 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
     refetchOnWindowFocus: false,
   });
 
+  const activeSimulateId = simulateId ?? createdSimulateId;
+
   const handleSubmit = useCallback(
     async (userMessage: UserMessage) => {
       setIsSaving(true);
@@ -135,7 +136,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         setIsSaving(false);
         return;
       }
-      if (currentSimulateId === null) {
+      if (activeSimulateId === null) {
         setIsSaving(false);
         return;
       }
@@ -146,7 +147,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            simulateId: currentSimulateId,
+            simulateId: activeSimulateId,
             input: userMessage.content,
             conversation: conversation,
           }),
@@ -174,12 +175,8 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         setIsSaving(false);
       }
     },
-    [conversation, currentSimulateId, setConversation, setUserMessage, tokenCount, user]
+    [activeSimulateId, conversation, setConversation, setUserMessage, tokenCount, user]
   );
-
-  useEffect(() => {
-    setCurrentSimulateId(simulateId);
-  }, [simulateId]);
 
   useEffect(() => {
     if (!embla) {
@@ -254,7 +251,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
                           isSaving ||
                           index !== conversation.length - 1 ||
                           tokenCount <= 0 ||
-                          currentSimulateId === null
+                          activeSimulateId === null
                         }
                         onClick={() => handleSubmit(userMessage)}
                         className={cn(

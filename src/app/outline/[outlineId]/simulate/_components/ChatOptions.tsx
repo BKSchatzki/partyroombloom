@@ -182,7 +182,7 @@ const RollSelectComponent: React.FC<RollSelectProps> = ({
       >
         <SelectTrigger
           className={cn(
-            `bg-base-300 text-base-content scrollbar-thin scrollbar-track-warning/25 scrollbar-thumb-warning w-40 rounded-full text-center`
+            `bg-base-300 text-base-content scrollbar-track-warning/25 scrollbar-thumb-warning w-40 scrollbar-thin rounded-full text-center`
           )}
         >
           <SelectValue placeholder={`-`} />

@@ -100,13 +100,21 @@ const Carousel = React.forwardRef<
       return;
     }
 
-    onSelect(api);
-    api.on('reInit', onSelect);
-    api.on('select', onSelect);
+    let isSubscribed = true;
+    const handleSelect = () => {
+      if (isSubscribed) {
+        onSelect(api);
+      }
+    };
+
+    queueMicrotask(handleSelect);
+    api.on('reInit', handleSelect);
+    api.on('select', handleSelect);
 
     return () => {
-      api.off('reInit', onSelect);
-      api.off('select', onSelect);
+      isSubscribed = false;
+      api.off('reInit', handleSelect);
+      api.off('select', handleSelect);
     };
   }, [api, onSelect]);
 
