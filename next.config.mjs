@@ -35,6 +35,11 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'cmt76lyntq.ufs.sh',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.buymeacoffee.com',
+        pathname: '/buttons/v2/**',
+      },
     ],
   },
   async headers() {

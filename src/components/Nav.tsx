@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 
 import type { User } from '@/lib/auth';
 import { Grid2X2, Leaf, Menu } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import { SignIn, SignOut } from '@/components/SignIn';
@@ -41,9 +41,11 @@ const NavComponent: React.FC<NavProps> = ({ user }) => {
             aria-hidden={true}
             className={cn(`size-8`)}
           /> */}
-          <img
+          <Image
             src={`/assets/prb-logo.png`}
             alt={`PartyRoomBloom Logo`}
+            width={32}
+            height={32}
             className={cn(`size-8`)}
           />
           <h2

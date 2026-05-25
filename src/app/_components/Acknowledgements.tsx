@@ -1,10 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useMemo } from 'react';
 
 import AutoScroll from 'embla-carousel-auto-scroll';
 import { Globe } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
@@ -191,10 +191,12 @@ const Acknowledgements = () => {
       {
         href: 'https://www.buymeacoffee.com/bkschatzki',
         image: (
-          <img
+          <Image
             src={`https://cdn.buymeacoffee.com/buttons/v2/default-red.png`}
             alt={`Buy Me a Coffee Link`}
-            className={cn(`h-6`)}
+            width={217}
+            height={60}
+            className={cn(`h-6 w-auto`)}
           />
         ),
         name: 'Buy My a Coffee',
@@ -291,10 +293,13 @@ const Acknowledgements = () => {
                   `bg-base-100/60 flex min-w-0 basis-full items-center justify-center border-r border-[#302a2a] px-6`
                 )}
               >
-                <img
+                <Image
                   src={logo.src}
                   alt={`${logo.name} Logo`}
-                  className={cn(`h-6`)}
+                  width={120}
+                  height={24}
+                  unoptimized
+                  className={cn(`h-6 w-auto`)}
                 />
               </div>
             </CarouselItem>
