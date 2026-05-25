@@ -84,7 +84,7 @@ Featureset expanding to include the use of a (currently public) Express service 
    SITE_URL="Optional canonical site URL, defaults to https://partyroombloom.vercel.app"
    AUTH_GOOGLE_ID="Your Google Client ID"
    AUTH_GOOGLE_SECRET="Your Google Client secret"
-   AUTH_GOOGLE_REDIRECT_URI="http://localhost:3000/login/google/callback"
+   AUTH_GOOGLE_REDIRECT_URI="Your app URL ending in /login/google/callback"
    NEXT_PUBLIC_NPC_SERVICE_URL="Optional NPC service URL"
    ```
 

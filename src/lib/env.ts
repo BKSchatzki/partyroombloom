@@ -28,12 +28,27 @@ const validateUrlEnv = (
   }
 };
 
+const validateGoogleRedirectUri = (value: string): EnvValidationResult => {
+  try {
+    const url = new URL(value);
+    return {
+      ok:
+        ['http:', 'https:'].includes(url.protocol) &&
+        url.pathname === '/login/google/callback' &&
+        url.search === '' &&
+        url.hash === '',
+    };
+  } catch {
+    return { ok: false };
+  }
+};
+
 const requiredEnvValidators: Record<RequiredEnvKey, (value: string) => EnvValidationResult> = {
   DATABASE_URL: (value) => validateUrlEnv(value, ['postgres:', 'postgresql:']),
   OPENAI_API_KEY: () => ({ ok: true }),
   AUTH_GOOGLE_ID: () => ({ ok: true }),
   AUTH_GOOGLE_SECRET: () => ({ ok: true }),
-  AUTH_GOOGLE_REDIRECT_URI: (value) => validateUrlEnv(value, ['http:', 'https:']),
+  AUTH_GOOGLE_REDIRECT_URI: validateGoogleRedirectUri,
 };
 
 const optionalEnvValidators: Record<OptionalEnvKey, (value: string) => EnvValidationResult> = {
