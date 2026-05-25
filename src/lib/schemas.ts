@@ -19,6 +19,7 @@ const textSchema = z.string().max(TEXT_MAX_LENGTH);
 export const GoogleUserInfoSchema = z.object({
   sub: z.string().min(1),
   email: z.string().email(),
+  email_verified: z.boolean().optional().default(false),
   name: z.string().nullable().optional(),
   picture: z.string().url().nullable().optional(),
 });
