@@ -20,7 +20,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { conversationAtom, outlinesListAtom, userMessageAtom, userMessageInit } from '@/lib/atoms';
-import { ConversationResponseSchema, IdResponseSchema, OutlineTreeSchema } from '@/lib/schemas';
+import { ConversationResponseSchema, OutlineTreeSchema } from '@/lib/schemas';
 import type { Outline, UserMessage } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -40,6 +40,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
   const [userMessage, setUserMessage] = useAtom(userMessageAtom);
   const [isSaving, setIsSaving] = useState(false);
   const [isLocalLoading, setIsLocalLoading] = useState(true);
+  const [currentSimulateId, setCurrentSimulateId] = useState(simulateId);
   const [embla, setEmbla] = useState<CarouselApi>();
   let outline: Outline | null = null;
   if (outlineId) {
@@ -74,21 +75,6 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
           throw new Error('Outline is required to start a simulation');
         }
 
-        const createResponse = await fetch('/api/simulate/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ outline: selectedOutline }),
-        });
-        if (!createResponse.ok) {
-          throw new Error(`Failed to create conversation: ${createResponse.status}`);
-        }
-        const parsedCreateResponse = IdResponseSchema.safeParse(await createResponse.json());
-        if (!parsedCreateResponse.success) {
-          throw new Error('Invalid create conversation payload');
-        }
-        const { id: newSimulateId } = parsedCreateResponse.data;
         const conversationResponse = await fetch('/api/simulate/converse', {
           method: 'POST',
           headers: {
@@ -110,25 +96,13 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         }
         const { conversation: updatedConversation, user: updatedUser } =
           parsedConversationResponse.data;
-        const updatedResponse = await fetch(`/api/simulate/${newSimulateId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ conversation: updatedConversation }),
-        });
-        if (!updatedResponse.ok) {
-          throw new Error(`Failed to update conversation: ${updatedResponse.status}`);
-        }
-        const parsedUpdateResponse = IdResponseSchema.safeParse(await updatedResponse.json());
-        if (!parsedUpdateResponse.success) {
-          throw new Error('Invalid update conversation payload');
-        }
+        const newSimulateId = parsedConversationResponse.data.id;
+        setCurrentSimulateId(newSimulateId);
         router.replace(`/outline/${outlineId}/simulate/${newSimulateId}`);
         setConversation(updatedConversation);
         setTokenCount(updatedUser.chatTokens);
         setIsLocalLoading(false);
-        return parsedUpdateResponse.data;
+        return parsedConversationResponse.data;
       } else {
         const response = await fetch(`/api/simulate/${simulateId}`);
         if (!response.ok) {
@@ -141,12 +115,16 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
           throw new Error('Invalid conversation payload');
         }
         const data = parsedConversationResponse.data;
+        setCurrentSimulateId(data.id);
         setConversation(data.conversation);
         setTokenCount(data.user.chatTokens);
         setIsLocalLoading(false);
         return data;
       }
     },
+    retry: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
   });
 
   const handleSubmit = useCallback(
@@ -157,6 +135,10 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         setIsSaving(false);
         return;
       }
+      if (currentSimulateId === null) {
+        setIsSaving(false);
+        return;
+      }
       try {
         const conversationResponse = await fetch('/api/simulate/converse', {
           method: 'POST',
@@ -164,6 +146,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            simulateId: currentSimulateId,
             input: userMessage.content,
             conversation: conversation,
           }),
@@ -179,25 +162,11 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         }
         const { conversation: updatedConversation, user: updatedUser } =
           parsedConversationResponse.data;
-        const updatedResponse = await fetch(`/api/simulate/${simulateId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ conversation: updatedConversation }),
-        });
-        if (!updatedResponse.ok) {
-          throw new Error(`Failed to update conversation: ${updatedResponse.status}`);
-        }
-        const parsedUpdateResponse = IdResponseSchema.safeParse(await updatedResponse.json());
-        if (!parsedUpdateResponse.success) {
-          throw new Error('Invalid update conversation payload');
-        }
         setConversation(updatedConversation);
         setTokenCount(updatedUser.chatTokens);
         setUserMessage(userMessageInit);
         setIsSaving(false);
-        return parsedUpdateResponse.data;
+        return parsedConversationResponse.data;
       } catch (error) {
         console.error('Failed to get response from AI or update conversation:', error);
         throw error;
@@ -205,8 +174,12 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         setIsSaving(false);
       }
     },
-    [conversation, setConversation, setUserMessage, simulateId, tokenCount, user]
+    [conversation, currentSimulateId, setConversation, setUserMessage, tokenCount, user]
   );
+
+  useEffect(() => {
+    setCurrentSimulateId(simulateId);
+  }, [simulateId]);
 
   useEffect(() => {
     if (!embla) {
@@ -277,7 +250,12 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
                         disabled={index !== conversation.length - 1}
                       />
                       <Button
-                        disabled={isSaving || index !== conversation.length - 1 || tokenCount <= 0}
+                        disabled={
+                          isSaving ||
+                          index !== conversation.length - 1 ||
+                          tokenCount <= 0 ||
+                          currentSimulateId === null
+                        }
                         onClick={() => handleSubmit(userMessage)}
                         className={cn(
                           `ring-offset-base-300 bg-indigo-600 ring-indigo-500 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:bg-indigo-600 hover:brightness-90 focus:ring-2 disabled:bg-indigo-600/30 max-sm:mx-1`

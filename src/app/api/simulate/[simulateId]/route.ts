@@ -38,7 +38,7 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
       return NextResponse.json({ message: 'Conversation not found' }, { status: 404 });
     }
     // Return found conversation and its owner
-    const response = { conversation: conversation.thread, user: user };
+    const response = { id: conversation.id, conversation: conversation.thread, user: user };
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     console.error('Error fetching conversation:', error);
