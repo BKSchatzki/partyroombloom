@@ -154,14 +154,19 @@ const retryOperation = async <T>(
   key: string,
   retryLimit = 3,
   retryInterval = 1000
-) => {
-  let lastError;
-  for (let i = 0; i < retryLimit; i++) {
+): Promise<T> => {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= retryLimit; attempt++) {
     try {
       return await operation();
     } catch (error) {
       lastError = error;
-      console.warn(`Retry ${key} operation: Attempt ${i + 1} of ${retryLimit}`);
+
+      if (attempt === retryLimit) {
+        break;
+      }
+
+      console.warn(`Retry ${key} operation: Attempt ${attempt} of ${retryLimit}`);
       await new Promise((resolve) => setTimeout(resolve, retryInterval));
     }
   }
