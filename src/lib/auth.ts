@@ -1,7 +1,5 @@
 import 'server-only';
 
-import { cache } from 'react';
-
 import { Google } from 'arctic';
 import { cookies } from 'next/headers';
 
@@ -164,33 +162,33 @@ const retryOperation = async <T>(
   throw lastError;
 };
 
-export const validateRequest = cache(
-  async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
-    const sessionId = (await cookies()).get(SESSION_COOKIE_NAME)?.value ?? null;
-    if (!sessionId) {
-      return { user: null, session: null };
-    }
-
-    const result = await retryOperation(
-      () => validateSessionFromDb(sessionId),
-      'Validate Session',
-      3,
-      1000
-    );
-
-    if (!result) {
-      try {
-        await deleteSessionCookie();
-      } catch {}
-      return { user: null, session: null };
-    }
-
-    try {
-      if (result.session.fresh) {
-        await setSessionCookie(result.session.id, result.session.expiresAt);
-      }
-    } catch {}
-
-    return result;
+export const validateRequest = async (): Promise<
+  { user: User; session: Session } | { user: null; session: null }
+> => {
+  const sessionId = (await cookies()).get(SESSION_COOKIE_NAME)?.value ?? null;
+  if (!sessionId) {
+    return { user: null, session: null };
   }
-);
+
+  const result = await retryOperation(
+    () => validateSessionFromDb(sessionId),
+    'Validate Session',
+    3,
+    1000
+  );
+
+  if (!result) {
+    try {
+      await deleteSessionCookie();
+    } catch {}
+    return { user: null, session: null };
+  }
+
+  try {
+    if (result.session.fresh) {
+      await setSessionCookie(result.session.id, result.session.expiresAt);
+    }
+  } catch {}
+
+  return result;
+};
