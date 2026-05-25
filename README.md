@@ -70,6 +70,8 @@ Featureset expanding to include the use of a (currently public) Express service 
    npm install
    ```
 
+   Use Node.js 24.x for local development and production parity.
+
 ## Configuration
 
 1. Create a `.env.local` file in the root directory
@@ -143,7 +145,7 @@ The Docker image uses Next.js standalone output, runs `node server.js` in produc
     - Install Command: `yarn install`, `pnpm install`, `npm install`, or `bun install`
     - Development Command: `next`
   - Root directory field is empty
-  - Node.js version is 20.x
+  - Node.js version is 24.x
 - Environment Variables all filled in Vercel Project Settings, especially note:
   - Your PostgreSQL database URL
   - Your OpenAI API key
