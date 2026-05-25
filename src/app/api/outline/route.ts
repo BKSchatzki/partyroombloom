@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { readJsonBody } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
 import { toElementWriteData, toFlatOutlineElement } from '@/lib/outlinePersistence';
 import { prisma } from '@/lib/prisma';
-import { OutlineTreeSchema } from '@/lib/schemas';
+import { OutlinePayloadSchema } from '@/lib/schemas';
 import type { Outline } from '@/lib/types';
 
 /* Service for:
@@ -72,15 +73,19 @@ export const POST = async (req: NextRequest) => {
   }
   try {
     // Insert outline info from body into table and associate with user
-    const body = await req.json();
-    const parsedOutline = OutlineTreeSchema.safeParse(body.payload);
-    if (!parsedOutline.success) {
+    const body = await readJsonBody(req);
+    if (body.response) {
+      return body.response;
+    }
+
+    const parsedPayload = OutlinePayloadSchema.safeParse(body.data);
+    if (!parsedPayload.success) {
       return NextResponse.json(
-        { message: 'Invalid outline payload', errors: parsedOutline.error.flatten() },
+        { message: 'Invalid outline payload', errors: parsedPayload.error.flatten() },
         { status: 400 }
       );
     }
-    const outline: Outline = parsedOutline.data;
+    const outline: Outline = parsedPayload.data.payload;
     const flattenedElements = flattenTreeForPersistence(outline.elements);
 
     const createdOutline = await prisma.$transaction(async (tx) => {

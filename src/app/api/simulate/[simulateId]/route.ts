@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { isPrismaRecordNotFoundError, parsePositiveInteger, readJsonBody } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { ConversationSchema } from '@/lib/schemas';
+import { UpdateConversationPayloadSchema } from '@/lib/schemas';
 
 /* Service for:
   - Getting conversation from URL param and its associated user
@@ -20,8 +21,8 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Convert simulateId string from params into number
     const { simulateId: simulateIdParam } = await params;
-    const simulateId = parseInt(simulateIdParam, 10);
-    if (isNaN(simulateId)) {
+    const simulateId = parsePositiveInteger(simulateIdParam);
+    if (simulateId === null) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }
     // Find specific simulation matching param and userId, aborting if no conversation found
@@ -55,16 +56,20 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Find specific simulation matching param and userId, aborting if no conversation found
     const { simulateId: simulateIdParam } = await params;
-    const simulateId = parseInt(simulateIdParam, 10);
-    if (isNaN(simulateId)) {
+    const simulateId = parsePositiveInteger(simulateIdParam);
+    if (simulateId === null) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }
     // Update existing conversation matching current user with data from body
-    const body = await req.json();
-    const parsedConversation = ConversationSchema.safeParse(body.conversation);
-    if (!parsedConversation.success) {
+    const body = await readJsonBody(req);
+    if (body.response) {
+      return body.response;
+    }
+
+    const parsedPayload = UpdateConversationPayloadSchema.safeParse(body.data);
+    if (!parsedPayload.success) {
       return NextResponse.json(
-        { message: 'Invalid conversation payload', errors: parsedConversation.error.flatten() },
+        { message: 'Invalid conversation payload', errors: parsedPayload.error.flatten() },
         { status: 400 }
       );
     }
@@ -74,12 +79,16 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
         userId: user.id,
       },
       data: {
-        thread: parsedConversation.data,
+        thread: parsedPayload.data.conversation,
       },
     });
     // Return id of updated conversation
     return NextResponse.json({ id: updatedConversation.id }, { status: 200 });
   } catch (error) {
+    if (isPrismaRecordNotFoundError(error)) {
+      return NextResponse.json({ message: 'Conversation not found' }, { status: 404 });
+    }
+
     console.error('Error updating conversation:', error);
     return NextResponse.json({ message: 'Error updating conversation' }, { status: 500 });
   }
@@ -97,8 +106,8 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Find specific simulation matching param and userId, aborting if no conversation found
     const { simulateId: simulateIdParam } = await params;
-    const simulateId = parseInt(simulateIdParam, 10);
-    if (isNaN(simulateId)) {
+    const simulateId = parsePositiveInteger(simulateIdParam);
+    if (simulateId === null) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }
     // Delete conversation matching current user
@@ -111,6 +120,10 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
     // Return id of deleted conversation
     return NextResponse.json({ id: deletedConversation.id }, { status: 200 });
   } catch (error) {
+    if (isPrismaRecordNotFoundError(error)) {
+      return NextResponse.json({ message: 'Conversation not found' }, { status: 404 });
+    }
+
     console.error('Error deleting conversation:', error);
     return NextResponse.json({ message: 'Error deleting conversation' }, { status: 500 });
   }

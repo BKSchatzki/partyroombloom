@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { readJsonBody } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { ConversationSchema, OutlineTreeSchema } from '@/lib/schemas';
+import { CreateConversationPayloadSchema } from '@/lib/schemas';
 
 /* Service for:
   - Creating new conversation entries
@@ -15,25 +16,23 @@ export const POST = async (req: NextRequest) => {
   }
   try {
     // Insert conversation from body into table and associate with outline and user
-    const body = await req.json();
-    const parsedConversation = ConversationSchema.safeParse(body.conversation ?? []);
-    const parsedOutline = OutlineTreeSchema.safeParse(body.outline);
+    const body = await readJsonBody(req);
+    if (body.response) {
+      return body.response;
+    }
 
-    if (!parsedConversation.success || !parsedOutline.success) {
+    const parsedPayload = CreateConversationPayloadSchema.safeParse(body.data);
+    if (!parsedPayload.success) {
       return NextResponse.json(
         {
           message: 'Invalid simulation payload',
-          errors: {
-            conversation: parsedConversation.success ? null : parsedConversation.error.flatten(),
-            outline: parsedOutline.success ? null : parsedOutline.error.flatten(),
-          },
+          errors: parsedPayload.error.flatten(),
         },
         { status: 400 }
       );
     }
 
-    const conversation = parsedConversation.data;
-    const outline = parsedOutline.data;
+    const { conversation, outline } = parsedPayload.data;
     if (outline.id === null) {
       return NextResponse.json({ message: 'Outline ID is required' }, { status: 400 });
     }

@@ -43,7 +43,7 @@ const TreeNodeBaseSchema = z.object({
   description: z.string().optional().default(''),
   rollableSuccess: z.string().optional().default(''),
   rollableFailure: z.string().optional().default(''),
-  userCreatedAt: z.string().min(1),
+  userCreatedAt: z.string().datetime(),
 });
 
 export const SecretNodeSchema = TreeNodeBaseSchema.extend({
@@ -165,3 +165,23 @@ export const ConversationSchema = z.array(
     AssistantMessageSchema,
   ])
 );
+
+export const OutlinePayloadSchema = z.object({
+  payload: OutlineTreeSchema,
+});
+
+export const CreateConversationPayloadSchema = z.object({
+  conversation: ConversationSchema.optional().default([]),
+  outline: OutlineTreeSchema,
+});
+
+export const SimulateInputSchema = OutlineTreeSchema.or(UserMessageContentSchema);
+
+export const SimulateConversePayloadSchema = z.object({
+  input: SimulateInputSchema,
+  conversation: ConversationSchema,
+});
+
+export const UpdateConversationPayloadSchema = z.object({
+  conversation: ConversationSchema,
+});

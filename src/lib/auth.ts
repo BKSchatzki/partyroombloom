@@ -91,7 +91,7 @@ async function validateSessionFromDb(
 
   const now = Date.now();
   if (now >= row.expiresAt.getTime()) {
-    await prisma.session.delete({ where: { id: sessionId } });
+    await prisma.session.deleteMany({ where: { id: sessionId } });
     return null;
   }
 
@@ -127,7 +127,7 @@ async function validateSessionFromDb(
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
-  await prisma.session.delete({ where: { id: sessionId } });
+  await prisma.session.deleteMany({ where: { id: sessionId } });
 }
 
 export async function setSessionCookie(sessionId: string, expiresAt: Date): Promise<void> {

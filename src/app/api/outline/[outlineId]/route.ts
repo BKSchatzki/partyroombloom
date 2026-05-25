@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { isPrismaRecordNotFoundError, parsePositiveInteger, readJsonBody } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { buildTreeFromFlat, flattenTreeForPersistence } from '@/lib/outlineTransformers';
 import { toElementWriteData, toFlatOutlineElement } from '@/lib/outlinePersistence';
 import { prisma } from '@/lib/prisma';
-import { OutlineTreeSchema } from '@/lib/schemas';
+import { OutlinePayloadSchema } from '@/lib/schemas';
 import type { Outline } from '@/lib/types';
 
 /* Service for:
@@ -24,8 +25,8 @@ export const GET = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
-    const outlineId = parseInt(outlineIdParam, 10);
-    if (isNaN(outlineId)) {
+    const outlineId = parsePositiveInteger(outlineIdParam);
+    if (outlineId === null) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
     // Find specific outline matching param and userId, ordering elements by creation time, aborting if no outline found
@@ -75,20 +76,24 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
-    const outlineId = parseInt(outlineIdParam, 10);
-    if (isNaN(outlineId)) {
+    const outlineId = parsePositiveInteger(outlineIdParam);
+    if (outlineId === null) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
     // Update existing outline matching current user with data from body
-    const body = await req.json();
-    const parsedOutline = OutlineTreeSchema.safeParse(body.payload);
-    if (!parsedOutline.success) {
+    const body = await readJsonBody(req);
+    if (body.response) {
+      return body.response;
+    }
+
+    const parsedPayload = OutlinePayloadSchema.safeParse(body.data);
+    if (!parsedPayload.success) {
       return NextResponse.json(
-        { message: 'Invalid outline payload', errors: parsedOutline.error.flatten() },
+        { message: 'Invalid outline payload', errors: parsedPayload.error.flatten() },
         { status: 400 }
       );
     }
-    const outline: Outline = parsedOutline.data;
+    const outline: Outline = parsedPayload.data.payload;
     const flattenedElements = flattenTreeForPersistence(outline.elements);
 
     const updatedOutline = await prisma.$transaction(async (tx) => {
@@ -163,6 +168,10 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
     // Return id of updated outline
     return NextResponse.json({ id: updatedOutline.id }, { status: 200 });
   } catch (error) {
+    if (isPrismaRecordNotFoundError(error)) {
+      return NextResponse.json({ message: 'Outline not found' }, { status: 404 });
+    }
+
     console.error('Error updating outline:', error);
     return NextResponse.json({ message: 'Error updating outline' }, { status: 500 });
   }
@@ -180,8 +189,8 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
-    const outlineId = parseInt(outlineIdParam, 10);
-    if (isNaN(outlineId)) {
+    const outlineId = parsePositiveInteger(outlineIdParam);
+    if (outlineId === null) {
       return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
     }
     // Delete outline matching current user
@@ -194,6 +203,10 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
     // Return id of deleted outline
     return NextResponse.json({ id: deletedOutline.id }, { status: 200 });
   } catch (error) {
+    if (isPrismaRecordNotFoundError(error)) {
+      return NextResponse.json({ message: 'Outline not found' }, { status: 404 });
+    }
+
     console.error('Error deleting outline:', error);
     return NextResponse.json({ message: 'Error deleting outline' }, { status: 500 });
   }
