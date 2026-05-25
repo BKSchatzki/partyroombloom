@@ -5,6 +5,8 @@ import { createSession, getGoogleClient, setSessionCookie } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
 import { GoogleUserInfoSchema } from '@/lib/schemas';
 
+export const runtime = 'nodejs';
+
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');

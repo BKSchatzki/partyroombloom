@@ -10,6 +10,8 @@ import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'] });
 
+export const runtime = 'nodejs';
+
 export const metadata: Metadata = {
   title: 'PartyRoomBloom',
   description: "The game master's inspirational session planning toolkit",

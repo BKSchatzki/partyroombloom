@@ -5,6 +5,8 @@ import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { UpdateConversationPayloadSchema } from '@/lib/schemas';
 
+export const runtime = 'nodejs';
+
 /* Service for:
   - Getting conversation from URL param and its associated user
 */

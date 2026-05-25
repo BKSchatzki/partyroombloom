@@ -3,6 +3,8 @@ import { cookies } from 'next/headers';
 
 import { getGoogleClient } from '@/lib/auth';
 
+export const runtime = 'nodejs';
+
 export async function GET(): Promise<Response> {
   const state = generateState();
   const codeVerifier = generateCodeVerifier();

@@ -5,6 +5,8 @@ import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { CreateConversationPayloadSchema } from '@/lib/schemas';
 
+export const runtime = 'nodejs';
+
 /* Service for:
   - Creating new conversation entries
 */

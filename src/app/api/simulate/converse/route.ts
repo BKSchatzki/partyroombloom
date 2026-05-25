@@ -6,6 +6,8 @@ import { getStructuredResponse } from '@/lib/openaiClient';
 import { prisma } from '@/lib/prisma';
 import { SimulateConversePayloadSchema } from '@/lib/schemas';
 
+export const runtime = 'nodejs';
+
 /* Service for:
   - Passing user inputs to completions API
   - Decrementing user chatToken column upon use of completions API

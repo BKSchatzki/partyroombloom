@@ -8,6 +8,8 @@ import { prisma } from '@/lib/prisma';
 import { OutlinePayloadSchema } from '@/lib/schemas';
 import type { Outline } from '@/lib/types';
 
+export const runtime = 'nodejs';
+
 /* Service for:
   - Getting all outlines associated with current user
   - Formatting outlines to match frontend types
