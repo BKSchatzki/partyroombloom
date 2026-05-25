@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { OpenAI } from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mjs';

@@ -1,3 +1,5 @@
+import 'server-only';
+
 export const REQUIRED_ENV_KEYS = [
   'DATABASE_URL',
   'OPENAI_API_KEY',
