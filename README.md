@@ -6,22 +6,19 @@
 
 PartyRoomBloom is an app for game masters of tabletop roleplaying games to develop their sessions through scene creation and iteration using generative AI.
 
-## Todo
-
-[x] - buildTree and flattenTree at the API boundary to make frontend intuitive
-[x] - atomize state to eliminate unnecessary renders
-[x] - React 19 + Next.js 16 upgrade (memoization hooks can now be removed gradually with the compiler)
-[x] - Authentication rewrite: replaced deprecated Lucia Auth with custom session management
-[x] - Remove unnecessary UUID dependency
-[ ] - Migrate from ESLint + Prettier to Biome (formatting is ready; blocked on Next.js-specific lint rules and nursery-status Tailwind class sorting with no tailwind.config.js support)
-
-## Current Status
+## Status
 
 PartyRoomBloom's core featureset is complete: The Outline Builder, Overview Page, Simulate Assistant, and PDF & JSON backups are all functional.
 
-Outline persistence has been refactored so outline elements are validated at the API boundary, written transactionally, and deleted when omitted from updates.
+The production path is intentionally explicit:
 
-Featureset expanding to include the use of a (currently public) Express service API that can be found at <https://github.com/BKSchatzki/prb-npc-service> and hosted at <https://prb-npc-service.onrender.com/>. Possibly rolling said separate Express API into the main PartyRoomBloom repo to take advantage of Next.js and Vercel's serverless architecture, whether it will remain public or be internal to PartyRoomBloom is TBD.
+- Outline elements are validated at the API boundary, written transactionally, and deleted when omitted from updates.
+- Mutating authenticated API routes validate same-origin requests before reading request bodies.
+- Runtime configuration is validated by `/api/health` without exposing secret values.
+- CI verifies formatting, linting, type checking, production builds, migrations, dependency audit, and a production smoke test.
+- The Docker image uses Next.js standalone output and `/api/health` as its readiness check.
+
+The NPC page is optional. Set `NEXT_PUBLIC_NPC_SERVICE_URL` to use the standalone NPC service; leave it empty to disable that page gracefully.
 
 ## Features
 
@@ -46,9 +43,10 @@ Featureset expanding to include the use of a (currently public) Express service 
 
 ## Required Services
 
-- Vercel (for ideal deployment)
+- PostgreSQL
 - OpenAI API (for Simulate Assistant)
 - Google Cloud Platform (for OAuth authentication)
+- Vercel or another Node.js 24-capable Next.js host
 
 ## Installation
 
@@ -78,15 +76,17 @@ Featureset expanding to include the use of a (currently public) Express service 
 2. Add required environment variables, also found in `.env.example`:
 
    ```env
-   DATABASE_URL="Link to your PostgreSQL instance"
+   DATABASE_URL="postgresql://postgres:password@localhost:5432/db?schema=public"
    OPENAI_API_KEY="Your OpenAI API key"
    OPENAI_MODEL="Optional model override, defaults to gpt-4o-mini"
    SITE_URL="Optional canonical site URL, defaults to https://partyroombloom.vercel.app"
    AUTH_GOOGLE_ID="Your Google Client ID"
    AUTH_GOOGLE_SECRET="Your Google Client secret"
-   AUTH_GOOGLE_REDIRECT_URI="Your app URL ending in /login/google/callback"
+   AUTH_GOOGLE_REDIRECT_URI="http://localhost:3000/login/google/callback"
    NEXT_PUBLIC_NPC_SERVICE_URL="Optional NPC service URL"
    ```
+
+`DATABASE_URL` must be a PostgreSQL URL. `AUTH_GOOGLE_REDIRECT_URI` must use `http` or `https`, must end exactly at `/login/google/callback`, and must not include query strings or hashes.
 
 ## Usage
 
@@ -96,9 +96,10 @@ Run dev server:
 npm run dev
 ```
 
-Start production server:
+Build and start the production server:
 
 ```bash
+npm run build
 npm start
 ```
 
