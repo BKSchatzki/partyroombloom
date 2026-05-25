@@ -48,7 +48,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
   const router = useRouter();
 
   const { isLoading, error } = useQuery({
-    queryKey: ['conversation'],
+    queryKey: ['conversation', outlineId, simulateId],
     queryFn: async () => {
       if (simulateId === null) {
         if (!user || tokenCount <= 0) {
@@ -100,7 +100,13 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         return data;
       } else {
         const response = await fetch(`/api/simulate/${simulateId}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch conversation: ${response.status}`);
+        }
         const data = await response.json();
+        if (!Array.isArray(data.conversation)) {
+          throw new Error('Invalid conversation payload');
+        }
         setConversation(data.conversation);
         setTokenCount(data.user.chatTokens);
         setIsLocalLoading(false);

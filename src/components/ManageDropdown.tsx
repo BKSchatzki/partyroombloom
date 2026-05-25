@@ -150,7 +150,7 @@ const ManageDropdownComponent: React.FC<ManageDropdownProps> = ({
             size={`block`}
             onPointerDown={handleTriggerPointerDown}
             className={cn(
-              `text-base-300 ring-offset-base-300 col-span-12 h-10 min-h-10 max-w-full rounded-3xl border border-orange-800 bg-orange-700 px-4 text-sm font-semibold ring-orange-600 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:bg-orange-700 hover:brightness-90 focus:ring-2 disabled:bg-orange-700/30 sm:col-span-3`,
+              `text-base-300 ring-offset-base-300 col-span-12 h-10 min-h-10 max-w-full rounded-3xl border border-orange-800 bg-orange-700 px-4 text-sm font-semibold ring-orange-600 ring-offset-2 transition-all duration-100 ease-in-out outline-none hover:border-orange-800 hover:bg-orange-700 hover:brightness-90 focus:ring-2 active:border-orange-800 active:bg-orange-700 disabled:bg-orange-700/30 sm:col-span-3`,
               className
             )}
           >

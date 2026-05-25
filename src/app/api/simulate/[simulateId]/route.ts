@@ -7,7 +7,11 @@ import type { Conversation } from '@/lib/types';
 /* Service for:
   - Getting conversation from URL param and its associated user
 */
-export const GET = async (req: NextRequest, { params }: { params: { simulateId: string } }) => {
+type RouteContext = {
+  params: Promise<{ simulateId: string }>;
+};
+
+export const GET = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
@@ -15,7 +19,8 @@ export const GET = async (req: NextRequest, { params }: { params: { simulateId: 
   }
   try {
     // Convert simulateId string from params into number
-    const simulateId = parseInt(params.simulateId);
+    const { simulateId: simulateIdParam } = await params;
+    const simulateId = parseInt(simulateIdParam);
     if (isNaN(simulateId)) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }
@@ -41,7 +46,7 @@ export const GET = async (req: NextRequest, { params }: { params: { simulateId: 
 /* Service for:
   - Updating conversation of id matching URL param and matching current user with data from body
 */
-export const PUT = async (req: NextRequest, { params }: { params: { simulateId: string } }) => {
+export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
@@ -49,7 +54,8 @@ export const PUT = async (req: NextRequest, { params }: { params: { simulateId: 
   }
   try {
     // Find specific simulation matching param and userId, aborting if no conversation found
-    const simulateId = parseInt(params.simulateId);
+    const { simulateId: simulateIdParam } = await params;
+    const simulateId = parseInt(simulateIdParam);
     if (isNaN(simulateId)) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }
@@ -76,7 +82,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { simulateId: 
 /* Service for:
   - Deleting conversation of id matching URL param matching current user
 */
-export const DELETE = async (req: NextRequest, { params }: { params: { simulateId: string } }) => {
+export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
@@ -84,7 +90,8 @@ export const DELETE = async (req: NextRequest, { params }: { params: { simulateI
   }
   try {
     // Find specific simulation matching param and userId, aborting if no conversation found
-    const simulateId = parseInt(params.simulateId);
+    const { simulateId: simulateIdParam } = await params;
+    const simulateId = parseInt(simulateIdParam);
     if (isNaN(simulateId)) {
       return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
     }

@@ -173,7 +173,9 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
                         color={`secondary`}
                         role={`link`}
                         size={`block`}
-                        className={cn(`h-10 min-h-10 max-w-full px-4 text-sm`)}
+                        className={cn(
+                          `hover:border-secondary active:border-secondary h-10 min-h-10 max-w-full px-4 text-sm`
+                        )}
                       >
                         <Pencil
                           aria-hidden={true}
