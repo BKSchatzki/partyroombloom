@@ -1,7 +1,6 @@
 'use client';
 
 import { LogOut } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 export const SignIn = ({ className }: { className?: string }) => {
   return (
-    <Link
+    <a
       href={`/login/google`}
       className={cn('gsi-material-button', className)}
     >
@@ -47,7 +46,7 @@ export const SignIn = ({ className }: { className?: string }) => {
         </div>
         <span className="gsi-material-button-contents">Continue with Google</span>
       </div>
-    </Link>
+    </a>
   );
 };
 

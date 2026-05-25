@@ -88,10 +88,27 @@ const assertHealthPayload = async (response, url) => {
   }
 };
 
+const assertLocationPrefix = (response, expectedLocationPrefix) => {
+  if (!expectedLocationPrefix) {
+    return;
+  }
+
+  const location = response.headers.get('location');
+  if (!location || !location.startsWith(expectedLocationPrefix)) {
+    throw new Error(
+      `Expected location to start with ${expectedLocationPrefix}, received ${location ?? 'none'}`
+    );
+  }
+};
+
 const main = async () => {
   const port = process.env.PORT || '3000';
   const hostname = process.env.HOSTNAME || '127.0.0.1';
   const smokePath = process.env.SMOKE_PATH || '/api/health';
+  const expectedStatus = process.env.SMOKE_EXPECTED_STATUS
+    ? parsePositiveInteger(process.env.SMOKE_EXPECTED_STATUS, 0)
+    : null;
+  const expectedLocationPrefix = process.env.SMOKE_EXPECTED_LOCATION_PREFIX || null;
   const timeoutMs = parsePositiveInteger(process.env.SMOKE_TIMEOUT_MS, DEFAULT_TIMEOUT_MS);
   const requiredHeaders = parseList(process.env.SMOKE_REQUIRED_HEADERS, DEFAULT_REQUIRED_HEADERS);
   const forbiddenHeaders = parseList(
@@ -135,8 +152,10 @@ const main = async () => {
 
       try {
         const response = await fetch(url, { redirect: 'manual' });
-        if (response.ok) {
+        const statusMatches = expectedStatus ? response.status === expectedStatus : response.ok;
+        if (statusMatches) {
           assertHeaders(response, requiredHeaders, forbiddenHeaders);
+          assertLocationPrefix(response, expectedLocationPrefix);
           await assertHealthPayload(response, url);
           console.log(`Production smoke passed: ${url.href} returned ${response.status}`);
           return;

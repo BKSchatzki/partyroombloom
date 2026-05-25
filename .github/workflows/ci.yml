@@ -66,6 +66,19 @@ jobs:
       - name: Smoke production health endpoint
         run: npm run smoke:production
 
+      - name: Smoke production Google OAuth start
+        run: npm run smoke:production
+        env:
+          SMOKE_EXPECTED_LOCATION_PREFIX: https://accounts.google.com/o/oauth2/v2/auth
+          SMOKE_EXPECTED_STATUS: '302'
+          SMOKE_PATH: /login/google
+          SMOKE_REQUIRED_HEADERS: X-DNS-Prefetch-Control,Strict-Transport-Security,X-Frame-Options,X-Content-Type-Options,Referrer-Policy,Permissions-Policy,Cache-Control,Location,Set-Cookie
+
+      - name: Smoke production first-login tutorial target
+        run: npm run smoke:production
+        env:
+          SMOKE_PATH: /outline/tutorial
+
   docker:
     name: Docker Image
     runs-on: ubuntu-latest
