@@ -6,6 +6,7 @@ const omittedDependencies = (process.env.npm_config_omit ?? '')
   .filter(Boolean);
 
 const shouldSkipHuskyInstall =
+  process.env.HUSKY === '0' ||
   process.env.CI === 'true' ||
   process.env.NODE_ENV === 'production' ||
   omittedDependencies.includes('dev');

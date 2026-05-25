@@ -1,4 +1,5 @@
 const { spawn } = require('node:child_process');
+const path = require('node:path');
 
 const DEFAULT_REQUIRED_HEADERS = [
   'X-DNS-Prefetch-Control',
@@ -98,13 +99,13 @@ const main = async () => {
     DEFAULT_FORBIDDEN_HEADERS
   );
   const url = new URL(smokePath, `http://${hostname}:${port}`);
-  const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  const serverScript = path.join('.next', 'standalone', 'server.js');
   const startedAt = Date.now();
   let serverOutput = '';
   let exitDescription = null;
   let lastError = null;
 
-  const server = spawn(npmCommand, ['start'], {
+  const server = spawn(process.execPath, [serverScript], {
     env: {
       ...process.env,
       HOSTNAME: hostname,

@@ -6,7 +6,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 FROM base AS deps
 
+ENV HUSKY=0
+
 COPY package*.json ./
+COPY scripts/prepare.js ./scripts/prepare.js
 RUN npm ci
 
 FROM base AS development
