@@ -19,7 +19,7 @@ PartyRoomBloom is an app for game masters of tabletop roleplaying games to devel
 
 PartyRoomBloom's core featureset is complete: The Outline Builder, Overview Page, Simulate Assistant, and PDF & JSON backups are all functional.
 
-Currently troubleshooting saved elements not being properly deleted when outline is updated. Possible solutions are frontend delete handler calling DELETE controller on new /element route, or restructuring of Outline state to include deleted flags for elements and modifying PUT controller on outline/[outlineId]. Latter solution likely to be developed with general refactoring of Outline state logic to isolate outline properties atomically to allow for memoization of handler functions and derived values (optimization logic already implemented).
+Outline persistence has been refactored so outline elements are validated at the API boundary, written transactionally, and deleted when omitted from updates.
 
 Featureset expanding to include the use of a (currently public) Express service API that can be found at <https://github.com/BKSchatzki/prb-npc-service> and hosted at <https://prb-npc-service.onrender.com/>. Possibly rolling said separate Express API into the main PartyRoomBloom repo to take advantage of Next.js and Vercel's serverless architecture, whether it will remain public or be internal to PartyRoomBloom is TBD.
 
@@ -41,14 +41,14 @@ Featureset expanding to include the use of a (currently public) Express service 
 - TypeScript
 - Neon PostgreSQL
 - OpenAI API
-- Lucia Auth
-- Next.js
+- Google OAuth
+- Prisma
 
 ## Required Services
 
 - Vercel (for ideal deployment)
 - OpenAI API (for Simulate Assistant)
-- Google Cloud Platform (for authentication using Lucia Auth)
+- Google Cloud Platform (for OAuth authentication)
 
 ## Installation
 
@@ -72,17 +72,16 @@ Featureset expanding to include the use of a (currently public) Express service 
 
 ## Configuration
 
-1. Create a `.env` file in the root directory
+1. Create a `.env.local` file in the root directory
 2. Add required environment variables, also found in `.env.example`:
 
    ```env
    DATABASE_URL="Link to your PostgreSQL instance"
-   OPENAI_URI="https://api.openai.com/v1/chat/completions"
-   OPENAI_API_KEY="Your OpenAPI key"
+   OPENAI_API_KEY="Your OpenAI API key"
    AUTH_GOOGLE_ID="Your Google Client ID"
    AUTH_GOOGLE_SECRET="Your Google Client secret"
    AUTH_GOOGLE_REDIRECT_URI="http://localhost:3000/login/google/callback"
-   NEXT_PUBLIC_NPC_SERVICE_URL="Currently under construction, will possibly be moved into this repo"
+   NEXT_PUBLIC_NPC_SERVICE_URL="Optional NPC service URL"
    ```
 
 ## Usage
@@ -109,6 +108,14 @@ To build the project for production:
 npm run build
 ```
 
+Build a production Docker image:
+
+```bash
+docker build -t partyroombloom .
+```
+
+The Docker image uses Next.js standalone output and runs `node server.js` in production. `docker-compose.yaml` targets the development stage for local container development.
+
 ## Deployment Checklist
 
 - Vercel Build and Deployment Settings:
@@ -129,7 +136,6 @@ npm run build
     - The subdomain at <https://project-name.vercel.app>
     - Any domains on which you are hosting the site
   - Authorized redirect URIs should have the following paths for each of the Authorized JavaScript Origins:
-    - /api/auth/callback/google
     - /login/google/callback
 
 ## Contributing
