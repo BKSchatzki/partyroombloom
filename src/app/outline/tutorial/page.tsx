@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Container from '@/components/Container';
-import { validateRequest } from '@/lib/auth';
+import { toClientUser, validateRequest } from '@/lib/auth';
 
 import Builder from '../_components/Builder';
 
@@ -12,7 +12,7 @@ const Tutorial = async () => {
     <Container>
       <Builder
         tutorialMode={true}
-        user={user}
+        user={user ? toClientUser(user) : null}
       />
     </Container>
   );

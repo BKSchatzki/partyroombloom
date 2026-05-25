@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import Container from '@/components/Container';
-import { validateRequest } from '@/lib/auth';
+import { toClientUser, validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 import Builder from '../_components/Builder';
@@ -34,7 +34,7 @@ const ViewOutline = async ({ params }: { params: Promise<{ outlineId: string }> 
     <Container>
       <Builder
         outlineId={outline.id}
-        user={user}
+        user={toClientUser(user)}
       />
     </Container>
   );

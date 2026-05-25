@@ -111,6 +111,9 @@ export const POST = async (req: NextRequest) => {
           where: {
             id: user.id,
           },
+          select: {
+            chatTokens: true,
+          },
         });
 
         return {

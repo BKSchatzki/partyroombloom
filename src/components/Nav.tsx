@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { User } from '@/lib/auth';
+import type { ClientUser } from '@/lib/auth';
 import { Grid2X2, Leaf, Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
 interface NavProps {
-  user: User | null;
+  user: ClientUser | null;
 }
 
 const NavComponent: React.FC<NavProps> = ({ user }) => {

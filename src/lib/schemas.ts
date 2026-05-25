@@ -238,9 +238,7 @@ export const UpdateConversationPayloadSchema = z.object({
 export const ConversationResponseSchema = z.object({
   id: z.number(),
   conversation: ConversationSchema,
-  user: z
-    .object({
-      chatTokens: z.number().int().nonnegative(),
-    })
-    .passthrough(),
+  user: z.object({
+    chatTokens: z.number().int().nonnegative(),
+  }),
 });

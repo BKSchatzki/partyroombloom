@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useAtom } from 'jotai';
-import type { User } from '@/lib/auth';
+import type { ClientUser } from '@/lib/auth';
 import { Check, Coins, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -30,7 +30,7 @@ import ChatOptions from './ChatOptions';
 interface ChatProps {
   outlineId: string | null;
   simulateId: number | null;
-  user: User | null;
+  user: ClientUser | null;
 }
 
 const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => {

@@ -2,7 +2,7 @@ import Container from '@/components/Container';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ShootingStars } from '@/components/ui/shooting-stars';
 import { StarsBackground } from '@/components/ui/stars-background';
-import { validateRequest } from '@/lib/auth';
+import { toClientUser, validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
 import About from './_components/About';
@@ -18,7 +18,7 @@ export default async function Home() {
       className={cn(`to-base-100 max-w-6xl gap-16 bg-linear-to-b from-transparent from-80%`)}
     >
       <ScrollArea className={cn(`flex h-full w-full flex-col gap-4`)}>
-        <Hero user={user} />
+        <Hero user={user ? toClientUser(user) : null} />
         <About />
         <Faq />
         <Acknowledgements />

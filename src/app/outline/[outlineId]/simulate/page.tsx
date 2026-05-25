@@ -3,7 +3,7 @@ import React from 'react';
 import { redirect } from 'next/navigation';
 
 import Container from '@/components/Container';
-import { validateRequest } from '@/lib/auth';
+import { toClientUser, validateRequest } from '@/lib/auth';
 
 import Chat from './_components/Chat';
 
@@ -21,7 +21,7 @@ const Simulate = async ({ params }: { params: Promise<{ outlineId: string }> }) 
       <Chat
         outlineId={outlineId}
         simulateId={null}
-        user={user}
+        user={toClientUser(user)}
       />
     </Container>
   );

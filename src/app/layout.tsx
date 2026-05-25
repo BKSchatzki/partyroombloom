@@ -5,7 +5,7 @@ import localFont from 'next/font/local';
 
 import Nav from '@/components/Nav';
 import Providers from '@/components/Providers';
-import { validateRequest } from '@/lib/auth';
+import { toClientUser, validateRequest } from '@/lib/auth';
 import { getSiteUrl } from '@/lib/env';
 import { cn } from '@/lib/utils';
 
@@ -71,7 +71,7 @@ export default async function RootLayout({
       <body className={cn(inter.className)}>
         <Providers>
           <div className={cn(`text-base-content grid h-dvh min-h-0 grid-rows-[auto_1fr]`)}>
-            <Nav user={user} />
+            <Nav user={user ? toClientUser(user) : null} />
             <main
               className={cn(
                 `no-scrollbar bg-flowers flex min-h-0 flex-col items-center justify-start overflow-y-auto`

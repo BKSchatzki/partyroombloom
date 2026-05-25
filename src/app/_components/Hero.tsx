@@ -1,4 +1,4 @@
-import type { User } from '@/lib/auth';
+import type { ClientUser } from '@/lib/auth';
 import { ArrowRight, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface HeroProps {
-  user: User | null;
+  user: ClientUser | null;
 }
 
 const Hero: React.FC<HeroProps> = ({ user }) => {

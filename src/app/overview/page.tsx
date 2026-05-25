@@ -3,7 +3,7 @@ import React from 'react';
 import { redirect } from 'next/navigation';
 
 import Container from '@/components/Container';
-import { validateRequest } from '@/lib/auth';
+import { toClientUser, validateRequest } from '@/lib/auth';
 
 import OutlinesList from './_components/OutlinesList';
 
@@ -16,7 +16,7 @@ const Overview = async () => {
 
   return (
     <Container>
-      <OutlinesList user={user} />
+      <OutlinesList user={toClientUser(user)} />
     </Container>
   );
 };

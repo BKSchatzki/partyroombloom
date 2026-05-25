@@ -37,6 +37,12 @@ export interface User {
   chatTokens: number;
 }
 
+export type ClientUser = Pick<User, 'chatTokens'>;
+
+export const toClientUser = (user: User): ClientUser => ({
+  chatTokens: user.chatTokens,
+});
+
 const encodeBase32LowerCaseNoPadding = (bytes: Uint8Array): string => {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz234567';
   let result = '';

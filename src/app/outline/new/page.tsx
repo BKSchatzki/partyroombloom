@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Container from '@/components/Container';
-import { validateRequest } from '@/lib/auth';
+import { toClientUser, validateRequest } from '@/lib/auth';
 
 import Builder from '../_components/Builder';
 
@@ -10,7 +10,7 @@ const Outline = async () => {
 
   return (
     <Container>
-      <Builder user={user} />
+      <Builder user={user ? toClientUser(user) : null} />
     </Container>
   );
 };

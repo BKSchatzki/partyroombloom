@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import Container from '@/components/Container';
-import { validateRequest } from '@/lib/auth';
+import { toClientUser, validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 import Chat from '../_components/Chat';
@@ -35,7 +35,7 @@ const ViewSimulation = async ({ params }: { params: Promise<{ simulateId: string
       <Chat
         simulateId={conversation.id}
         outlineId={null}
-        user={user}
+        user={toClientUser(user)}
       />
     </Container>
   );

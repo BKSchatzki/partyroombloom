@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { useAtom } from 'jotai';
-import type { User } from '@/lib/auth';
+import type { ClientUser } from '@/lib/auth';
 import { ChevronDown, Leaf, Pencil } from 'lucide-react';
 import Link from 'next/link';
 
@@ -29,7 +29,7 @@ import Preview from './Preview';
 import SimulateDropdown from './SimulateDropdown';
 
 interface OutlinesListProps {
-  user: User;
+  user: ClientUser;
 }
 
 const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {

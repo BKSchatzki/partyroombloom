@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import type { User } from '@/lib/auth';
+import type { ClientUser } from '@/lib/auth';
 import { ChevronUp, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -42,7 +42,7 @@ import SecretsContainer from './SecretsContainer';
 interface BuilderProps {
   outlineId?: number | null;
   tutorialMode?: boolean;
-  user?: User | null;
+  user?: ClientUser | null;
 }
 
 const OUTLINE_META_FIELDS: Record<OutlineMetaField, true> = {
