@@ -22,8 +22,11 @@ export const POST = async (req: NextRequest) => {
 
   // Get user and abort if no user found
   const { user } = await validateRequest();
-  if (!user || user.chatTokens <= 0) {
-    return Response.json({ message: 'Unauthorized' }, { status: 401 });
+  if (!user) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+  if (user.chatTokens <= 0) {
+    return NextResponse.json({ message: 'Insufficient chat tokens' }, { status: 402 });
   }
   try {
     // Get user response and existing conversation, throwing error if input not found
