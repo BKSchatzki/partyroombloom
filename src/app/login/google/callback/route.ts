@@ -1,7 +1,7 @@
 import { OAuth2RequestError } from 'arctic';
 import { cookies } from 'next/headers';
 
-import { createSession, google, setSessionCookie } from '@/lib/auth';
+import { createSession, getGoogleClient, setSessionCookie } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
 
 export async function GET(request: Request): Promise<Response> {
@@ -11,11 +11,11 @@ export async function GET(request: Request): Promise<Response> {
   const cookieStore = await cookies();
   const storedState = cookieStore.get('google_oauth_state')?.value ?? null;
   const storedCodeVerifier = cookieStore.get('code_verifier')?.value ?? null;
-  if (!code || !state || !storedState || state !== storedState) {
+  if (!code || !state || !storedState || !storedCodeVerifier || state !== storedState) {
     return new Response('Invalid state or missing code', { status: 400 });
   }
   try {
-    const tokens = await google.validateAuthorizationCode(code, storedCodeVerifier!);
+    const tokens = await getGoogleClient().validateAuthorizationCode(code, storedCodeVerifier);
     const accessToken = tokens.accessToken();
     const googleUserResponse = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
       headers: {
@@ -35,7 +35,7 @@ export async function GET(request: Request): Promise<Response> {
 
     if (existingUser) {
       const session = await createSession(existingUser.id);
-      setSessionCookie(session.id, session.expiresAt);
+      await setSessionCookie(session.id, session.expiresAt);
       return new Response(null, {
         status: 302,
         headers: { Location: '/overview' },
@@ -53,7 +53,7 @@ export async function GET(request: Request): Promise<Response> {
     });
 
     const session = await createSession(newUser.id);
-    setSessionCookie(session.id, session.expiresAt);
+    await setSessionCookie(session.id, session.expiresAt);
 
     return new Response(null, {
       status: 302,

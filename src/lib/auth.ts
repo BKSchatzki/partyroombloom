@@ -5,11 +5,27 @@ import { cookies } from 'next/headers';
 
 import { prisma } from '@/lib/prisma';
 
-export const google = new Google(
-  process.env.AUTH_GOOGLE_ID!,
-  process.env.AUTH_GOOGLE_SECRET!,
-  process.env.AUTH_GOOGLE_REDIRECT_URI!
-);
+let googleClient: Google | null = null;
+
+const getRequiredEnv = (
+  key: 'AUTH_GOOGLE_ID' | 'AUTH_GOOGLE_SECRET' | 'AUTH_GOOGLE_REDIRECT_URI'
+) => {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`${key} is not configured.`);
+  }
+  return value;
+};
+
+export const getGoogleClient = () => {
+  googleClient ??= new Google(
+    getRequiredEnv('AUTH_GOOGLE_ID'),
+    getRequiredEnv('AUTH_GOOGLE_SECRET'),
+    getRequiredEnv('AUTH_GOOGLE_REDIRECT_URI')
+  );
+
+  return googleClient;
+};
 
 const SESSION_COOKIE_NAME = 'auth_session';
 const SESSION_EXPIRY_SECONDS = 60 * 60 * 24 * 30; // 30 days

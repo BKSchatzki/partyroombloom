@@ -1,12 +1,23 @@
 import { generateCodeVerifier, generateState } from 'arctic';
 import { cookies } from 'next/headers';
 
-import { google } from '@/lib/auth';
+import { getGoogleClient } from '@/lib/auth';
 
 export async function GET(): Promise<Response> {
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
-  const url = google.createAuthorizationURL(state, codeVerifier, ['openid', 'email', 'profile']);
+  let url: URL;
+
+  try {
+    url = getGoogleClient().createAuthorizationURL(state, codeVerifier, [
+      'openid',
+      'email',
+      'profile',
+    ]);
+  } catch (error) {
+    console.error('Google OAuth configuration error:', error);
+    return new Response('Google OAuth is not configured', { status: 500 });
+  }
 
   const cookieStore = await cookies();
   cookieStore.set('google_oauth_state', state, {
