@@ -6,7 +6,7 @@ import { Grid2X2, Leaf, Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { SignIn, SignOut } from '@/components/SignIn';
+import { SignIn, SignOut } from '@/components/AuthButtons';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
@@ -156,7 +156,7 @@ const NavComponent: React.FC = () => {
                 </li>
                 <Separator className={cn(`border-base-300 mx-auto my-2 w-5/6`)} />
                 <li>
-                  <SignOut classProps={'btn-wide'} />
+                  <SignOut className={'btn-wide'} />
                 </li>
               </ul>
               <DrawerFooter></DrawerFooter>

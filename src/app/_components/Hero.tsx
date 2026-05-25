@@ -3,7 +3,7 @@
 import { ArrowRight, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 
-import { SignIn } from '@/components/SignIn';
+import { SignIn } from '@/components/AuthButtons';
 import { Button } from '@/components/ui/button';
 import { useSession } from '@/hooks/useSession';
 import { cn } from '@/lib/utils';
