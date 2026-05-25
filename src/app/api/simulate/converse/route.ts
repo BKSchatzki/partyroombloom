@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import type { NextResponse } from 'next/server';
 
-import { readJsonBody, validateSameOriginRequest } from '@/lib/api';
+import { jsonNoStore, readJsonBody, validateSameOriginRequest } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
 import { getStructuredResponse } from '@/lib/openaiClient';
 import { prisma } from '@/lib/prisma';
@@ -8,6 +9,7 @@ import { SimulateConversePayloadSchema } from '@/lib/schemas';
 import type { Outline } from '@/lib/types';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 /* Service for:
   - Passing user inputs to completions API
@@ -23,10 +25,10 @@ export const POST = async (req: NextRequest) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   if (user.chatTokens <= 0) {
-    return NextResponse.json({ message: 'Insufficient chat tokens' }, { status: 402 });
+    return jsonNoStore({ message: 'Insufficient chat tokens' }, { status: 402 });
   }
   try {
     // Get user response and existing conversation, throwing error if input not found
@@ -37,7 +39,7 @@ export const POST = async (req: NextRequest) => {
 
     const parsedPayload = SimulateConversePayloadSchema.safeParse(body.data);
     if (!parsedPayload.success) {
-      return NextResponse.json(
+      return jsonNoStore(
         {
           message: 'Invalid simulation payload',
           errors: parsedPayload.error.flatten(),
@@ -60,7 +62,7 @@ export const POST = async (req: NextRequest) => {
     // Calculate tokenCost as 1 per 10 exchanges
     const tokenCost = Math.max(1, Math.ceil(validatedConversation.length / 20));
     if (tokenCost > user.chatTokens) {
-      return NextResponse.json({ message: 'Insufficient chat tokens' }, { status: 402 });
+      return jsonNoStore({ message: 'Insufficient chat tokens' }, { status: 402 });
     }
 
     const tokenReservation = await prisma.user.updateMany({
@@ -78,7 +80,7 @@ export const POST = async (req: NextRequest) => {
     });
 
     if (tokenReservation.count !== 1) {
-      return NextResponse.json({ message: 'Insufficient chat tokens' }, { status: 402 });
+      return jsonNoStore({ message: 'Insufficient chat tokens' }, { status: 402 });
     }
 
     try {
@@ -131,7 +133,7 @@ export const POST = async (req: NextRequest) => {
 
       // Return updated conversation and user with new token count
       const response = { id: conversationId, conversation: updatedConversation, user: updatedUser };
-      return NextResponse.json(response, { status: 200 });
+      return jsonNoStore(response, { status: 200 });
     } catch (error) {
       await prisma.user
         .update({
@@ -152,7 +154,7 @@ export const POST = async (req: NextRequest) => {
     }
   } catch (error) {
     console.error('Error in API route:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return jsonNoStore({ error: 'Internal Server Error' }, { status: 500 });
   }
 };
 
@@ -207,7 +209,7 @@ const resolvePersistenceTarget = async ({
     if (!ownedConversation) {
       return {
         ok: false,
-        response: NextResponse.json({ message: 'Conversation not found' }, { status: 404 }),
+        response: jsonNoStore({ message: 'Conversation not found' }, { status: 404 }),
       };
     }
 
@@ -221,7 +223,7 @@ const resolvePersistenceTarget = async ({
   if (outlineId === null) {
     return {
       ok: false,
-      response: NextResponse.json({ message: 'Outline ID is required' }, { status: 400 }),
+      response: jsonNoStore({ message: 'Outline ID is required' }, { status: 400 }),
     };
   }
 
@@ -238,7 +240,7 @@ const resolvePersistenceTarget = async ({
   if (!ownedOutline) {
     return {
       ok: false,
-      response: NextResponse.json({ message: 'Outline not found' }, { status: 404 }),
+      response: jsonNoStore({ message: 'Outline not found' }, { status: 404 }),
     };
   }
 

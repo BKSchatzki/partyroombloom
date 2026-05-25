@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 import { jsonNoStore, readJsonBody, validateSameOriginRequest } from '@/lib/api';
 import { validateRequest } from '@/lib/auth';
@@ -77,7 +77,7 @@ export const POST = async (req: NextRequest) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
     // Insert outline info from body into table and associate with user
@@ -88,7 +88,7 @@ export const POST = async (req: NextRequest) => {
 
     const parsedPayload = OutlinePayloadSchema.safeParse(body.data);
     if (!parsedPayload.success) {
-      return NextResponse.json(
+      return jsonNoStore(
         { message: 'Invalid outline payload', errors: parsedPayload.error.flatten() },
         { status: 400 }
       );
@@ -121,9 +121,9 @@ export const POST = async (req: NextRequest) => {
       return outlineRecord;
     });
     // Return id of created outline
-    return NextResponse.json({ id: createdOutline.id }, { status: 201 });
+    return jsonNoStore({ id: createdOutline.id }, { status: 201 });
   } catch (error) {
     console.error('Error saving outline:', error);
-    return NextResponse.json({ message: 'Error saving outline' }, { status: 500 });
+    return jsonNoStore({ message: 'Error saving outline' }, { status: 500 });
   }
 };

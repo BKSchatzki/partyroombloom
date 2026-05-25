@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 import {
   isPrismaRecordNotFoundError,
@@ -85,14 +85,14 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
     const outlineId = parsePositiveInteger(outlineIdParam);
     if (outlineId === null) {
-      return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
+      return jsonNoStore({ message: 'Invalid outline ID' }, { status: 400 });
     }
     // Update existing outline matching current user with data from body
     const body = await readJsonBody(req);
@@ -102,7 +102,7 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
 
     const parsedPayload = OutlinePayloadSchema.safeParse(body.data);
     if (!parsedPayload.success) {
-      return NextResponse.json(
+      return jsonNoStore(
         { message: 'Invalid outline payload', errors: parsedPayload.error.flatten() },
         { status: 400 }
       );
@@ -180,14 +180,14 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
       return outlineRecord;
     });
     // Return id of updated outline
-    return NextResponse.json({ id: updatedOutline.id }, { status: 200 });
+    return jsonNoStore({ id: updatedOutline.id }, { status: 200 });
   } catch (error) {
     if (isPrismaRecordNotFoundError(error)) {
-      return NextResponse.json({ message: 'Outline not found' }, { status: 404 });
+      return jsonNoStore({ message: 'Outline not found' }, { status: 404 });
     }
 
     console.error('Error updating outline:', error);
-    return NextResponse.json({ message: 'Error updating outline' }, { status: 500 });
+    return jsonNoStore({ message: 'Error updating outline' }, { status: 500 });
   }
 };
 
@@ -203,14 +203,14 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
     // Convert outlineId string from params into number
     const { outlineId: outlineIdParam } = await params;
     const outlineId = parsePositiveInteger(outlineIdParam);
     if (outlineId === null) {
-      return NextResponse.json({ message: 'Invalid outline ID' }, { status: 400 });
+      return jsonNoStore({ message: 'Invalid outline ID' }, { status: 400 });
     }
     // Delete outline matching current user
     const deletedOutline = await prisma.outline.delete({
@@ -220,13 +220,13 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
       },
     });
     // Return id of deleted outline
-    return NextResponse.json({ id: deletedOutline.id }, { status: 200 });
+    return jsonNoStore({ id: deletedOutline.id }, { status: 200 });
   } catch (error) {
     if (isPrismaRecordNotFoundError(error)) {
-      return NextResponse.json({ message: 'Outline not found' }, { status: 404 });
+      return jsonNoStore({ message: 'Outline not found' }, { status: 404 });
     }
 
     console.error('Error deleting outline:', error);
-    return NextResponse.json({ message: 'Error deleting outline' }, { status: 500 });
+    return jsonNoStore({ message: 'Error deleting outline' }, { status: 500 });
   }
 };

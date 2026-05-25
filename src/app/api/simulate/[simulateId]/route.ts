@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 import {
   isPrismaRecordNotFoundError,
@@ -69,14 +69,14 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
     // Find specific simulation matching param and userId, aborting if no conversation found
     const { simulateId: simulateIdParam } = await params;
     const simulateId = parsePositiveInteger(simulateIdParam);
     if (simulateId === null) {
-      return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
+      return jsonNoStore({ message: 'Invalid simulate ID' }, { status: 400 });
     }
     // Update existing conversation matching current user with data from body
     const body = await readJsonBody(req);
@@ -86,7 +86,7 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
 
     const parsedPayload = UpdateConversationPayloadSchema.safeParse(body.data);
     if (!parsedPayload.success) {
-      return NextResponse.json(
+      return jsonNoStore(
         { message: 'Invalid conversation payload', errors: parsedPayload.error.flatten() },
         { status: 400 }
       );
@@ -101,14 +101,14 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
       },
     });
     // Return id of updated conversation
-    return NextResponse.json({ id: updatedConversation.id }, { status: 200 });
+    return jsonNoStore({ id: updatedConversation.id }, { status: 200 });
   } catch (error) {
     if (isPrismaRecordNotFoundError(error)) {
-      return NextResponse.json({ message: 'Conversation not found' }, { status: 404 });
+      return jsonNoStore({ message: 'Conversation not found' }, { status: 404 });
     }
 
     console.error('Error updating conversation:', error);
-    return NextResponse.json({ message: 'Error updating conversation' }, { status: 500 });
+    return jsonNoStore({ message: 'Error updating conversation' }, { status: 500 });
   }
 };
 
@@ -124,14 +124,14 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
   // Get user and abort if no user found
   const { user } = await validateRequest();
   if (!user) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    return jsonNoStore({ message: 'Unauthorized' }, { status: 401 });
   }
   try {
     // Find specific simulation matching param and userId, aborting if no conversation found
     const { simulateId: simulateIdParam } = await params;
     const simulateId = parsePositiveInteger(simulateIdParam);
     if (simulateId === null) {
-      return NextResponse.json({ message: 'Invalid simulate ID' }, { status: 400 });
+      return jsonNoStore({ message: 'Invalid simulate ID' }, { status: 400 });
     }
     // Delete conversation matching current user
     const deletedConversation = await prisma.conversation.delete({
@@ -141,13 +141,13 @@ export const DELETE = async (req: NextRequest, { params }: RouteContext) => {
       },
     });
     // Return id of deleted conversation
-    return NextResponse.json({ id: deletedConversation.id }, { status: 200 });
+    return jsonNoStore({ id: deletedConversation.id }, { status: 200 });
   } catch (error) {
     if (isPrismaRecordNotFoundError(error)) {
-      return NextResponse.json({ message: 'Conversation not found' }, { status: 404 });
+      return jsonNoStore({ message: 'Conversation not found' }, { status: 404 });
     }
 
     console.error('Error deleting conversation:', error);
-    return NextResponse.json({ message: 'Error deleting conversation' }, { status: 500 });
+    return jsonNoStore({ message: 'Error deleting conversation' }, { status: 500 });
   }
 };

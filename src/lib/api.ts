@@ -77,7 +77,7 @@ const getRequestOrigins = (request: NextRequest) => {
 export const validateSameOriginRequest = (request: NextRequest) => {
   const origin = parseHeaderOrigin(request.headers.get('origin'));
   if (!origin || !getRequestOrigins(request).has(origin)) {
-    return NextResponse.json({ message: 'Invalid request origin' }, { status: 403 });
+    return jsonNoStore({ message: 'Invalid request origin' }, { status: 403 });
   }
 
   return null;
@@ -86,23 +86,20 @@ export const validateSameOriginRequest = (request: NextRequest) => {
 export const readJsonBody = async (request: NextRequest): Promise<JsonBodyResult> => {
   if (!hasJsonContentType(request.headers.get('content-type'))) {
     return {
-      response: NextResponse.json(
-        { message: 'Content-Type must be application/json' },
-        { status: 415 }
-      ),
+      response: jsonNoStore({ message: 'Content-Type must be application/json' }, { status: 415 }),
     };
   }
 
   const contentLength = parseContentLength(request.headers.get('content-length'));
   if (contentLength !== null && contentLength > MAX_JSON_BODY_BYTES) {
     return {
-      response: NextResponse.json({ message: 'JSON body is too large' }, { status: 413 }),
+      response: jsonNoStore({ message: 'JSON body is too large' }, { status: 413 }),
     };
   }
 
   if (!request.body) {
     return {
-      response: NextResponse.json({ message: 'Missing JSON body' }, { status: 400 }),
+      response: jsonNoStore({ message: 'Missing JSON body' }, { status: 400 }),
     };
   }
 
@@ -122,7 +119,7 @@ export const readJsonBody = async (request: NextRequest): Promise<JsonBodyResult
       if (receivedBytes > MAX_JSON_BODY_BYTES) {
         await reader.cancel();
         return {
-          response: NextResponse.json({ message: 'JSON body is too large' }, { status: 413 }),
+          response: jsonNoStore({ message: 'JSON body is too large' }, { status: 413 }),
         };
       }
 
@@ -134,7 +131,7 @@ export const readJsonBody = async (request: NextRequest): Promise<JsonBodyResult
     return { data: JSON.parse(rawBody) };
   } catch {
     return {
-      response: NextResponse.json({ message: 'Invalid JSON body' }, { status: 400 }),
+      response: jsonNoStore({ message: 'Invalid JSON body' }, { status: 400 }),
     };
   } finally {
     reader.releaseLock();
