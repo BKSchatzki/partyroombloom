@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { outlinesListAtom } from '@/lib/atoms';
+import { OutlineListSchema } from '@/lib/schemas';
 import { Outline } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -42,10 +43,13 @@ const OutlinesListComponent: React.FC<OutlinesListProps> = ({ user }) => {
       if (!response.ok) {
         throw new Error(`Failed to fetch outlines: ${response.status}`);
       }
-      const data = await response.json();
+      const parsedOutlines = OutlineListSchema.safeParse(await response.json());
+      if (!parsedOutlines.success) {
+        throw new Error('Invalid outlines payload');
+      }
       setIsLocalLoading(false);
-      setOutlinesList(data);
-      return data;
+      setOutlinesList(parsedOutlines.data);
+      return parsedOutlines.data;
     },
   });
 

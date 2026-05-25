@@ -20,6 +20,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { conversationAtom, outlinesListAtom, userMessageAtom, userMessageInit } from '@/lib/atoms';
+import { ConversationResponseSchema, IdResponseSchema, OutlineTreeSchema } from '@/lib/schemas';
 import type { Outline, UserMessage } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -62,7 +63,11 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
           if (!outlineResponse.ok) {
             throw new Error(`Failed to fetch outline: ${outlineResponse.status}`);
           }
-          selectedOutline = (await outlineResponse.json()) as Outline;
+          const parsedOutline = OutlineTreeSchema.safeParse(await outlineResponse.json());
+          if (!parsedOutline.success) {
+            throw new Error('Invalid outline payload');
+          }
+          selectedOutline = parsedOutline.data;
         }
 
         if (!selectedOutline) {
@@ -79,7 +84,11 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         if (!createResponse.ok) {
           throw new Error(`Failed to create conversation: ${createResponse.status}`);
         }
-        const { id: newSimulateId } = await createResponse.json();
+        const parsedCreateResponse = IdResponseSchema.safeParse(await createResponse.json());
+        if (!parsedCreateResponse.success) {
+          throw new Error('Invalid create conversation payload');
+        }
+        const { id: newSimulateId } = parsedCreateResponse.data;
         const conversationResponse = await fetch('/api/simulate/converse', {
           method: 'POST',
           headers: {
@@ -93,8 +102,14 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         if (!conversationResponse.ok) {
           throw new Error(`Failed to fetch conversation: ${conversationResponse.status}`);
         }
+        const parsedConversationResponse = ConversationResponseSchema.safeParse(
+          await conversationResponse.json()
+        );
+        if (!parsedConversationResponse.success) {
+          throw new Error('Invalid simulation response payload');
+        }
         const { conversation: updatedConversation, user: updatedUser } =
-          await conversationResponse.json();
+          parsedConversationResponse.data;
         const updatedResponse = await fetch(`/api/simulate/${newSimulateId}`, {
           method: 'PUT',
           headers: {
@@ -105,21 +120,27 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         if (!updatedResponse.ok) {
           throw new Error(`Failed to update conversation: ${updatedResponse.status}`);
         }
-        const data = await updatedResponse.json();
+        const parsedUpdateResponse = IdResponseSchema.safeParse(await updatedResponse.json());
+        if (!parsedUpdateResponse.success) {
+          throw new Error('Invalid update conversation payload');
+        }
         router.replace(`/outline/${outlineId}/simulate/${newSimulateId}`);
         setConversation(updatedConversation);
         setTokenCount(updatedUser.chatTokens);
         setIsLocalLoading(false);
-        return data;
+        return parsedUpdateResponse.data;
       } else {
         const response = await fetch(`/api/simulate/${simulateId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch conversation: ${response.status}`);
         }
-        const data = await response.json();
-        if (!Array.isArray(data.conversation)) {
+        const parsedConversationResponse = ConversationResponseSchema.safeParse(
+          await response.json()
+        );
+        if (!parsedConversationResponse.success) {
           throw new Error('Invalid conversation payload');
         }
+        const data = parsedConversationResponse.data;
         setConversation(data.conversation);
         setTokenCount(data.user.chatTokens);
         setIsLocalLoading(false);
@@ -150,8 +171,14 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         if (!conversationResponse.ok) {
           throw new Error(`Failed to get response from AI: ${conversationResponse.status}`);
         }
+        const parsedConversationResponse = ConversationResponseSchema.safeParse(
+          await conversationResponse.json()
+        );
+        if (!parsedConversationResponse.success) {
+          throw new Error('Invalid simulation response payload');
+        }
         const { conversation: updatedConversation, user: updatedUser } =
-          await conversationResponse.json();
+          parsedConversationResponse.data;
         const updatedResponse = await fetch(`/api/simulate/${simulateId}`, {
           method: 'PUT',
           headers: {
@@ -162,12 +189,15 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
         if (!updatedResponse.ok) {
           throw new Error(`Failed to update conversation: ${updatedResponse.status}`);
         }
-        const data = await updatedResponse.json();
+        const parsedUpdateResponse = IdResponseSchema.safeParse(await updatedResponse.json());
+        if (!parsedUpdateResponse.success) {
+          throw new Error('Invalid update conversation payload');
+        }
         setConversation(updatedConversation);
         setTokenCount(updatedUser.chatTokens);
         setUserMessage(userMessageInit);
         setIsSaving(false);
-        return data;
+        return parsedUpdateResponse.data;
       } catch (error) {
         console.error('Failed to get response from AI or update conversation:', error);
         throw error;

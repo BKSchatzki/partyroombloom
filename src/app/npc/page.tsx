@@ -7,22 +7,30 @@ import GenericError from '@/components/GenericError';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
+import { z } from 'zod';
 
-type Npc = {
-  name: string;
-  species: string;
-  gender: string;
-  age: string;
-  anatomy: { build: string; height: string };
-  skin: { color: string; texture: string };
-  hair: { color: string; style: string };
-  eyes: { color: string; shape: string };
-  voice: { pitch: string; quality: string; speed: string; volume: string };
-  features: string;
-  mannerisms: string;
-  motivation: string;
-  plotHooks: string;
-};
+const NpcSchema = z.object({
+  name: z.string(),
+  species: z.string(),
+  gender: z.string(),
+  age: z.string(),
+  anatomy: z.object({ build: z.string(), height: z.string() }),
+  skin: z.object({ color: z.string(), texture: z.string() }),
+  hair: z.object({ color: z.string(), style: z.string() }),
+  eyes: z.object({ color: z.string(), shape: z.string() }),
+  voice: z.object({
+    pitch: z.string(),
+    quality: z.string(),
+    speed: z.string(),
+    volume: z.string(),
+  }),
+  features: z.string(),
+  mannerisms: z.string(),
+  motivation: z.string(),
+  plotHooks: z.string(),
+});
+
+type Npc = z.infer<typeof NpcSchema>;
 
 const Npc = () => {
   const {
@@ -42,7 +50,12 @@ const Npc = () => {
         throw new Error(`Error fetching NPC: ${response.status}`);
       }
 
-      return (await response.json()) as Npc;
+      const parsedNpc = NpcSchema.safeParse(await response.json());
+      if (!parsedNpc.success) {
+        throw new Error('Invalid NPC payload');
+      }
+
+      return parsedNpc.data;
     },
   });
 

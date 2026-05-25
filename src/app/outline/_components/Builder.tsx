@@ -28,6 +28,7 @@ import {
   updateOutlineMetaFieldAtomFamily,
 } from '@/lib/atoms';
 import { getOutlineMode, OutlineMetaField } from '@/lib/outlineState';
+import { OutlineTreeSchema } from '@/lib/schemas';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
@@ -90,9 +91,12 @@ const BuilderComponent: React.FC<BuilderProps> = ({
       if (!response.ok) {
         throw new Error(`Failed to fetch outline: ${response.status}`);
       }
-      const data = await response.json();
-      setExistingOutline(data);
-      return data;
+      const parsedOutline = OutlineTreeSchema.safeParse(await response.json());
+      if (!parsedOutline.success) {
+        throw new Error('Invalid outline payload');
+      }
+      setExistingOutline(parsedOutline.data);
+      return parsedOutline.data;
     },
   });
 

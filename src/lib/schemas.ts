@@ -228,6 +228,8 @@ export const OutlinePayloadSchema = z.object({
   payload: OutlineTreeSchema,
 });
 
+export const OutlineListSchema = z.array(OutlineTreeSchema);
+
 export const CreateConversationPayloadSchema = z.object({
   conversation: ConversationSchema.optional().default([]),
   outline: OutlineTreeSchema,
@@ -242,4 +244,17 @@ export const SimulateConversePayloadSchema = z.object({
 
 export const UpdateConversationPayloadSchema = z.object({
   conversation: ConversationSchema,
+});
+
+export const IdResponseSchema = z.object({
+  id: z.number(),
+});
+
+export const ConversationResponseSchema = z.object({
+  conversation: ConversationSchema,
+  user: z
+    .object({
+      chatTokens: z.number().int().nonnegative(),
+    })
+    .passthrough(),
 });
