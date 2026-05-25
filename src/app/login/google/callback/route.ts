@@ -7,16 +7,41 @@ import { GoogleUserInfoSchema } from '@/lib/schemas';
 
 export const runtime = 'nodejs';
 
+const GOOGLE_OAUTH_STATE_COOKIE = 'google_oauth_state';
+const GOOGLE_OAUTH_CODE_VERIFIER_COOKIE = 'code_verifier';
+
+const expireGoogleOAuthCookie = (
+  cookieStore: Awaited<ReturnType<typeof cookies>>,
+  name: string
+) => {
+  cookieStore.set(name, '', {
+    path: '/',
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 0,
+    sameSite: 'lax',
+  });
+};
+
+const expireGoogleOAuthCookies = (cookieStore: Awaited<ReturnType<typeof cookies>>) => {
+  expireGoogleOAuthCookie(cookieStore, GOOGLE_OAUTH_STATE_COOKIE);
+  expireGoogleOAuthCookie(cookieStore, GOOGLE_OAUTH_CODE_VERIFIER_COOKIE);
+};
+
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
   const cookieStore = await cookies();
-  const storedState = cookieStore.get('google_oauth_state')?.value ?? null;
-  const storedCodeVerifier = cookieStore.get('code_verifier')?.value ?? null;
+  const storedState = cookieStore.get(GOOGLE_OAUTH_STATE_COOKIE)?.value ?? null;
+  const storedCodeVerifier = cookieStore.get(GOOGLE_OAUTH_CODE_VERIFIER_COOKIE)?.value ?? null;
   if (!code || !state || !storedState || !storedCodeVerifier || state !== storedState) {
+    expireGoogleOAuthCookies(cookieStore);
     return new Response('Invalid state or missing code', { status: 400 });
   }
+
+  expireGoogleOAuthCookies(cookieStore);
+
   try {
     const tokens = await getGoogleClient().validateAuthorizationCode(code, storedCodeVerifier);
     const accessToken = tokens.accessToken();
