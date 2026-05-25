@@ -9,6 +9,20 @@ export const runtime = 'nodejs';
 const noStoreHeaders = {
   'Cache-Control': 'no-store',
 };
+const DATABASE_HEALTHCHECK_TIMEOUT_MS = 2_000;
+
+const withTimeout = <T>(promise: Promise<T>, timeoutMs: number) => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<never>((_resolve, reject) => {
+    timeoutId = setTimeout(() => reject(new Error('Database health check timed out.')), timeoutMs);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  });
+};
 
 export const GET = async () => {
   const startedAt = Date.now();
@@ -16,7 +30,7 @@ export const GET = async () => {
   let databaseCheck: 'ok' | 'error' = 'ok';
 
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    await withTimeout(prisma.$queryRaw`SELECT 1`, DATABASE_HEALTHCHECK_TIMEOUT_MS);
   } catch {
     databaseCheck = 'error';
   }
