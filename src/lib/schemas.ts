@@ -7,6 +7,36 @@ export const DungeonMasterResponseSchema = z.object({
   options: z.array(z.object({ description: z.string(), roll: z.boolean() })),
 });
 
+export const RollResultSchema = z.enum([
+  'Critical Success',
+  'Normal Success',
+  'Close Success',
+  'Close Failure',
+  'Normal Failure',
+  'Critical Failure',
+]);
+
+export const UserMessageContentSchema = z.object({
+  choice: z.string(),
+  comments: z.string().optional().default(''),
+  rollResult: RollResultSchema.nullable(),
+});
+
+export const SystemMessageSchema = z.object({
+  role: z.literal('system'),
+  content: z.string(),
+});
+
+export const UserMessageSchema = z.object({
+  role: z.literal('user'),
+  content: UserMessageContentSchema,
+});
+
+export const AssistantMessageSchema = z.object({
+  role: z.literal('assistant'),
+  content: DungeonMasterResponseSchema,
+});
+
 const TreeNodeBaseSchema = z.object({
   id: z.string().min(1),
   name: z.string().optional().default(''),
@@ -121,3 +151,17 @@ export const OutlineTreeSchema = z
       });
     }
   });
+
+export const OutlineUserMessageSchema = z.object({
+  role: z.literal('user'),
+  content: OutlineTreeSchema,
+});
+
+export const ConversationSchema = z.array(
+  z.union([
+    SystemMessageSchema,
+    UserMessageSchema,
+    OutlineUserMessageSchema,
+    AssistantMessageSchema,
+  ])
+);

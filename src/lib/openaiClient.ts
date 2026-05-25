@@ -4,7 +4,7 @@ import { ChatCompletionMessageParam } from 'openai/resources/chat/completions.mj
 
 import { simulateOutlinePrompt } from './prompts';
 import { DungeonMasterResponseSchema } from './schemas';
-import { Conversation, Outline, SystemMessage, UserMessage } from './types';
+import { Conversation, Outline, OutlineUserMessage, SystemMessage, UserMessage } from './types';
 
 let openaiClient: OpenAI | null = null;
 
@@ -20,47 +20,64 @@ const getOpenAIClient = () => {
   return openaiClient;
 };
 
+const isOutlineInput = (input: Outline | UserMessage['content']): input is Outline => {
+  return 'elements' in input;
+};
+
 export const getStructuredResponse = async (
   input: Outline | UserMessage['content'],
   conversation: Conversation
-) => {
+): Promise<Conversation> => {
   const initialSystemPrompt: SystemMessage = {
     role: 'system',
     content: simulateOutlinePrompt,
   };
 
-  const userMessage = {
-    role: 'user',
-    content: typeof input === 'string' ? input : JSON.stringify(input),
-  };
+  const userMessage: UserMessage | OutlineUserMessage = isOutlineInput(input)
+    ? {
+        role: 'user',
+        content: input,
+      }
+    : {
+        role: 'user',
+        content: input,
+      };
 
-  const formattedConversation = conversation.map((message) => ({
+  const formattedConversation: ChatCompletionMessageParam[] = conversation.map((message) => ({
     role: message.role,
     content:
       typeof message.content === 'string' ? message.content : JSON.stringify(message.content),
   }));
 
-  const messages = conversation.length
-    ? [...formattedConversation, userMessage]
-    : [initialSystemPrompt, userMessage];
+  const formattedUserMessage: ChatCompletionMessageParam = {
+    role: 'user',
+    content: JSON.stringify(input),
+  };
+
+  const messages: ChatCompletionMessageParam[] = conversation.length
+    ? [...formattedConversation, formattedUserMessage]
+    : [
+        {
+          role: initialSystemPrompt.role,
+          content: initialSystemPrompt.content,
+        },
+        formattedUserMessage,
+      ];
 
   const completion = await getOpenAIClient().beta.chat.completions.parse({
     model: 'gpt-4o-mini',
-    messages: messages as ChatCompletionMessageParam[],
+    messages,
     response_format: zodResponseFormat(DungeonMasterResponseSchema, 'assistant_response'),
   });
 
-  const parsedMessages = messages.map((msg) => ({
-    ...msg,
-    content:
-      (msg.role === 'user' || msg.role === 'assistant') &&
-      msg.content &&
-      typeof msg.content === 'string'
-        ? JSON.parse(msg.content)
-        : msg.content,
-  }));
-
   const assistantMessage = completion.choices[0].message.parsed;
+  if (!assistantMessage) {
+    throw new Error('OpenAI response did not match the expected assistant schema.');
+  }
 
-  return [...parsedMessages, { role: 'assistant', content: assistantMessage }];
+  const nextConversation = conversation.length
+    ? [...conversation, userMessage]
+    : [initialSystemPrompt, userMessage];
+
+  return [...nextConversation, { role: 'assistant', content: assistantMessage }];
 };

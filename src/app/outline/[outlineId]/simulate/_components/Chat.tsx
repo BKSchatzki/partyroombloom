@@ -20,7 +20,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { conversationAtom, outlinesListAtom, userMessageAtom, userMessageInit } from '@/lib/atoms';
-import type { UserMessage } from '@/lib/types';
+import type { Outline, UserMessage } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 
@@ -40,9 +40,9 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
   const [isSaving, setIsSaving] = useState(false);
   const [isLocalLoading, setIsLocalLoading] = useState(true);
   const [embla, setEmbla] = useState<CarouselApi>();
-  let outline = null;
+  let outline: Outline | null = null;
   if (outlineId) {
-    outline = outlinesList.find((outline) => outline.id === parseInt(outlineId, 10));
+    outline = outlinesList.find((outline) => outline.id === parseInt(outlineId, 10)) ?? null;
   }
 
   const router = useRouter();
@@ -56,12 +56,25 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
           router.push('/overview');
           return tokenCount;
         }
+        let selectedOutline = outline;
+        if (!selectedOutline && outlineId) {
+          const outlineResponse = await fetch(`/api/outline/${outlineId}`);
+          if (!outlineResponse.ok) {
+            throw new Error(`Failed to fetch outline: ${outlineResponse.status}`);
+          }
+          selectedOutline = (await outlineResponse.json()) as Outline;
+        }
+
+        if (!selectedOutline) {
+          throw new Error('Outline is required to start a simulation');
+        }
+
         const createResponse = await fetch('/api/simulate/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ outline }),
+          body: JSON.stringify({ outline: selectedOutline }),
         });
         if (!createResponse.ok) {
           throw new Error(`Failed to create conversation: ${createResponse.status}`);
@@ -73,7 +86,7 @@ const ChatComponent: React.FC<ChatProps> = ({ outlineId, simulateId, user }) => 
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            input: outline,
+            input: selectedOutline,
             conversation: [],
           }),
         });

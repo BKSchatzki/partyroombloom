@@ -72,18 +72,25 @@ export type SystemMessage = BaseMessage & {
 
 export type UserMessage = BaseMessage & {
   role: 'user';
-  content: {
-    choice: string;
-    comments?: string;
-    rollResult:
-      | 'Critical Success'
-      | 'Normal Success'
-      | 'Close Success'
-      | 'Close Failure'
-      | 'Normal Failure'
-      | 'Critical Failure'
-      | null;
-  };
+  content: UserMessageContent;
+};
+
+export type UserMessageContent = {
+  choice: string;
+  comments?: string;
+  rollResult:
+    | 'Critical Success'
+    | 'Normal Success'
+    | 'Close Success'
+    | 'Close Failure'
+    | 'Normal Failure'
+    | 'Critical Failure'
+    | null;
+};
+
+export type OutlineUserMessage = BaseMessage & {
+  role: 'user';
+  content: Outline;
 };
 
 export type AssistantMessage = BaseMessage & {
@@ -99,7 +106,7 @@ export type AssistantMessage = BaseMessage & {
   };
 };
 
-export type Message = SystemMessage | UserMessage | AssistantMessage;
+export type Message = SystemMessage | UserMessage | OutlineUserMessage | AssistantMessage;
 
 export type Conversation = Message[];
 
@@ -108,7 +115,12 @@ export const isSystemMessage = (message: Message): message is SystemMessage => {
   return message.role === 'system';
 };
 export const isUserMessage = (message: Message): message is UserMessage => {
-  return message.role === 'user';
+  return (
+    message.role === 'user' &&
+    typeof message.content === 'object' &&
+    message.content !== null &&
+    'choice' in message.content
+  );
 };
 export const isAssistantMessage = (message: Message): message is AssistantMessage => {
   return message.role === 'assistant';

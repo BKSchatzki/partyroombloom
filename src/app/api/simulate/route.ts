@@ -2,12 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import type { Conversation, Outline } from '@/lib/types';
-
-// Create type for only id field in Outline
-type ExistingOutline = Omit<Outline, 'id'> & {
-  id: number;
-};
+import { ConversationSchema, OutlineTreeSchema } from '@/lib/schemas';
 
 /* Service for:
   - Creating new conversation entries
@@ -21,13 +16,47 @@ export const POST = async (req: NextRequest) => {
   try {
     // Insert conversation from body into table and associate with outline and user
     const body = await req.json();
-    const conversation: Conversation = body.conversation;
-    const outline: ExistingOutline = body.outline;
+    const parsedConversation = ConversationSchema.safeParse(body.conversation ?? []);
+    const parsedOutline = OutlineTreeSchema.safeParse(body.outline);
+
+    if (!parsedConversation.success || !parsedOutline.success) {
+      return NextResponse.json(
+        {
+          message: 'Invalid simulation payload',
+          errors: {
+            conversation: parsedConversation.success ? null : parsedConversation.error.flatten(),
+            outline: parsedOutline.success ? null : parsedOutline.error.flatten(),
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    const conversation = parsedConversation.data;
+    const outline = parsedOutline.data;
+    if (outline.id === null) {
+      return NextResponse.json({ message: 'Outline ID is required' }, { status: 400 });
+    }
+
+    const ownedOutline = await prisma.outline.findUnique({
+      where: {
+        id: outline.id,
+        userId: user.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!ownedOutline) {
+      return NextResponse.json({ message: 'Outline not found' }, { status: 404 });
+    }
+
     const createdConversation = await prisma.conversation.create({
       data: {
-        outlineId: outline.id ?? null,
+        outlineId: outline.id,
         userId: user.id,
-        thread: conversation ?? '',
+        thread: conversation,
       },
     });
     // Return id of created conversation

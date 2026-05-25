@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { validateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import type { Conversation } from '@/lib/types';
+import { ConversationSchema } from '@/lib/schemas';
 
 /* Service for:
   - Getting conversation from URL param and its associated user
@@ -61,14 +61,20 @@ export const PUT = async (req: NextRequest, { params }: RouteContext) => {
     }
     // Update existing conversation matching current user with data from body
     const body = await req.json();
-    const conversation: Conversation = body.conversation;
+    const parsedConversation = ConversationSchema.safeParse(body.conversation);
+    if (!parsedConversation.success) {
+      return NextResponse.json(
+        { message: 'Invalid conversation payload', errors: parsedConversation.error.flatten() },
+        { status: 400 }
+      );
+    }
     const updatedConversation = await prisma.conversation.update({
       where: {
         id: simulateId,
         userId: user.id,
       },
       data: {
-        thread: conversation,
+        thread: parsedConversation.data,
       },
     });
     // Return id of updated conversation
