@@ -9,6 +9,7 @@ export const runtime = 'nodejs';
 
 const GOOGLE_OAUTH_STATE_COOKIE = 'google_oauth_state';
 const GOOGLE_OAUTH_CODE_VERIFIER_COOKIE = 'code_verifier';
+const GOOGLE_USERINFO_TIMEOUT_MS = 10_000;
 
 const expireGoogleOAuthCookie = (
   cookieStore: Awaited<ReturnType<typeof cookies>>,
@@ -49,6 +50,7 @@ export async function GET(request: Request): Promise<Response> {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
+      signal: AbortSignal.timeout(GOOGLE_USERINFO_TIMEOUT_MS),
     });
 
     if (!googleUserResponse.ok) {
