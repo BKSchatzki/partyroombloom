@@ -1,6 +1,7 @@
 import { OAuth2RequestError } from 'arctic';
 import { Prisma } from '@prisma/client';
 import { cookies } from 'next/headers';
+import { z } from 'zod';
 
 import { createSession, getGoogleClient, setSessionCookie } from '@/lib/auth';
 import { prisma as db } from '@/lib/prisma';
@@ -14,7 +15,7 @@ const GOOGLE_OAUTH_STATE_COOKIE = 'google_oauth_state';
 const GOOGLE_OAUTH_CODE_VERIFIER_COOKIE = 'code_verifier';
 const GOOGLE_USERINFO_TIMEOUT_MS = 10_000;
 
-type GoogleUserInfo = ReturnType<(typeof GoogleUserInfoSchema)['parse']>;
+type GoogleUserInfo = z.infer<typeof GoogleUserInfoSchema>;
 type CallbackStage =
   | 'token_exchange'
   | 'user_info_fetch'
@@ -51,10 +52,6 @@ const isPrismaUniqueConstraintError = (
   error: unknown
 ): error is Prisma.PrismaClientKnownRequestError => {
   return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
-};
-
-const hasPrismaErrorTarget = (targets: string[], field: string) => {
-  return targets.some((target) => target === field || target.includes(field));
 };
 
 const logCallbackError = (stage: CallbackStage, error: unknown) => {
@@ -127,7 +124,7 @@ const persistGoogleUser = async (googleUser: GoogleUserInfo) => {
     }
 
     const targets = getPrismaErrorTargets(error);
-    if (hasPrismaErrorTarget(targets, 'googleId')) {
+    if (targets.some((target) => target === 'googleId' || target.includes('googleId'))) {
       const user = await db.user.update({
         where: { googleId: googleUser.sub },
         data: profileData,
@@ -135,26 +132,6 @@ const persistGoogleUser = async (googleUser: GoogleUserInfo) => {
       });
 
       return { isNewUser: false, user };
-    }
-
-    if (hasPrismaErrorTarget(targets, 'email') && googleUser.email_verified) {
-      const userByEmail = await db.user.findFirst({
-        where: { email: googleUser.email },
-        select: { id: true },
-      });
-
-      if (userByEmail) {
-        const user = await db.user.update({
-          where: { id: userByEmail.id },
-          data: {
-            ...profileData,
-            googleId: googleUser.sub,
-          },
-          select: { id: true },
-        });
-
-        return { isNewUser: false, user };
-      }
     }
 
     throw error;
